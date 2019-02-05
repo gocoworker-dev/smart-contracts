@@ -1,0 +1,59 @@
+{
+  "name": "gocoworker-tokensale-sc",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "scripts/build.sh",
+    "compile": "truffle compile",
+    "console": "truffle console",
+    "deploy": "scripts/deploy.sh",
+    "coverage": "scripts/coverage.sh",
+    "lint": "npm run lint:js && npm run lint:sol",
+    "lint:fix": "npm run lint:js:fix",
+    "lint:js": "eslint .",
+    "lint:js:fix": "eslint . --fix",
+    "lint:sol": "solhint --max-warnings 0 \"contracts/**/*.sol\"",
+    "prepack": "npm run build",
+    "version": "scripts/version.js",
+    "test": "npm run compile && scripts/test.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gocoworker/gocoworker-tokensale-sc/"
+  },
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart",
+    "contracts",
+    "tokensale"
+  ],
+  "author": "Sébastien Griffon <sebastien.griffon@playitopen.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GoCoworker/gocoworker-tokensale-sc/issues"
+  },
+  "homepage": "https://github.com/GoCoworker/gocoworker-tokensale-sc/",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-bn": "^0.1.1",
+    "coveralls": "^3.0.1",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-mocha-no-only": "^1.1.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "ethereumjs-util": "^6.0.0",
+    "ethjs-abi": "^0.2.1",
+    "ganache-cli": "6.1.8",
+    "openzeppelin-test-helpers": "^0.1.1",
+    "pify": "^4.0.1",
+    "solhint": "^1.5.0",
+    "truffle": "5.0.0",
+    "openzeppelin-solidity": "^2.1.2",
+    "truffle-flattener": "^1.2.10",
+    "dotenv": "^6.2.0"
+  }
+}
