@@ -1,5 +1,6 @@
 # GCWToken : GoCoworker ERC20 token and Token Sales
 
+[![Build Status](https://travis-ci.com/Gocoworker/gocoworker-tokensale-sc.svg?branch=master)](https://travis-ci.com/Gocoworker/gocoworker-tokensale-sc)
 
 ## Getting Started
 
