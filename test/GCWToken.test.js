@@ -3,14 +3,12 @@ const { ZERO_ADDRESS } = constants;
 
 const GCWToken = artifacts.require('GCWToken');
 
-
 contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccount, recipient, anotherAccount]) {
   const totalSupply = new BN(21000000).mul(new BN(10).pow(new BN(18)));
 
   const founderSupply = new BN(6930000).mul(new BN(10).pow(new BN(18)));
   const saleSupply = new BN(12600000).mul(new BN(10).pow(new BN(18)));
   const rewardSupply = new BN(1470000).mul(new BN(10).pow(new BN(18)));
-
 
   beforeEach(async function () {
     this.token = await GCWToken.new(founderAccount, tokenSaleAccount, rewardAccount);
@@ -53,7 +51,6 @@ contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccou
       it('returns the total amount of tokens for reward pool', async function () {
         (await this.token.balanceOf(rewardAccount)).should.be.bignumber.equal(rewardSupply);
       });
-
     });
   });
 
@@ -348,14 +345,11 @@ contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccou
     });
   });
 
-
   describe('approve', function () {
     testApprove(tokenSaleAccount, recipient, saleSupply, function (owner, spender, amount) {
       return this.token.approve(spender, amount, { from: owner });
     });
   });
-
- 
 
   function testApprove (owner, spender, supply, approve) {
     describe('when the spender is not the zero address', function () {

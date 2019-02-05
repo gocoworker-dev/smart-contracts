@@ -18,7 +18,7 @@ module.exports = {
       network_id: '*', // eslint-disable-line camelcase
     },
     rinkeby: {
-      provider: new HDWalletProvider(getWallet(), process.env.PASSWALLET, 'https://rinkeby.infura.io/'+process.env.INFURA_API_KEY),
+      provider: new HDWalletProvider(getWallet(), process.env.PASSWALLET, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY),
       gas: 4700000,
       network_id: 4,
     },
@@ -26,7 +26,7 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '*', // eslint-disable-line camelcase
-    }
+    },
   },
-  migrations_directory: './migrations'
+  migrations_directory: './migrations',
 };

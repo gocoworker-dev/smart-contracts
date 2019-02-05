@@ -1,7 +1,5 @@
 require('dotenv').config();
 
-
-
 module.exports = {
   networks: {
     development: {
@@ -27,6 +25,5 @@ module.exports = {
       network_id: '*', // eslint-disable-line camelcase
     },
   },
-  migrations_directory: './migrations'
+  migrations_directory: './migrations',
 };
-
