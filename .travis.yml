@@ -23,11 +23,6 @@ jobs:
       script: npm run test
 
     - stage: tests
-      name: "Unit tests with coverage report"
-      script: npm run test
-      env: SOLIDITY_COVERAGE=true
-
-    - stage: tests
       name: "Unit tests using solc nightly"
       script: npm run test
       env: SOLC_NIGHTLY=true
