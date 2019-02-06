@@ -54,7 +54,7 @@
     "truffle": "5.0.0",
     "openzeppelin-solidity": "^2.1.2",
     "truffle-flattener": "^1.2.10",
-    "solidity-coverage": "^0.5.11",
+    "solidity-coverage": "https://github.com/Gocoworker/solidity-coverage.git#5875f5b7bc74d447f3312c9c0e9fc7814b482477",
     "dotenv": "^6.2.0"
   }
 }
