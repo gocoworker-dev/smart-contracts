@@ -66,8 +66,9 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
     uint256 weiAmount
   )
     internal
-    whenNotPaused
     view
+    onlyWhileOpen
+    whenNotPaused
   {
     super._preValidatePurchase(beneficiary, weiAmount);
   }
