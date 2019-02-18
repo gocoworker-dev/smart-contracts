@@ -13,9 +13,11 @@ async function tokenBalanceDifference (token, account, promiseFunc) {
 contract('GCWSale', function ([_, owner, founderAccount, tokenSaleAccount, rewardAccount, investor1, investor2, investor3, anyone]) {
   const value = ether('1');
 
-  const TOKEN_BY_PERIOD = new BN(42000).mul(new BN(10).pow(new BN(18)));
+ 
   const NUMBER_OF_PERIOD = new BN(4);
-  const TOKEN_SUPPLY = TOKEN_BY_PERIOD.mul(NUMBER_OF_PERIOD);
+  const TOKEN_SUPPLY = new BN(10500000).mul(new BN(10).pow(new BN(18)));
+
+  const TOKEN_BY_PERIOD = TOKEN_SUPPLY.div(NUMBER_OF_PERIOD);
 
   before(async function () {
     // Advance to the next block to correctly read time in the solidity "now" function interpreted by ganache
@@ -30,7 +32,7 @@ contract('GCWSale', function ([_, owner, founderAccount, tokenSaleAccount, rewar
 
     this.token = await GCWToken.new(founderAccount, tokenSaleAccount, rewardAccount, { from });
 
-    this.crowdsale = await GCWSale.new(this.openingTime, tokenSaleAccount, rewardAccount, NUMBER_OF_PERIOD, TOKEN_BY_PERIOD, this.token.address, { from });
+    this.crowdsale = await GCWSale.new(this.openingTime, tokenSaleAccount, rewardAccount, NUMBER_OF_PERIOD, this.token.address, { from });
 
     await this.token.approve(this.crowdsale.address, TOKEN_BY_PERIOD.mul(NUMBER_OF_PERIOD), { from: tokenSaleAccount }); // approve the crowdsale contract to transfer tokenSaleAccount tokens
   });

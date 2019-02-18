@@ -30,7 +30,7 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
 
     this.token = await GCWToken.new(founderAccount, tokenSaleAccount, rewardAccount, { from });
 
-    this.crowdsale = await GCWPreSale.new(this.openingTime, tokenSaleAccount, rewardAccount, this.token.address, { from });
+    this.crowdsale = await GCWPreSale.new(this.openingTime, this.closingTime, tokenSaleAccount, rewardAccount, this.token.address, { from });
 
     await this.token.transfer(this.crowdsale.address, TOKEN_SUPPLY, { from: tokenSaleAccount });
     await this.token.approve(this.crowdsale.address, TOKEN_SUPPLY.div(new BN(10)), { from: rewardAccount }); // approve the crowdsale contract to transfer reward pool tokens

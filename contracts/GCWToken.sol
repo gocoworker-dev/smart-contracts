@@ -32,25 +32,25 @@ import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
 
 /**
  * @title GCWToken
- * @dev All tokens are pre-assigned to the founder/team wallet, the sale wallet and the reward pool wallet.
+ * @dev All tokens are pre-assigned to the team wallet, the sale wallet and the reward pool wallet.
  * Note they can later distribute these tokens as they wish using `transfer` and other
  * `ERC20` functions.
  */
 contract GCWToken is ERC20, ERC20Detailed {
 
-  //TOTAL SYPPLY IS 21,000,000 TOKENS
+  //TOTAL SUPPLY IS 21,000,000 TOKENS
   
-  uint256 public constant FOUNDER_SUPPLY = 6930000; //33% of the total supply goes to the founder/team
+  uint256 public constant TEAM_SUPPLY = 7000000; //33.33% of the total supply goes to the team
 
   uint256 public constant TOKEN_SALE_SUPPLY = 12600000; //60% of the total supply goes to the token sale
 
-  uint256 public constant REWARD_POOL_SUPPLY = 1470000; //7% of the total supply goes to the token sale
+  uint256 public constant REWARD_POOL_SUPPLY = 1400000; //6.666% of the total supply goes to the token sale
 
   /**
    * @dev Constructor that mint all the existing tokens and allocate them.
    */
-  constructor(address founderWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("GoCoworker", "GCW", 18) {
-    _mint(founderWallet, FOUNDER_SUPPLY * (10 ** uint256(decimals())));
+  constructor(address teamWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("GoCoworker", "GCW", 18) {
+    _mint(teamWallet, TEAM_SUPPLY * (10 ** uint256(decimals())));
     _mint(tokenSaleWallet, TOKEN_SALE_SUPPLY * (10 ** uint256(decimals())));
     _mint(rewardPoolWallet, REWARD_POOL_SUPPLY * (10 ** uint256(decimals())));
   }

@@ -28,11 +28,131 @@
 pragma solidity ^0.5.0;
 
 import 'openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol';
-import 'openzeppelin-solidity/contracts/crowdsale/emission/AllowanceCrowdsale.sol';
-import 'openzeppelin-solidity/contracts/crowdsale/distribution/FinalizableCrowdsale.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
+
+
+/**
+ * @title TimedCrowdsale
+ * @dev Crowdsale accepting contributions only within a time frame.
+ */
+contract TimedCrowdsale is Crowdsale {
+    using SafeMath for uint256;
+
+    uint256 private _openingTime;
+    uint256 internal _closingTime;
+
+    /**
+     * @dev Reverts if not in crowdsale time range.
+     */
+    modifier onlyWhileOpen {
+        require(isOpen());
+        _;
+    }
+
+    /**
+     * @dev Constructor, takes crowdsale opening and closing times.
+     * @param openingTime Crowdsale opening time
+     * @param closingTime Crowdsale closing time
+     */
+    constructor (uint256 openingTime, uint256 closingTime) public {
+        // solhint-disable-next-line not-rely-on-time
+        require(openingTime >= block.timestamp);
+        require(closingTime > openingTime);
+
+        _openingTime = openingTime;
+        _closingTime = closingTime;
+    }
+
+    /**
+     * @return the crowdsale opening time.
+     */
+    function openingTime() public view returns (uint256) {
+        return _openingTime;
+    }
+
+    /**
+     * @return the crowdsale closing time.
+     */
+    function closingTime() public view returns (uint256) {
+        return _closingTime;
+    }
+
+    /**
+     * @return true if the crowdsale is open, false otherwise.
+     */
+    function isOpen() public view returns (bool) {
+        // solhint-disable-next-line not-rely-on-time
+        return block.timestamp >= _openingTime && block.timestamp <= _closingTime;
+    }
+
+    /**
+     * @dev Checks whether the period in which the crowdsale is open has already elapsed.
+     * @return Whether crowdsale period has elapsed
+     */
+    function hasClosed() public view returns (bool) {
+        // solhint-disable-next-line not-rely-on-time
+        return block.timestamp > _closingTime;
+    }
+
+    /**
+     * @dev Extend parent behavior requiring to be within contributing period
+     * @param beneficiary Token purchaser
+     * @param weiAmount Amount of wei contributed
+     */
+    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal onlyWhileOpen view {
+        super._preValidatePurchase(beneficiary, weiAmount);
+    }
+}
+
+/**
+ * @title FinalizableCrowdsale
+ * @dev Extension of Crowdsale with a one-off finalization action, where one
+ * can do extra work after finishing.
+ */
+contract FinalizableCrowdsale is TimedCrowdsale {
+    using SafeMath for uint256;
+
+    bool private _finalized;
+
+    event CrowdsaleFinalized();
+
+    constructor () internal {
+        _finalized = false;
+    }
+
+    /**
+     * @return true if the crowdsale is finalized, false otherwise.
+     */
+    function finalized() public view returns (bool) {
+        return _finalized;
+    }
+
+    /**
+     * @dev Must be called after crowdsale ends, to do some extra finalization
+     * work. Calls the contract's finalization function.
+     */
+    function finalize() public {
+        require(!_finalized);
+        require(hasClosed());
+
+        _finalized = true;
+
+        _finalization();
+        emit CrowdsaleFinalized();
+    }
+
+    /**
+     * @dev Can be overridden to add finalization logic. The overriding function
+     * should call super._finalization() to ensure the chain of finalization is
+     * executed entirely.
+     */
+    function _finalization() internal {
+        // solhint-disable-previous-line no-empty-blocks
+    }
+}
+
 
 contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable {
 
@@ -43,6 +163,7 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
 
   constructor(
     uint256 openingTime,
+    uint256 closingTime,
     address payable saleWallet,
     address rewardPoolWallet,
     IERC20 gcwtoken
@@ -50,10 +171,16 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
     public
     Crowdsale(10, saleWallet, gcwtoken) //token price is 0.1 Ether, i.e 10 token unit (10^-18) by wei
     CappedCrowdsale(210000 ether) //Max cap  : 210,000 Ether = 2,100,000 tokens
-    TimedCrowdsale(openingTime, openingTime + 12 weeks)
+    TimedCrowdsale(openingTime, closingTime)
   {
     rewardPool = rewardPoolWallet;
     referralEnabled = true;
+  }
+
+
+  function changeClosingTime(uint256 closingTime) public onlyOwner {
+      require(closingTime >= block.timestamp);
+      _closingTime = closingTime;
   }
 
   /**

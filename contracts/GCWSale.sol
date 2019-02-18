@@ -28,7 +28,7 @@
 pragma solidity ^0.5.0;
 
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
-import 'openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
+import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
 import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol';
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
@@ -37,10 +37,10 @@ import 'openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol';
 contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20 for ERC20Detailed;
 
     // The token being sold
-    IERC20 private _token;
+    ERC20Detailed private _token;
 
     //Total number of token to purchase
     uint256 private _tokenCap;
@@ -50,6 +50,8 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     
     // Address of the reward pool 
     address private _rewardpool;
+
+    
 
     // Amount of wei raised
     uint256 private _weiRaised;
@@ -79,12 +81,11 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     constructor(uint256 openingTime,
         address payable wallet,
         address rewardpool,        
-        uint256 numberOfPeriod,
-        uint256 tokenByPeriod,        
-        IERC20 token
+        uint256 numberOfPeriod,      
+        ERC20Detailed token
     ) public {
 
-        require(tokenByPeriod >0);
+        
         require(numberOfPeriod > 0);
         require(openingTime>0);
         require(wallet != address(0));
@@ -95,9 +96,9 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
         _rewardpool = rewardpool;
         _token = token;
         
-        _tokenByPeriod = tokenByPeriod;
+        _tokenCap = 10500000 * (10 ** uint256(token.decimals()));
 
-        _tokenCap = numberOfPeriod.mul(tokenByPeriod);
+        _tokenByPeriod = _tokenCap.div(numberOfPeriod);
      
         _openingTime = openingTime;
         _closingTime = openingTime.add(numberOfPeriod.mul(21 hours));
@@ -117,7 +118,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     /**
      * @return the token being sold.
      */
-    function token() public view returns (IERC20) {
+    function token() public view returns (ERC20Detailed) {
         return _token;
     }
 
@@ -137,7 +138,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
  
     /**
-     * @return the otal number of token to purchase
+     * @return the total number of token to purchase.
      */
     function tokenCap() public view returns (uint256) {
         return _tokenCap;
@@ -227,7 +228,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     function claim(uint256 period, address beneficiary) public nonReentrant whenNotPaused {
         require(today() > period);
         
-        if (claimed[period][beneficiary] || dailyTotals[period] == 0) {
+        if (claimed[period][beneficiary] || userBuys[period][beneficiary] == 0 || dailyTotals[period] == 0) {
             return;
         }
 
