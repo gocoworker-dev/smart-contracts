@@ -247,7 +247,37 @@ contract('GCWSale', function ([_, owner, founderAccount, tokenSaleAccount, rewar
       (await this.token.balanceOf(investor2)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
       (await this.token.balanceOf(investor3)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
     });
+
+    it('when a period is purchased by 50 account and tokens are all batch claimed later :token amounts should be consistent', async function () {
+      const investmentAmount = ether('1');
+      const expectedTokenAmount = investmentAmount.mul(TOKEN_BY_PERIOD.div(investmentAmount.mul(new BN(50))));
+  
+      let batch50Account = [50];
+      for (var i = 0; i < 50; i++) {
+        let address = '0x2bdd21761a483f71054e14f5b827213567971c' + (i + 16).toString(16);
+        batch50Account[i] = address;
+      }
+      // PERIOD 1
+      await time.increaseTo(this.openingTime);
+  
+      for (var i = 0; i < batch50Account.length; i++) {
+        await this.crowdsale.buyTokens(batch50Account[i], { value: investmentAmount, from: investor1 });
+      }
+  
+      // AFTER PERIOD 1
+      await time.increaseTo(this.openingTime.add(time.duration.hours(21)));
+      let period = await this.crowdsale.today()
+      
+      await this.crowdsale.batchClaim(period.sub(new BN(1)), batch50Account);
+  
+      for (var i = 0; i < batch50Account.length; i++) {
+        (await this.token.balanceOf(batch50Account[i])).should.be.bignumber.equal(expectedTokenAmount);
+      }
+  
+    });
   });
+
+ 
 
   context('after pause', function () {
     beforeEach(async function () {
@@ -273,288 +303,3 @@ contract('GCWSale', function ([_, owner, founderAccount, tokenSaleAccount, rewar
   });
 });
 
-/*
-contract EOSSaleTest is DSTest, DSExec {
-    TestableEOSSale  sale;
-    DSToken          EOS;
-    DSGuard          guard;
-    TestUser         user1;
-    TestUser         user2;
-    TestOwner        owner;
-    uint             window;
-
-    function setUp() {
-        string memory x = new string(1);
-
-        EOS = new DSToken("EOS");
-        window = 0;
-
-        sale = new TestableEOSSale(
-            5, 156.25 ether, now, block.timestamp + 1 days, 10 ether, x
-        );
-
-        EOS.setOwner(sale);
-        sale.initialize(EOS);
-
-        sale.addTime(now + 1);
-
-        user1 = new TestUser(sale);
-        user2 = new TestUser(sale);
-        owner = new TestOwner(sale);
-
-        user1.transfer(100 ether);
-        user2.transfer(100 ether);
-
-        guard = new DSGuard();
-        guard.okay(owner, sale);
-
-        sale.setAuthority(guard);
-    }
-
-    function addTime() {
-        sale.addTime(1 days);
-    }
-
-    function nextRound(uint wad, uint wad1, uint wad2) {
-        if (wad != 0) sale.buy.value(wad)();
-        if (wad1 != 0) user1.doBuy(wad1);
-        if (wad2 != 0) user2.doBuy(wad2);
-
-        addTime();
-
-        sale.claim(window);
-        user1.doClaim(window);
-        user2.doClaim(window);
-
-        window++;
-    }
-
-    function testFailBuyBeforeOpen() {
-        string memory x = new string(1);
-        sale = new TestableEOSSale(
-            5, 156.25 ether, now + 1, block.timestamp + 1 days, 10 ether, x
-        );
-        sale.addTime(now);
-        sale.buy.value(1 ether)();
-    }
-
-    function testBuy() {
-        sale.buy.value(1 ether)();
-    }
-
-    function testBuyWithLimit() {
-        sale.buyWithLimit.value(1 ether)(0, 2 ether);
-        assertEq(sale.userBuys(0, address(this)), 1 ether);
-    }
-
-    function testFailBuyOverLimit() {
-        user1.doBuy(1 ether);
-        sale.buyWithLimit.value(1 ether)(0, 1.5 ether);
-    }
-
-    function testBuyOverLimitLaterWindow() {
-        user1.doBuy(1 ether);
-        sale.buyWithLimit.value(1 ether)(3, 1.5 ether);
-    }
-
-    function testBuyLaterWindow() {
-        sale.buyWithLimit.value(1 ether)(3, 2 ether);
-        assertEq(sale.userBuys(0, address(this)), 0);
-        assertEq(sale.userBuys(2, address(this)), 0);
-        assertEq(sale.userBuys(3, address(this)), 1 ether);
-        assertEq(sale.userBuys(4, address(this)), 0);
-    }
-
-    function testFailBuyTooLate() {
-        addTime();
-        sale.buyWithLimit.value(1 ether)(0, 0);
-    }
-
-    function testBuyFirstDay() {
-        sale.buy.value(1 ether)();
-        sale.addTime(1 days);
-        sale.claim(0);
-        assertEq(EOS.balanceOf(this), 31.25 ether);
-    }
-
-    function testBuyFirstAndSecondDay() {
-        sale.buy.value(1 ether)();
-        sale.addTime(1 days);
-        sale.claim(0);
-        assertEq(EOS.balanceOf(this), 31.25 ether);
-
-        sale.buy.value(1 ether)();
-        sale.addTime(1 days);
-        sale.claim(1);
-        // 23 tokens issued per day after first day
-        assertEq(EOS.balanceOf(this), 54.25 ether);
-    }
-
-    function testFailSaleOver() {
-        sale.addTime(6 days);
-        sale.buy.value(1 ether)();
-    }
-
-    function testFailSmallBuy() {
-        nextRound(1 finney, 0, 0);
-    }
-
-    function testLargeBuy() {
-        nextRound(1001 ether, 0, 0);
-    }
-
-    function testAllDistributed() {
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-
-        assertEq(EOS.balanceOf(this), 146.25 ether);
-    }
-
-    function testClaim() {
-        nextRound(1 ether, 0, 0);
-        assertEq(EOS.balanceOf(this), 31.25 ether);
-    }
-
-    function testClaimZeroContribution() {
-        nextRound(0, 0, 0);
-    }
-
-    function testFailEarlyClaim() {
-        sale.claim(2);
-    }
-
-    function testFailEarlyFreeze() {
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-
-        // try release at the start of the third round
-        user1.doFreeze();
-    }
-
-    function testMultiUser() {
-        nextRound(1 ether, 1 ether, 0);
-        assertEq(EOS.balanceOf(this), 15.625 ether);
-        assertEq(EOS.balanceOf(user1), 15.625 ether);
-    }
-
-    function testMultiUserAsymmetricBid() {
-        nextRound(1 ether, 9 ether, 0);
-        assertEq(EOS.balanceOf(this), 3.125 ether);
-        assertEq(EOS.balanceOf(user1), 28.125 ether);
-    }
-
-    // is this an issue?
-    function testRepeatingDecimalRoundUp() {
-        nextRound(1 ether, 1 ether, 1 ether);
-        assertEq(EOS.balanceOf(this), 10416666666666666667);
-        assertEq(EOS.balanceOf(user1), 10416666666666666667);
-        assertEq(EOS.balanceOf(user2), 10416666666666666667);
-    }
-
-    function testRepeatingDecimalRoundDown() {
-        addTime();
-        window++;
-
-        nextRound(5 ether, 1 ether, 0);
-        assertEq(EOS.balanceOf(this), 19166666666666666665);
-        assertEq(EOS.balanceOf(user1), 3833333333333333333);
-    }
-
-    function testFreeze() {
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        assertEq(EOS.balanceOf(this), 146.25 ether);
-
-        // one extra day to trade
-        addTime();
-
-        user1.doFreeze();
-    }
-
-    function testCollect() {
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        nextRound(1 ether, 0, 0);
-        assertEq(EOS.balanceOf(this), 146.25 ether);
-
-        owner.doCollect();
-        assertEq(owner.balance, 6 ether);
-    }
-
-    function testMultiUserFinalize() {
-        nextRound(1 ether, 1 ether, 0);
-        nextRound(1 ether, 1 ether, 0);
-        nextRound(1 ether, 1 ether, 0);
-        nextRound(1 ether, 1 ether, 0);
-        nextRound(1 ether, 1 ether, 0);
-        nextRound(1 ether, 1 ether, 0);
-        assertEq(EOS.balanceOf(this), 73.125 ether);
-        assertEq(EOS.balanceOf(user1), 73.125 ether);
-        addTime();
-
-        owner.doCollect();
-        assertEq(owner.balance, 12 ether);
-
-        user1.doFreeze();
-    }
-
-    function testMultiUserAsymmetricBidFinalize() {
-        nextRound(9 ether, 1 ether, 0);
-        nextRound(4 ether, 1 ether, 0);
-        nextRound(1 ether, 9 ether, 10 ether);
-        nextRound(1 ether, 12 ether, 12 ether);
-        nextRound(12 ether, 1 ether, 12 ether);
-        nextRound(12 ether, 12 ether, 1 ether);
-        assertEq(EOS.balanceOf(this), 70.675 ether);
-        assertEq(EOS.balanceOf(user1), 41.075 ether);
-        assertEq(EOS.balanceOf(user2), 34.5 ether);
-        addTime();
-
-        owner.doCollect();
-        assertEq(owner.balance, 110 ether);
-
-        user1.doFreeze();
-    }
-
-    function testClaimAll() {
-        sale.buy.value(1 ether)();
-        addTime();
-        sale.buy.value(1 ether)();
-        addTime();
-        sale.buy.value(1 ether)();
-        addTime();
-
-        assertEq(EOS.balanceOf(this), 0);
-
-        sale.claimAll();
-        assertEq(EOS.balanceOf(this), 77.25 ether);
-    }
-
-    function testClaimAllZeroContribution() {
-        sale.buy.value(1 ether)();
-        addTime();
-        addTime(); // skip a day
-        sale.buy.value(1 ether)();
-        addTime();
-        sale.buy.value(1 ether)();
-        addTime();
-
-        assertEq(EOS.balanceOf(this), 0);
-
-        sale.claimAll();
-        assertEq(EOS.balanceOf(this), 77.25 ether);
-    }
-
-*/
-/// /////

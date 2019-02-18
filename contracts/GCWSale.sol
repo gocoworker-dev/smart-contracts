@@ -187,7 +187,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     }
 
 
-      /**
+    /**
     * @return true if the crowdsale is open, false otherwise.
     */
     function isOpen() public view returns (bool) {
@@ -224,7 +224,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
     }
   
-    function claim(uint256 period, address beneficiary) public nonReentrant  whenNotPaused {
+    function claim(uint256 period, address beneficiary) public nonReentrant whenNotPaused {
         require(today() > period);
         
         if (claimed[period][beneficiary] || dailyTotals[period] == 0) {
@@ -241,7 +241,18 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
        
     }
 
-     function claimAll(address beneficiary) public {
+    /**
+    * @dev This is an especial owner-only function to make massive tokens claim for a given period.
+    * @param period is the period to claim
+    * @param beneficiaries is an array of claiming addresses
+    */
+    function batchClaim(uint256 period, address[] memory beneficiaries) public whenNotPaused {
+        for (uint i = 0; i < beneficiaries.length; i++) {
+            claim(period,beneficiaries[i]);
+        }
+    }
+
+    function claimAll(address beneficiary) public {
         for (uint256 i = 0; i < today(); i++) {
             claim(i, beneficiary);
         }
