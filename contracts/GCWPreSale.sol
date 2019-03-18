@@ -178,7 +178,7 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
   }
 
 
-  function changeClosingTime(uint256 closingTime) public onlyOwner {
+  function changeClosingTime(uint256 closingTime) public onlyWhileOpen onlyOwner {
       require(closingTime >= block.timestamp);
       _closingTime = closingTime;
   }
