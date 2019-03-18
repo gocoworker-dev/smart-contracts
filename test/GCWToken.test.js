@@ -6,9 +6,9 @@ const GCWToken = artifacts.require('GCWToken');
 contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccount, recipient, anotherAccount]) {
   const totalSupply = new BN(21000000).mul(new BN(10).pow(new BN(18)));
 
-  const founderSupply = new BN(6930000).mul(new BN(10).pow(new BN(18)));
+  const founderSupply = new BN(7000000).mul(new BN(10).pow(new BN(18)));
   const saleSupply = new BN(12600000).mul(new BN(10).pow(new BN(18)));
-  const rewardSupply = new BN(1470000).mul(new BN(10).pow(new BN(18)));
+  const rewardSupply = new BN(1400000).mul(new BN(10).pow(new BN(18)));
 
   beforeEach(async function () {
     this.token = await GCWToken.new(founderAccount, tokenSaleAccount, rewardAccount);

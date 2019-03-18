@@ -33,11 +33,14 @@
     "url": "https://github.com/GoCoworker/gocoworker-tokensale-sc/issues"
   },
   "homepage": "https://github.com/GoCoworker/gocoworker-tokensale-sc/",
-  "dependencies": {},
+  "dependencies": {
+    "truffle-hdwallet-provider": "^1.0.5"
+  },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-bn": "^0.1.1",
     "coveralls": "^3.0.1",
+    "dotenv": "^6.2.0",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.13.0",
@@ -48,13 +51,12 @@
     "ethereumjs-util": "^6.0.0",
     "ethjs-abi": "^0.2.1",
     "ganache-cli": "6.1.8",
+    "openzeppelin-solidity": "^2.1.2",
     "openzeppelin-test-helpers": "^0.1.1",
     "pify": "^4.0.1",
     "solhint": "^1.5.0",
-    "truffle": "5.0.0",
-    "openzeppelin-solidity": "^2.1.2",
-    "truffle-flattener": "^1.2.10",
     "solidity-coverage": "https://github.com/Gocoworker/solidity-coverage.git#5875f5b7bc74d447f3312c9c0e9fc7814b482477",
-    "dotenv": "^6.2.0"
+    "truffle": "5.0.0",
+    "truffle-flattener": "^1.2.10"
   }
 }
