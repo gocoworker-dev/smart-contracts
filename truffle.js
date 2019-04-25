@@ -11,9 +11,10 @@ module.exports = {
       network_id: '*', // eslint-disable-line camelcase
     },
     rinkeby: {
-      provider: new HDWalletProvider(process.env.PASSWALLET, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY),
+      provider: new HDWalletProvider(process.env.MNEMONIC, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY),
       gas: 4700000,
       network_id: 4,
+      skipDryRun: true
     },
     testrpc: {
       host: 'localhost',

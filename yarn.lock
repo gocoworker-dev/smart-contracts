@@ -4014,7 +4014,7 @@ truffle-flattener@^1.2.10:
     truffle-resolver "^4.0.4"
     tsort "0.0.1"
 
-truffle-hdwallet-provider@^1.0.5:
+truffle-hdwallet-provider@1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/truffle-hdwallet-provider/-/truffle-hdwallet-provider-1.0.5.tgz#76059fb37d13df70bf37a9c296cf27d5a944e112"
   integrity sha512-T9qNm7b6MD0UPWVmmJEhgzW1DdR6mkMDijGBSbdJqYaaBLufoycE+qH3dsV+m1mLTE+ebM5RcJ4gF4oXgDW67w==

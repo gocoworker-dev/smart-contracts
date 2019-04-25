@@ -40,4 +40,7 @@ build/
 # truffle
 .node-xmlhttprequest-*
 
+claim.js
+web/
+
 

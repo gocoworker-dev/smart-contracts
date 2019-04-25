@@ -33,9 +33,7 @@
     "url": "https://github.com/GoCoworker/gocoworker-tokensale-sc/issues"
   },
   "homepage": "https://github.com/GoCoworker/gocoworker-tokensale-sc/",
-  "dependencies": {
-    "truffle-hdwallet-provider": "^1.0.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-bn": "^0.1.1",
@@ -56,7 +54,8 @@
     "pify": "^4.0.1",
     "solhint": "^1.5.0",
     "solidity-coverage": "https://github.com/Gocoworker/solidity-coverage.git#5875f5b7bc74d447f3312c9c0e9fc7814b482477",
-    "truffle": "5.0.0",
-    "truffle-flattener": "^1.2.10"
+    "truffle": "5.0.10",
+    "truffle-flattener": "^1.2.10",
+    "truffle-hdwallet-provider": "1.0.5"
   }
 }
