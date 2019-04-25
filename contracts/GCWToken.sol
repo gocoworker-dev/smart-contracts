@@ -55,10 +55,4 @@ contract GCWToken is ERC20, ERC20Detailed {
     _mint(rewardPoolWallet, REWARD_POOL_SUPPLY * (10 ** uint256(decimals())));
   }
 
-  /**
-    * @return the number dailyTotalsof token by period.
-  */
-  function holderNumber() public view returns (uint256) {
-      return _tokenByPeriod;
-  }
 }
