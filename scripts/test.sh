@@ -61,6 +61,8 @@ fi
 
 truffle version
 
+
+
 if [ "$SOLIDITY_COVERAGE" = true ]; then
   node_modules/.bin/solidity-coverage
 
@@ -68,5 +70,5 @@ if [ "$SOLIDITY_COVERAGE" = true ]; then
     cat coverage/lcov.info | node_modules/.bin/coveralls
   fi
 else
-  node_modules/.bin/truffle test "$@"
+  FOUNDER_WALLET=0x081411f7f9fd88D0006F9D553eBEBc1A68868682 TOKENSALE_WALLET=0x21C7E18a0Ee6A0c8a70cAB4A038439C9549C0307 REWARDPOOL_WALLET=0x4b62eCF454D60126fFF936e00f4B82bfAEC97308 node_modules/.bin/truffle test "$@"
 fi
