@@ -40,7 +40,7 @@ import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 contract TimedCrowdsale is Crowdsale {
     using SafeMath for uint256;
 
-    uint256 private _openingTime;
+    uint256 internal _openingTime;
     uint256 internal _closingTime;
 
     /**

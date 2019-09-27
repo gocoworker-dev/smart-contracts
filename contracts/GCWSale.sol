@@ -56,8 +56,8 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     // Amount of wei raised
     uint256 private _weiRaised;
 
-    uint256 public  _openingTime;             // Time of first period opening  
-    uint256 public  _closingTime;             // Time of last period closing  
+    uint256 internal  _openingTime;             // Time of first period opening  
+    uint256 internal  _closingTime;             // Time of last period closing  
 
     uint256 public  _tokenByPeriod;         // Tokens sold in each period
 
