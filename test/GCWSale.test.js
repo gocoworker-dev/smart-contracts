@@ -34,7 +34,7 @@ contract('GCWSale', function ([_, owner, founderAccount, tokenSaleAccount, rewar
 
     this.crowdsale = await GCWSale.new(this.openingTime, tokenSaleAccount, rewardAccount, NUMBER_OF_PERIOD, this.token.address, { from });
 
-    await this.token.approve(this.crowdsale.address, TOKEN_BY_PERIOD.mul(NUMBER_OF_PERIOD), { from: tokenSaleAccount }); // approve the crowdsale contract to transfer tokenSaleAccount tokens
+    await this.token.transfer(this.crowdsale.address, TOKEN_BY_PERIOD.mul(NUMBER_OF_PERIOD), { from: tokenSaleAccount }); // approve the crowdsale contract to transfer tokenSaleAccount tokens
   });
 
   it('should create crowdsale with correct parameters', async function () {
@@ -301,6 +301,45 @@ contract('GCWSale', function ([_, owner, founderAccount, tokenSaleAccount, rewar
         await this.crowdsale.sendTransaction({ from: investor1, value });
         await this.crowdsale.buyTokens(investor1, { from: investor1, value });
       });
+    });
+  });
+
+  context('finalization', function () {
+    it('cannot be finalized before ending', async function () {
+      await shouldFail.reverting(this.crowdsale.finalize({ from: owner }));
+    });
+
+    it('can be finalized by owner after ending', async function () {
+      await time.increaseTo(this.afterClosingTime);
+      await this.crowdsale.finalize({ from: owner });
+    });
+
+    it('cannot be finalized twice', async function () {
+      await time.increaseTo(this.afterClosingTime);
+      await this.crowdsale.finalize({ from: owner });
+      await shouldFail.reverting(this.crowdsale.finalize({ from: owner }));
+    });
+
+    it('logs finalized', async function () {
+      await time.increaseTo(this.afterClosingTime);
+      const { logs } = await this.crowdsale.finalize({ from: owner });
+      expectEvent.inLogs(logs, 'CrowdsaleFinalized');
+    });
+
+    it('should transfer unsold token to reward pool after finalization, token sale contract is now empty', async function () {
+      await time.increaseTo(this.openingTime);
+      await this.crowdsale.send(ether('1000'));
+      await time.increaseTo(this.afterClosingTime);
+
+      const UNCLAIM_TOKEN = TOKEN_SUPPLY;
+
+      (await tokenBalanceDifference(this.token, rewardAccount, async () => {
+        await this.crowdsale.finalize({ from: owner });
+      })).should.be.bignumber.equal(UNCLAIM_TOKEN);
+
+      (await balance.current(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+
+      (await this.token.balanceOf(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
     });
   });
 });

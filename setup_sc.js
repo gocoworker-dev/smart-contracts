@@ -35,9 +35,9 @@ GCWToken.deployed().then(function(instance) {
   return token.transfer(GCWPresale.address, PRESALE_TOKEN_SUPPLY, { from:  process.env.TOKENSALE_WALLET });    
 }).then (function (result) {
   console.log("Token sale wallet transfered tokens to Presale contract")
-  return token.approve(GCWSale.address, SALE_TOKEN_SUPPLY, { from: process.env.TOKENSALE_WALLET, gas: 210000 });// approve the sale contract to transfer tokensale wallet tokens  
+  return token.transfer(GCWSale.address, SALE_TOKEN_SUPPLY, { from: process.env.TOKENSALE_WALLET, gas: 210000 });// approve the sale contract to transfer tokensale wallet tokens  
 }).then (function (result){
-  console.log("Token sale wallet approved Sale contract")
+  console.log("Token sale wallet transfered Sale contract")
 });
 
 

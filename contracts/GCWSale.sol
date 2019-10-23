@@ -51,13 +51,14 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     // Address of the reward pool 
     address private _rewardpool;
 
-    
 
     // Amount of wei raised
     uint256 private _weiRaised;
 
     uint256 internal  _openingTime;             // Time of first period opening  
     uint256 internal  _closingTime;             // Time of last period closing  
+
+    bool private _finalized;
 
     uint256 public  _tokenByPeriod;         // Tokens sold in each period
 
@@ -66,7 +67,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     mapping (uint256 => mapping (address => bool)) public claimed;
 
 
-  
+    event CrowdsaleFinalized();
     event LogBuy      (uint256 period, address user, uint256 amount);
     event LogClaim    (uint256 period, address user, uint256 amount);
 
@@ -102,6 +103,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
      
         _openingTime = openingTime;
         _closingTime = openingTime.add(numberOfPeriod.mul(21 hours));
+        _finalized = false;
         
     }
   
@@ -113,6 +115,36 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     function changeClosingTime(uint256 closingTime) public onlyWhileOpen onlyOwner {
         require(closingTime >= block.timestamp);
         _closingTime = closingTime;
+    }
+
+      /**
+     * @return true if the crowdsale is finalized, false otherwise.
+     */
+    function finalized() public view returns (bool) {
+        return _finalized;
+    }
+
+    /**
+     * @dev Must be called after crowdsale ends, to do some extra finalization
+     * work. Calls the contract's finalization function.
+     */
+    function finalize() public onlyOwner {
+        require(!_finalized);
+        require(hasClosed());
+
+        _finalized = true;
+
+        _finalization();
+        emit CrowdsaleFinalized();
+    }
+
+    /**
+     * @dev Can be overridden to add finalization logic. The overriding function
+     * should call super._finalization() to ensure the chain of finalization is
+     * executed entirely.
+     */
+    function _finalization() internal {
+        _token.transfer(_rewardpool, _token.balanceOf(address(this)));
     }
 
      /**
@@ -242,11 +274,13 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
             return;
         }
 
-        uint256 reward = userBuys[period][beneficiary].mul(_tokenByPeriod.div(dailyTotals[period]));
+        uint256 reward = userBuys[period][beneficiary].mul(_tokenByPeriod);
         
+	    reward = reward.div(dailyTotals[period]); //fixed precision prob by dividing after multiplication
+
         claimed[period][beneficiary] = true;
 
-       _token.transferFrom(_wallet, beneficiary, reward);
+       _token.transfer(beneficiary, reward);
 
         emit LogClaim(period, beneficiary, reward);
        
