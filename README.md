@@ -16,10 +16,11 @@ GoCoworker smart contracts integrate with [Truffle](https://github.com/ConsenSys
 
 ```sh
  ./node_modules/.bin/truffle migrate --network rinkeby
+ node setup_sc.js
 ```
-Token : 0xEF0616cD112af0c0817Bf3dd8F8D24CC2805451F
-Presale: 0x664AbF7f5645464f6BAa62C1673E7C223B9d6ebA
-Sale : 0x5d1bD843a7bcaCF94e0AD316bE98aE828db85605
+Token : 0xCc7D5C8ad2AC270b5D7559130416911A7A59ABDB
+Presale: 0x443074dA4F0b50c98BBAed64683638EF89fc1a7d
+Sale : 0xEEccDAa58ecd1a55392dB369d88527641Fa3De56
 
 ## Security
 GoCoworker smart contracts are based on [OpenZeppelin](https://github.com/OpenZeppelin/zeppelin-solidity/) which is meant to provide secure, tested and community-audited code.
