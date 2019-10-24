@@ -159,7 +159,6 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
   bool private referralEnabled;
   address private rewardPool;
   mapping (address => address) refereeMap; //map a referee adress to its referrer
-  mapping (address => mapping(address => bool)) referralMap; //map a referrer adress to its referees
 
   constructor(
     uint256 openingTime,
@@ -205,11 +204,11 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
     super._preValidatePurchase(beneficiary, weiAmount);
   }
 
-  function addReferee(address from_referrer, address to_referee) public onlyOwner{
+  function addReferee(address from_referrer, address to_referee) public {
     require (from_referrer != address(0) && to_referee != address(0) && from_referrer != to_referee);
+    require (token().balanceOf(from_referrer) != 0);
     require(refereeMap[to_referee]==address(0), 'This referee has already been added' );
 
-    referralMap[from_referrer][to_referee] = true;
     refereeMap[to_referee]=from_referrer;
 
   }

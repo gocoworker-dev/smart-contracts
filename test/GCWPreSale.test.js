@@ -109,15 +109,17 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
       });
     });
 
-    describe('when the addReferee function is not called by the owner', function () {
+    describe('when the referrer has no token', function () {
       it('reverts', async function () {
-        await shouldFail.reverting(this.crowdsale.addReferee(referrer, referee, { from: anyone }));
+        await shouldFail.reverting(this.crowdsale.addReferee(referee, referee, { from: owner }));
       });
     });
 
-    describe('when the addReferee function is called by the owner, with referrer != referee', function () {
+
+    describe('when the addReferee function is called by a referrer that has token, with referrer != referee', function () {
       beforeEach(async function () {
-        await this.crowdsale.addReferee(referrer, referee, { from: owner });
+        await this.crowdsale.buyTokens(referrer, { from: referrer, value });
+        await this.crowdsale.addReferee(referrer, referee, { from: referrer });
       });
 
       it('when referee buy tokens, reward tokens are transfered to referrer and referee', async function () {
@@ -126,7 +128,7 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
 
         await this.crowdsale.buyTokens(referee, { from: referee, value });
         (await this.token.balanceOf(referee)).should.be.bignumber.equal(expectedTokenPurchased.add(expectedTokenReward));
-        (await this.token.balanceOf(referrer)).should.be.bignumber.equal(expectedTokenReward);
+        (await this.token.balanceOf(referrer)).should.be.bignumber.equal(expectedTokenReward.add(RATE.mul(value)));
       });
 
       it('when referal is disabled, should not transfer rewards', async function () {
@@ -134,7 +136,7 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
         await this.crowdsale.disableReferral({ from: owner });
         await this.crowdsale.buyTokens(referee, { from: referee, value });
         (await this.token.balanceOf(referee)).should.be.bignumber.equal(expectedTokenPurchased);
-        (await this.token.balanceOf(referrer)).should.be.bignumber.equal(new BN(0));
+        (await this.token.balanceOf(referrer)).should.be.bignumber.equal(RATE.mul(value));
       });
     });
   });
