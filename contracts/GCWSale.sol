@@ -81,8 +81,8 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
     constructor(uint256 openingTime,
         address payable wallet,
-        address rewardpool,        
-        uint256 numberOfPeriod,      
+        address rewardpool,
+        uint256 numberOfPeriod,
         ERC20Detailed token
     ) public {
 
@@ -107,14 +107,10 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
         
     }
   
-    function changeOpeningTime(uint256 openingTime) public onlyOwner {
+    function changeOpeningTime(uint256 openingTime, uint256 numberOfPeriod) public onlyOwner {
         require(openingTime >= block.timestamp);
         _openingTime = openingTime;
-    }
-
-    function changeClosingTime(uint256 closingTime) public onlyWhileOpen onlyOwner {
-        require(closingTime >= block.timestamp);
-        _closingTime = closingTime;
+        _closingTime = openingTime.add(numberOfPeriod.mul(21 hours));
     }
 
       /**
@@ -217,7 +213,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
     function dailyTotal(uint256 period) public view returns (uint256) {
         return dailyTotals[period];
-    } 
+    }
 
    
     // Each window is 21 hours long so that end-of-window rotates

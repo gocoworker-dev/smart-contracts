@@ -49,7 +49,7 @@ contract GCWToken is ERC20, ERC20Detailed {
   /**
    * @dev Constructor that mint all the existing tokens and allocate them.
    */
-  constructor(address teamWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("GoCoworker", "GCW", 18) {
+  constructor(address teamWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("Gocoworker", "GOCO", 18) {
     _mint(teamWallet, TEAM_SUPPLY * (10 ** uint256(decimals())));
     _mint(tokenSaleWallet, TOKEN_SALE_SUPPLY * (10 ** uint256(decimals())));
     _mint(rewardPoolWallet, REWARD_POOL_SUPPLY * (10 ** uint256(decimals())));

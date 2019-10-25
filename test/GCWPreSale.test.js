@@ -60,6 +60,13 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
     (await this.token.balanceOf(investor)).should.be.bignumber.equal(expectedTokenAmount);
   });
 
+  it('should reject payments during the sale < 0.1 ether', async function () {
+    await time.increaseTo(this.openingTime);
+    await shouldFail.reverting(this.crowdsale.send(ether('0.01')));
+    await shouldFail.reverting(this.crowdsale.buyTokens(investor, { value: ether('0.01'), from: investor }));
+  });
+
+
   it('should reject payments after end', async function () {
     await time.increaseTo(this.afterClosingTime);
     await shouldFail.reverting(this.crowdsale.send(ether('1')));

@@ -15,11 +15,11 @@ contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccou
   });
 
   it('has a name', async function () {
-    (await this.token.name()).should.equal('GoCoworker');
+    (await this.token.name()).should.equal('Gocoworker');
   });
 
   it('has a symbol', async function () {
-    (await this.token.symbol()).should.equal('GCW');
+    (await this.token.symbol()).should.equal('GOCO');
   });
 
   it('has 18 decimals', async function () {

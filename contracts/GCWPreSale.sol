@@ -198,9 +198,9 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
   )
     internal
     view
-    onlyWhileOpen
     whenNotPaused
   {
+    require(weiAmount >= 0.1 ether);
     super._preValidatePurchase(beneficiary, weiAmount);
   }
 
@@ -242,7 +242,7 @@ contract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable 
      if(referralEnabled && refereeMap[beneficiary]!=address(0)) {
       uint256 tokenReferallAmount = _getTokenAmount(weiAmount).div(20);
       token().transferFrom(rewardPool, beneficiary, tokenReferallAmount);
-      token().transferFrom(rewardPool, refereeMap[beneficiary], tokenReferallAmount);     
+      token().transferFrom(rewardPool, refereeMap[beneficiary], tokenReferallAmount);
      }
 
   }
