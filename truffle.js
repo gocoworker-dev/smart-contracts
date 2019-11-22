@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
-
 module.exports = {
   compilers: {
     solc: {
@@ -25,7 +24,7 @@ module.exports = {
     testrpc: {
       host: 'localhost',
       port: 8545,
-      network_id: '*', // eslint-disable-line camelcase
+      network_id: '5777', // eslint-disable-line camelcase
     },
   },
   migrations_directory: './migrations',

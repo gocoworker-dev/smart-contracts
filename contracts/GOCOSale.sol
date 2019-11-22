@@ -1,7 +1,11 @@
 /**
     Copyright (c) 2019 Gocoworker
 
+<<<<<<< HEAD:contracts/GOCOSale.sol
     GOCO ERC20 Token Sales Smart Contract    
+=======
+    GCW ERC20 Token Sales Smart Contract
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
     Version 0.1
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +29,11 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
+<<<<<<< HEAD:contracts/GOCOSale.sol
 pragma solidity 0.5.13;
+=======
+pragma solidity ^0.5.0;  // MINOR_01 : lock pragma version
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
 
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
@@ -49,15 +57,15 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
 
     // Address where funds are collected
     address payable private _wallet;
-    
-    // Address of the reward pool 
+
+    // Address of the reward pool
     address private _rewardpool;
 
     // Amount of wei raised
     uint256 private _weiRaised;
 
-    uint256 internal  _openingTime;             // Time of first period opening  
-    uint256 internal  _closingTime;             // Time of last period closing  
+    uint256 internal  _openingTime;             // Time of first period opening
+    uint256 internal  _closingTime;             // Time of last period closing
 
     bool private _finalized;
 
@@ -87,28 +95,46 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
         ERC20Detailed token
     ) public {
 
+<<<<<<< HEAD:contracts/GOCOSale.sol
         
         require(numberOfPeriod > 0, "GOCOSale: number of period must be > 0");
         require(openingTime>block.timestamp, "GOCOSale: opening time must be > block timestamp");
         require(wallet != address(0), "GOCOSale: wallet is the zero address");
         require(rewardpool != address(0), "GOCOSale: rewardpool wallet is the zero address");
         require(address(token) != address(0), "GOCOSale: token address is the zero address");
+=======
+
+        require(numberOfPeriod > 0);
+        // MINOR_08 Require openingTime is lesser than timestamp
+        require(openingTime>0);
+        require(wallet != address(0));
+        require(rewardpool != address(0));
+        require(address(token) != address(0));
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
 
         _wallet = wallet;
         _rewardpool = rewardpool;
         _token = token;
-        
+
         _tokenCap = 10500000 * (10 ** uint256(token.decimals()));
 
         _tokenByPeriod = _tokenCap.div(numberOfPeriod);
-     
+
         _openingTime = openingTime;
+<<<<<<< HEAD:contracts/GOCOSale.sol
         _closingTime = openingTime.add(numberOfPeriod.mul(periodDuration()));
+=======
+        // MINOR_10 21 hours should be a constant (pure fn internal or public)
+        _closingTime = openingTime.add(numberOfPeriod.mul(21 hours));
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
         _finalized = false;
-        
+
     }
 
+<<<<<<< HEAD:contracts/GOCOSale.sol
   
+=======
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
     function changeOpeningTime(uint256 openingTime, uint256 numberOfPeriod) public onlyOwner {
         require(!isOpen(), "GOCOSale: sale is already open");
         require(openingTime >= block.timestamp, "GOCOSale: opening time must be > block timestamp");
@@ -145,6 +171,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
      */
     function _finalization() internal {
         _token.transfer(_rewardpool, _token.balanceOf(address(this)));
+        // MEDIUM_04 Should call super._finalization()
     }
 
      /**
@@ -153,6 +180,8 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
      * of 2300, which is not enough to call buyTokens. Consider calling
      * buyTokens directly when purchasing tokens from a contract.
      */
+     // WATCH_02 There is already a fallback with same instructions in Crowdsale, inherited
+     // from PausableCrowdsale
     function () external payable {
         buyTokens(msg.sender);
     }
@@ -182,7 +211,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
         return _weiRaised;
     }
 
- 
+
     /**
      * @return the total number of token to purchase.
      */
@@ -215,6 +244,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
         return block.timestamp;
     }
 
+    // MINOR_09 Should better named better
     function today() public view returns (uint256) {
         return periodFor(time());
     }
@@ -223,11 +253,11 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
         return dailyTotals[period];
     }
 
-   
+
     // Each window is 21 hours long so that end-of-window rotates
     // around the clock for all timezones.
     function periodFor(uint256 timestamp) public view returns (uint256) {
-
+        // MINOR_11 Avoid ternaries for cade readability
         return timestamp < _openingTime
             ? 0
             : timestamp.sub(_openingTime).div(periodDuration()) + 1;
@@ -238,6 +268,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
     * @return true if the crowdsale is open, false otherwise.
     */
     function isOpen() public view returns (bool) {
+        // MINOR_03 Inverse conditions for readability
         // solium-disable-next-line security/no-block-members
         return block.timestamp >= _openingTime && block.timestamp <= _closingTime;
     }
@@ -247,47 +278,68 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
     * @return Whether crowdsale period has elapsed
     */
     function hasClosed() public view returns (bool) {
+        // MINOR_03 Inverse conditions for readability
         // solium-disable-next-line security/no-block-members
         return block.timestamp > _closingTime;
     }
 
 
-
+    // MAJOR_03 This should not be overriden. For extended code use
+    // _preValidatePurchase for validations and ;
+    // _postValidatePurchase for further instructions ;
+    // userBuys and dailyTotal must be updated after transfer is successful, thus in
+    // _postValidatePurchase
     function buyTokens(address beneficiary) public nonReentrant onlyWhileOpen whenNotPaused payable  {
+<<<<<<< HEAD:contracts/GOCOSale.sol
     
         require(msg.value >= 0.1 ether, "GOCOSale: minimum contribution is 0.1 ether");
+=======
+        require(msg.value >= 0.1 ether);
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
 
         uint256 weiAmount = msg.value;
         uint256 period = today();
-    
+
         userBuys[period][beneficiary] = userBuys[period][beneficiary].add(weiAmount);
         dailyTotals[period] = dailyTotals[period].add(weiAmount);
-        
+
         _weiRaised = _weiRaised.add(weiAmount);
-        
+
         _forwardFunds();
 
         emit LogBuy(period, beneficiary, weiAmount);
 
     }
+<<<<<<< HEAD:contracts/GOCOSale.sol
   
     function _claim(uint256 period, address beneficiary) internal {
         require(periodFor(time()-1 minutes) > period, "GOCOSale: claim is avalaible 1 minute after the end of the period");
         
+=======
+
+    function claim(uint256 period, address beneficiary) public nonReentrant whenNotPaused {
+        require(today() > period);
+
+        // MEDIUM_07 Those conditions should be 2 requires
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
         if (claimed[period][beneficiary] || userBuys[period][beneficiary] == 0 || dailyTotals[period] == 0) {
             return;
         }
 
         uint256 reward = userBuys[period][beneficiary].mul(_tokenByPeriod);
-        
+
 	    reward = reward.div(dailyTotals[period]); //fixed precision prob by dividing after multiplication
 
         _token.transfer(beneficiary, reward);
 
+<<<<<<< HEAD:contracts/GOCOSale.sol
         claimed[period][beneficiary] = true;
+=======
+        // MINOR_12 Should call token() instead
+       _token.transfer(beneficiary, reward);
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWSale.sol
 
         emit LogClaim(period, beneficiary, reward);
-       
     }
 
     /**
@@ -314,6 +366,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
     /**
     * @dev Determines how ETH is stored/forwarded on purchases.
     */
+    // WATCH_03 This fn already exists in Crowdsale with the same instructions
     function _forwardFunds() internal {
         _wallet.sendValue(msg.value);
     }

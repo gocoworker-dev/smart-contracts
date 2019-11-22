@@ -1,7 +1,11 @@
 /**
     Copyright (c) 2019 Gocoworker
 
+<<<<<<< HEAD:contracts/GOCOToken.sol
     GOCO ERC20 Token Sales Smart Contract    
+=======
+    GCW ERC20 Token Sales Smart Contract
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWToken.sol
     Version 0.1
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +29,11 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
+<<<<<<< HEAD:contracts/GOCOToken.sol
 pragma solidity 0.5.13;
+=======
+pragma solidity ^0.5.0; // MINOR_01 : lock pragma version
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWToken.sol
 
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
@@ -39,7 +47,7 @@ import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
 contract GOCOToken is ERC20, ERC20Detailed {
 
   //TOTAL SUPPLY IS 21,000,000 TOKENS
-  
+
   uint256 public constant TEAM_SUPPLY = 7000000; //33.33% of the total supply goes to the team
 
   uint256 public constant TOKEN_SALE_SUPPLY = 12600000; //60% of the total supply goes to the token sale
@@ -50,9 +58,14 @@ contract GOCOToken is ERC20, ERC20Detailed {
    * @dev Constructor that mint all the existing tokens and allocate them.
    */
   constructor(address teamWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("Gocoworker", "GOCO", 18) {
+<<<<<<< HEAD:contracts/GOCOToken.sol
 
     require(teamWallet != address(0) && tokenSaleWallet != address(0) && rewardPoolWallet != address(0), "GOCOToken: a wallet is the zero address");
     require(teamWallet != tokenSaleWallet && teamWallet != rewardPoolWallet && tokenSaleWallet != rewardPoolWallet, "GOCOToken: wallets are not different");
+=======
+    // MEDIUM_09 Control teamWallet, tokenSaleWallet and rewardPoolWallet are different to avoid human error
+    // that they are set (not 0)
+>>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWToken.sol
     _mint(teamWallet, TEAM_SUPPLY * (10 ** uint256(decimals())));
     _mint(tokenSaleWallet, TOKEN_SALE_SUPPLY * (10 ** uint256(decimals())));
     _mint(rewardPoolWallet, REWARD_POOL_SUPPLY * (10 ** uint256(decimals())));

@@ -74,7 +74,7 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
   });
 
 
-  it('should reject payments after end', async function () {
+  it('should reject payments after closing time', async function () {
     await time.increaseTo(this.afterClosingTime);
     await shouldFail.reverting(this.crowdsale.send(ether('1')));
     await shouldFail.reverting(this.crowdsale.buyTokens(investor, { value: ether('1'), from: investor }));
@@ -86,13 +86,13 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
     await shouldFail.reverting(this.crowdsale.send(1));
   });
 
-  it('purchases work', async function () {
+  it('should purchase tokens', async function () {
     await time.increaseTo(this.openingTime);
     await this.crowdsale.sendTransaction({ from: investor, value });
     await this.crowdsale.buyTokens(investor, { from: investor, value });
   });
 
-  it('does immediately transfer funds to wallet ', async function () {
+  it('should transfer funds to wallet ', async function () {
     await time.increaseTo(this.openingTime);
 
     (await balance.difference(tokenSaleAccount, async () => {
@@ -111,19 +111,20 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
     describe('when the referrer or the referee are the zero address', function () {
       const zero = ZERO_ADDRESS;
 
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(this.crowdsale.addReferee(zero, referee, { from: owner }));
         await shouldFail.reverting(this.crowdsale.addReferee(referrer, zero, { from: owner }));
       });
     });
 
     describe('when the referrer and the referee are the same address', function () {
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(this.crowdsale.addReferee(referee, referee, { from: owner }));
       });
     });
 
     describe('when the referrer has no token', function () {
+<<<<<<< HEAD:test/GOCOPreSale.test.js
       it('reverts', async function () {
         await shouldFail.reverting(this.crowdsale.addReferee(referrer, referee, { from: owner }));
       });
@@ -144,6 +145,10 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
         }
 
         await shouldFail.reverting(this.crowdsale.addReferee(referrer, referee11Account[10], { from: referrer }));
+=======
+      it('should revert', async function () {
+        await shouldFail.reverting(this.crowdsale.addReferee(referee, referee, { from: owner }));
+>>>>>>> 8c5ea27... Adds first version of commit:test/GCWPreSale.test.js
       });
     });
 
@@ -154,7 +159,7 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
         await this.crowdsale.addReferee(referrer, referee, { from: referrer });
       });
 
-      it('when referee buy tokens, reward tokens are transfered to referrer and referee', async function () {
+      it('should transfer tokens to referee', async function () {
         const expectedTokenPurchased = RATE.mul(value);
         const expectedTokenReward = expectedTokenPurchased.div(new BN(20)); // 5% reward
 
@@ -163,7 +168,11 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
         (await this.token.balanceOf(referrer)).should.be.bignumber.equal(expectedTokenReward.add(RATE.mul(value)));
       });
 
-      it('when referal is disabled, should not transfer rewards', async function () {
+      // WATCH_02 A better logic would be to let all listed referees to get their reward
+      // and use referal enabling for adding referees only. This will look like a false promise
+      // telling the user that a referee can be not rewarded on the decision of the contract owner
+      // even if he got referred while this was enabled.
+      it('should should not transfer rewards on referee disabled', async function () {
         const expectedTokenPurchased = RATE.mul(value);
         await this.crowdsale.disableReferral({ from: owner });
         await this.crowdsale.buyTokens(referee, { from: referee, value });
@@ -173,23 +182,22 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
     });
   });
 
-  context('after pause', function () {
+  context('pause', function () {
     beforeEach(async function () {
       await time.increaseTo(this.openingTime);
       await this.crowdsale.pause({ from: owner });
     });
 
-    it('purchases do not work', async function () {
-      await shouldFail.reverting(this.crowdsale.sendTransaction({ from: investor, value }));
-      await shouldFail.reverting(this.crowdsale.buyTokens(investor, { from: investor, value }));
+    describe('when a user wants to buy tokens and contract paused', function() {
+      it('should revert', async function () {
+        await shouldFail.reverting(this.crowdsale.sendTransaction({ from: investor, value }));
+        await shouldFail.reverting(this.crowdsale.buyTokens(investor, { from: investor, value }));
+      });
     });
 
-    context('after unpause', function () {
-      beforeEach(async function () {
+    describe('when a user wants to buy tokens after unpaused', function() {
+      it('should buy some tokens', async function () {
         await this.crowdsale.unpause({ from: owner });
-      });
-
-      it('purchases work', async function () {
         await this.crowdsale.sendTransaction({ from: investor, value });
         await this.crowdsale.buyTokens(investor, { from: investor, value });
       });
@@ -197,41 +205,52 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
   });
 
   context('finalization', function () {
-    it('cannot be finalized before ending', async function () {
-      await shouldFail.reverting(this.crowdsale.finalize({ from: anyone }));
-    });
-
-    it('can be finalized by anyone after ending', async function () {
-      await time.increaseTo(this.afterClosingTime);
-      await this.crowdsale.finalize({ from: anyone });
-    });
-
-    it('cannot be finalized twice', async function () {
-      await time.increaseTo(this.afterClosingTime);
-      await this.crowdsale.finalize({ from: anyone });
-      await shouldFail.reverting(this.crowdsale.finalize({ from: anyone }));
-    });
-
-    it('logs finalized', async function () {
-      await time.increaseTo(this.afterClosingTime);
-      const { logs } = await this.crowdsale.finalize({ from: anyone });
-      expectEvent.inLogs(logs, 'CrowdsaleFinalized');
-    });
-
-    it('should transfer unsold token to reward pool after finalization, token sale contract is now empty', async function () {
+    it('should not be finalized', async function () {
       await time.increaseTo(this.openingTime);
-      await this.crowdsale.send(ether('1000'));
+      await shouldFail.reverting(this.crowdsale.finalize({ from: anyone }));
+    });
+
+    it('should be finalized by anyone after ending', async function () {
       await time.increaseTo(this.afterClosingTime);
+      await this.crowdsale.finalize({ from: anyone });
+    });
 
-      const UNSOLD_TOKEN = TOKEN_SUPPLY.sub(ether('1000').mul(RATE));
+    it('should not be finalized twice', async function () {
+      await time.increaseTo(this.afterClosingTime);
+      await this.crowdsale.finalize({ from: anyone });
+      await shouldFail.reverting(this.crowdsale.finalize({ from: anyone }));
+    });
 
-      (await tokenBalanceDifference(this.token, rewardAccount, async () => {
+    describe('when finalized', function() {
+      it('should transfer unsold tokens to reward pool', async function() {
+        await time.increaseTo(this.openingTime);
+        await this.crowdsale.send(ether('1000'));
+        await time.increaseTo(this.afterClosingTime);
+
+        const UNSOLD_TOKEN = TOKEN_SUPPLY.sub(ether('1000').mul(RATE));
+
+        (await tokenBalanceDifference(this.token, rewardAccount, async () => {
+          await this.crowdsale.finalize({ from: anyone });
+        })).should.be.bignumber.equal(UNSOLD_TOKEN);
+      });
+
+      it('should empty contract funds', async function () {
+        await time.increaseTo(this.openingTime);
+        await this.crowdsale.send(ether('1'));
+        await time.increaseTo(this.afterClosingTime);
+
         await this.crowdsale.finalize({ from: anyone });
-      })).should.be.bignumber.equal(UNSOLD_TOKEN);
 
-      (await balance.current(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+        (await balance.current(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
 
-      (await this.token.balanceOf(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+        (await this.token.balanceOf(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+      });
+
+      it('should log finalized', async function () {
+        await time.increaseTo(this.afterClosingTime);
+        const { logs } = await this.crowdsale.finalize({ from: anyone });
+        expectEvent.inLogs(logs, 'CrowdsaleFinalized');
+      });
     });
   });
 });

@@ -13,7 +13,6 @@ async function tokenBalanceDifference (token, account, promiseFunc) {
 contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewardAccount, investor1, investor2, investor3, anyone]) {
   const value = ether('1');
 
- 
   const NUMBER_OF_PERIOD = new BN(4);
   const TOKEN_SUPPLY = new BN(10500000).mul(new BN(10).pow(new BN(18)));
 
@@ -50,7 +49,7 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
     await shouldFail.reverting(this.crowdsale.buyTokens(investor1, { from: investor1, value: ether('1') }));
   });
 
-  context('When the sale is open with 3 investors purchasing tokens on first period', function () {
+  context('when the sale is open with 3 investors purchasing tokens on first period', function () {
     const investmentAmount = ether('1');
     const expectedTokenAmount = investmentAmount.mul(TOKEN_BY_PERIOD.div(investmentAmount.mul(new BN(3))));
 
@@ -62,12 +61,16 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
       (await this.crowdsale.today()).should.be.bignumber.equal(new BN(1));
     });
 
-    it('should accept payments from investors ', async function () {
-      const { logs } = await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+    it('should accept payments from investors', async function () {
+      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
       await this.crowdsale.send(investmentAmount, { from: investor2 });
       await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
 
       (await this.crowdsale.dailyTotal(new BN(1))).should.be.bignumber.equal(ether('3'));
+    });
+
+    it('should logs when buy happens', async function () {
+      const { logs } = await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
 
       expectEvent.inLogs(logs, 'LogBuy', {
         period: new BN(1),
@@ -76,52 +79,57 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
       });
     });
 
-    it('should be period 2 ', async function () {
-    // increase time to the end of the current period
-      await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
-      (await this.crowdsale.today()).should.be.bignumber.equal(new BN(2));
+    describe('when advancing to 22 hours', function () {
+      it('should be in period 2 ', async function () {
+        // increase time to the end of the current period
+        await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
+        (await this.crowdsale.today()).should.be.bignumber.equal(new BN(2));
+      });
     });
 
-    it('should claim and transfer token to investors ', async function () {
-      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
-      await this.crowdsale.send(investmentAmount, { from: investor2 });
-      await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 }); ;
 
-      // increase time to the end of the current period
-      await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
+    describe('when claiming tokens', function () {
+      it('should transfer token to investors', async function () {
+        await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+        await this.crowdsale.send(investmentAmount, { from: investor2 });
+        await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 }); ;
 
-      await this.crowdsale.claim(new BN(1), investor1, { from: anyone });
-      await this.crowdsale.claim(new BN(1), investor2, { from: anyone });
-      await this.crowdsale.claim(new BN(1), investor3, { from: anyone });
+        // increase time to the end of the current period
+        await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
 
-      (await this.token.balanceOf(investor1)).should.be.bignumber.equal(expectedTokenAmount);
-      (await this.token.balanceOf(investor2)).should.be.bignumber.equal(expectedTokenAmount);
-      (await this.token.balanceOf(investor3)).should.be.bignumber.equal(expectedTokenAmount);
+        await this.crowdsale.claim(new BN(1), investor1, { from: anyone });
+        await this.crowdsale.claim(new BN(1), investor2, { from: anyone });
+        await this.crowdsale.claim(new BN(1), investor3, { from: anyone });
+
+        (await this.token.balanceOf(investor1)).should.be.bignumber.equal(expectedTokenAmount);
+        (await this.token.balanceOf(investor2)).should.be.bignumber.equal(expectedTokenAmount);
+        (await this.token.balanceOf(investor3)).should.be.bignumber.equal(expectedTokenAmount);
+      });
+
+      it('should transfer different amount of tokens to investors depending on periods', async function () {
+        await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+        await this.crowdsale.send(investmentAmount.mul(new BN(2)), { from: investor2 });
+        await this.crowdsale.buyTokens(investor3, { value: investmentAmount.mul(new BN(3)), from: investor3 }); ;
+
+        // increase time to the end of the current period
+        await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
+
+        await this.crowdsale.claim(new BN(1), investor1, { from: anyone });
+        await this.crowdsale.claim(new BN(1), investor2, { from: anyone });
+        await this.crowdsale.claim(new BN(1), investor3, { from: anyone });
+
+        const baseExpectedTokenAmount = TOKEN_BY_PERIOD.div(new BN(6));
+        (await this.token.balanceOf(investor1)).should.be.bignumber.equal(baseExpectedTokenAmount);
+        (await this.token.balanceOf(investor2)).should.be.bignumber.equal(baseExpectedTokenAmount.mul(new BN(2)));
+        (await this.token.balanceOf(investor3)).should.be.bignumber.equal(baseExpectedTokenAmount.mul(new BN(3)));
+      });
     });
 
-    it('should claim and transfer token to investors : asymetric ', async function () {
-      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
-      await this.crowdsale.send(investmentAmount.mul(new BN(2)), { from: investor2 });
-      await this.crowdsale.buyTokens(investor3, { value: investmentAmount.mul(new BN(3)), from: investor3 }); ;
-
-      // increase time to the end of the current period
-      await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
-
-      await this.crowdsale.claim(new BN(1), investor1, { from: anyone });
-      await this.crowdsale.claim(new BN(1), investor2, { from: anyone });
-      await this.crowdsale.claim(new BN(1), investor3, { from: anyone });
-
-      const baseExpectedTokenAmount = TOKEN_BY_PERIOD.div(new BN(6));
-      (await this.token.balanceOf(investor1)).should.be.bignumber.equal(baseExpectedTokenAmount);
-      (await this.token.balanceOf(investor2)).should.be.bignumber.equal(baseExpectedTokenAmount.mul(new BN(2)));
-      (await this.token.balanceOf(investor3)).should.be.bignumber.equal(baseExpectedTokenAmount.mul(new BN(3)));
-    });
-
-    it('should fail purchase < 0.1 ether', async function () {
+    it('should not buy tokens for < 0.1 ether', async function () {
       await shouldFail.reverting(this.crowdsale.buyTokens(investor1, { value: ether('0.01'), from: investor1 }));
     });
 
-    it('should reject payments after end', async function () {
+    it('should not buy tokens after closing time', async function () {
       await time.increaseTo(this.afterClosingTime);
       await shouldFail.reverting(this.crowdsale.send(ether('1')));
       await shouldFail.reverting(this.crowdsale.buyTokens(investor1, { value: ether('1'), from: investor1 }));
@@ -150,11 +158,11 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
         await time.increaseTo(this.openingTime);
       });
 
-      it('should be period 1 ', async function () {
+      it('should be period 1', async function () {
         (await this.crowdsale.today()).should.be.bignumber.equal(new BN(1));
       });
 
-      it('should accept payments from investors ', async function () {
+      it('should accept payments from investors', async function () {
         const { logs } = await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
         await this.crowdsale.send(investmentAmount, { from: investor2 });
         await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
@@ -179,11 +187,11 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
         await time.increaseTo(this.openingTime.add(time.duration.hours(21)));
       });
 
-      it('should be period 2 ', async function () {
+      it('should be period 2', async function () {
         (await this.crowdsale.today()).should.be.bignumber.equal(new BN(2));
       });
 
-      it('should accept payments from investors ', async function () {
+      it('should accept payments from investors', async function () {
         const { logs } = await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
         await this.crowdsale.send(investmentAmount, { from: investor2 });
         await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
@@ -203,59 +211,84 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
       });
     });
 
-    it('when every period are purchased and tokens are all claimed later : funds raised and token amounts should be consistent', async function () {
-      // PERIOD 1
-      await time.increaseTo(this.openingTime);
+    describe('when every period are purchased and tokens are all claimed later', function () {
+      it('should distribute consistent tokens amount', async function () {
+        // PERIOD 1
+        await time.increaseTo(this.openingTime);
 
-      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
-      await this.crowdsale.send(investmentAmount, { from: investor2 });
-      await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
+        await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+        await this.crowdsale.send(investmentAmount, { from: investor2 });
+        await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
 
-      (await this.crowdsale.dailyTotal(new BN(1))).should.be.bignumber.equal(ether('3'));
+        (await this.crowdsale.dailyTotal(new BN(1))).should.be.bignumber.equal(ether('3'));
 
+<<<<<<< HEAD:test/GOCOSale.test.js
       // PERIOD 2
       await time.increaseTo(this.openingTime.add(time.duration.hours(22)));
+=======
+        // PERIOD 2
+        await time.increaseTo(this.openingTime.add(time.duration.hours(21)));
+>>>>>>> 8c5ea27... Adds first version of commit:test/GCWSale.test.js
 
-      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
-      await this.crowdsale.send(investmentAmount, { from: investor2 });
-      await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
+        await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+        await this.crowdsale.send(investmentAmount, { from: investor2 });
+        await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
 
-      (await this.crowdsale.dailyTotal(new BN(2))).should.be.bignumber.equal(ether('3'));
+        (await this.crowdsale.dailyTotal(new BN(2))).should.be.bignumber.equal(ether('3'));
 
+<<<<<<< HEAD:test/GOCOSale.test.js
       // PERIOD 3
       await time.increaseTo(this.openingTime.add(time.duration.hours(21 * 2)).add(time.duration.minutes(2)));
+=======
+        // PERIOD 3
+        await time.increaseTo(this.openingTime.add(time.duration.hours(21 * 2)));
+>>>>>>> 8c5ea27... Adds first version of commit:test/GCWSale.test.js
 
-      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
-      await this.crowdsale.send(investmentAmount, { from: investor2 });
-      await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
+        await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+        await this.crowdsale.send(investmentAmount, { from: investor2 });
+        await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
 
-      (await this.crowdsale.dailyTotal(new BN(3))).should.be.bignumber.equal(ether('3'));
+        (await this.crowdsale.dailyTotal(new BN(3))).should.be.bignumber.equal(ether('3'));
 
+<<<<<<< HEAD:test/GOCOSale.test.js
       // PERIOD 4
       await time.increaseTo(this.openingTime.add(time.duration.hours(21 * 3)).add(time.duration.minutes(2)));
+=======
+        // PERIOD 4
+        await time.increaseTo(this.openingTime.add(time.duration.hours(21 * 3)));
+>>>>>>> 8c5ea27... Adds first version of commit:test/GCWSale.test.js
 
-      await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
-      await this.crowdsale.send(investmentAmount, { from: investor2 });
-      await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
+        await this.crowdsale.buyTokens(investor1, { value: investmentAmount, from: investor1 });
+        await this.crowdsale.send(investmentAmount, { from: investor2 });
+        await this.crowdsale.buyTokens(investor3, { value: investmentAmount, from: investor3 });
 
-      (await this.crowdsale.dailyTotal(new BN(4))).should.be.bignumber.equal(ether('3'));
+        (await this.crowdsale.dailyTotal(new BN(4))).should.be.bignumber.equal(ether('3'));
 
+<<<<<<< HEAD:test/GOCOSale.test.js
       // PERIOD 5 (after end)
       await time.increaseTo(this.openingTime.add(time.duration.hours(21 * 4)).add(time.duration.minutes(2)));
       await shouldFail.reverting(this.crowdsale.send(ether('1')));
       await shouldFail.reverting(this.crowdsale.buyTokens(investor1, { value: ether('1'), from: investor1 }));
+=======
+        // PERIOD 5 (after end)
+        await time.increaseTo(this.openingTime.add(time.duration.hours(21 * 4)).add(time.duration.seconds(1)));
+        await shouldFail.reverting(this.crowdsale.send(ether('1')));
+        await shouldFail.reverting(this.crowdsale.buyTokens(investor1, { value: ether('1'), from: investor1 }));
+>>>>>>> 8c5ea27... Adds first version of commit:test/GCWSale.test.js
 
-      (await this.crowdsale.weiRaised()).should.be.bignumber.equal(ether('12'));
+        (await this.crowdsale.weiRaised()).should.be.bignumber.equal(ether('12'));
 
-      await this.crowdsale.claimAll(investor1, { from: anyone });
-      await this.crowdsale.claimAll(investor2, { from: anyone });
-      await this.crowdsale.claimAll(investor3, { from: anyone });
+        await this.crowdsale.claimAll(investor1, { from: anyone });
+        await this.crowdsale.claimAll(investor2, { from: anyone });
+        await this.crowdsale.claimAll(investor3, { from: anyone });
 
-      (await this.token.balanceOf(investor1)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
-      (await this.token.balanceOf(investor2)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
-      (await this.token.balanceOf(investor3)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
+        (await this.token.balanceOf(investor1)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
+        (await this.token.balanceOf(investor2)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
+        (await this.token.balanceOf(investor3)).should.be.bignumber.equal(expectedTokenAmount.mul(new BN(4)));
+      });
     });
 
+<<<<<<< HEAD:test/GOCOSale.test.js
     it('when a period is purchased by 50 account and tokens are all batch claimed later :token amounts should be consistent', async function () {
       const investmentAmount = ether('1');
       const expectedTokenAmount = investmentAmount.mul(TOKEN_BY_PERIOD.div(investmentAmount.mul(new BN(50))));
@@ -282,10 +315,38 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
         (await this.token.balanceOf(batch50Account[i])).should.be.bignumber.equal(expectedTokenAmount);
       }
   
+=======
+
+    describe('when a period is purchased by 50 account and tokens are all batch claimed later', function () {
+      it('should distribute consistent tokens amount', async function () {
+        const investmentAmount = ether('1');
+        const expectedTokenAmount = investmentAmount.mul(TOKEN_BY_PERIOD.div(investmentAmount.mul(new BN(50))));
+
+        let batch50Account = [50];
+        for (var i = 0; i < 50; i++) {
+          let address = '0x2bdd21761a483f71054e14f5b827213567971c' + (i + 16).toString(16);
+          batch50Account[i] = address;
+        }
+        // PERIOD 1
+        await time.increaseTo(this.openingTime);
+
+        for (var i = 0; i < batch50Account.length; i++) {
+          await this.crowdsale.buyTokens(batch50Account[i], { value: investmentAmount, from: investor1 });
+        }
+
+        // AFTER PERIOD 1
+        await time.increaseTo(this.openingTime.add(time.duration.hours(21)));
+        let period = await this.crowdsale.today()
+
+        await this.crowdsale.batchClaim(period.sub(new BN(1)), batch50Account);
+
+        for (var i = 0; i < batch50Account.length; i++) {
+          (await this.token.balanceOf(batch50Account[i])).should.be.bignumber.equal(expectedTokenAmount);
+        }
+      });
+>>>>>>> 8c5ea27... Adds first version of commit:test/GCWSale.test.js
     });
   });
-
- 
 
   context('after pause', function () {
     beforeEach(async function () {
@@ -293,7 +354,7 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
       await this.crowdsale.pause({ from: owner });
     });
 
-    it('purchases do not work', async function () {
+    it('should not purchase tokens', async function () {
       await shouldFail.reverting(this.crowdsale.sendTransaction({ from: investor1, value }));
       await shouldFail.reverting(this.crowdsale.buyTokens(investor1, { from: investor1, value }));
     });
@@ -303,7 +364,7 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
         await this.crowdsale.unpause({ from: owner });
       });
 
-      it('purchases work', async function () {
+      it('should purchase tokens', async function () {
         await this.crowdsale.sendTransaction({ from: investor1, value });
         await this.crowdsale.buyTokens(investor1, { from: investor1, value });
       });
@@ -311,42 +372,43 @@ contract('GOCOSale', function ([_, owner, founderAccount, tokenSaleAccount, rewa
   });
 
   context('finalization', function () {
-    it('cannot be finalized before ending', async function () {
+    it('should not finalize before ending', async function () {
       await shouldFail.reverting(this.crowdsale.finalize({ from: owner }));
     });
 
-    it('can be finalized by owner after ending', async function () {
+    it('should be finalized by owner', async function () {
       await time.increaseTo(this.afterClosingTime);
       await this.crowdsale.finalize({ from: owner });
     });
 
-    it('cannot be finalized twice', async function () {
+    it('should not be finalized twice', async function () {
       await time.increaseTo(this.afterClosingTime);
       await this.crowdsale.finalize({ from: owner });
       await shouldFail.reverting(this.crowdsale.finalize({ from: owner }));
     });
 
-    it('logs finalized', async function () {
-      await time.increaseTo(this.afterClosingTime);
-      const { logs } = await this.crowdsale.finalize({ from: owner });
-      expectEvent.inLogs(logs, 'CrowdsaleFinalized');
-    });
+    describe('when finalized', function() {
+      it('should transfer unsold tokens to reward pool', async function() {
+        await time.increaseTo(this.openingTime);
+        await this.crowdsale.send(ether('1000'));
+        await time.increaseTo(this.afterClosingTime);
 
-    it('should transfer unsold token to reward pool after finalization, token sale contract is now empty', async function () {
-      await time.increaseTo(this.openingTime);
-      await this.crowdsale.send(ether('1000'));
-      await time.increaseTo(this.afterClosingTime);
+        const UNCLAIM_TOKEN = TOKEN_SUPPLY;
 
-      const UNCLAIM_TOKEN = TOKEN_SUPPLY;
+        (await tokenBalanceDifference(this.token, rewardAccount, async () => {
+          await this.crowdsale.finalize({ from: owner });
+        })).should.be.bignumber.equal(UNCLAIM_TOKEN);
 
-      (await tokenBalanceDifference(this.token, rewardAccount, async () => {
-        await this.crowdsale.finalize({ from: owner });
-      })).should.be.bignumber.equal(UNCLAIM_TOKEN);
+        (await balance.current(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
 
-      (await balance.current(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+        (await this.token.balanceOf(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+      });
 
-      (await this.token.balanceOf(this.crowdsale.address)).should.be.bignumber.equal(new BN(0));
+      it('should log finalized', async function () {
+        await time.increaseTo(this.afterClosingTime);
+        const { logs } = await this.crowdsale.finalize({ from: owner });
+        expectEvent.inLogs(logs, 'CrowdsaleFinalized');
+      });
     });
   });
 });
-

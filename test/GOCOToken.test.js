@@ -14,41 +14,39 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
     this.token = await GOCOToken.new(founderAccount, tokenSaleAccount, rewardAccount);
   });
 
-  it('has a name', async function () {
+  it('should be names Gocoworker', async function () {
     (await this.token.name()).should.equal('Gocoworker');
   });
 
-  it('has a symbol', async function () {
+  it('should have symbol GOCO', async function () {
     (await this.token.symbol()).should.equal('GOCO');
   });
 
-  it('has 18 decimals', async function () {
+  it('should have 18 decimals', async function () {
     (await this.token.decimals()).should.be.bignumber.equal('18');
   });
 
-  describe('total supply', function () {
-    it('returns the total amount of tokens', async function () {
-      (await this.token.totalSupply()).should.be.bignumber.equal(totalSupply);
-    });
+  it('should return total supply of 21000000', async function () {
+    (await this.token.totalSupply()).should.be.bignumber.equal(totalSupply);
   });
 
   describe('balanceOf', function () {
     describe('when the requested account has no tokens', function () {
-      it('returns zero', async function () {
+      it('should return zero', async function () {
         (await this.token.balanceOf(anotherAccount)).should.be.bignumber.equal('0');
       });
     });
 
     describe('when the requested account has some tokens', function () {
-      it('returns the total amount of tokens for founders/teams', async function () {
+      it('should return the total amount of tokens for founders/teams', async function () {
         (await this.token.balanceOf(founderAccount)).should.be.bignumber.equal(founderSupply);
       });
 
-      it('returns the total amount of tokens for token sales', async function () {
+      it('should return the total amount of tokens for token sales', async function () {
         (await this.token.balanceOf(tokenSaleAccount)).should.be.bignumber.equal(saleSupply);
       });
 
-      it('returns the total amount of tokens for reward pool', async function () {
+      it('should return the total amount of tokens for reward pool', async function () {
         (await this.token.balanceOf(rewardAccount)).should.be.bignumber.equal(rewardSupply);
       });
     });
@@ -61,7 +59,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       describe('when the sender does not have enough balance', function () {
         const amount = saleSupply.addn(1);
 
-        it('reverts', async function () {
+        it('should revert', async function () {
           await shouldFail.reverting(this.token.transfer(to, amount, { from: tokenSaleAccount }));
         });
       });
@@ -69,7 +67,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       describe('when the sender has enough balance', function () {
         const amount = saleSupply;
 
-        it('transfers the requested amount', async function () {
+        it('should transfer the requested amount', async function () {
           await this.token.transfer(to, amount, { from: tokenSaleAccount });
 
           (await this.token.balanceOf(tokenSaleAccount)).should.be.bignumber.equal('0');
@@ -77,7 +75,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
           (await this.token.balanceOf(to)).should.be.bignumber.equal(amount);
         });
 
-        it('emits a transfer event', async function () {
+        it('should emit a transfer event', async function () {
           const { logs } = await this.token.transfer(to, amount, { from: tokenSaleAccount });
 
           expectEvent.inLogs(logs, 'Transfer', {
@@ -92,7 +90,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
     describe('when the recipient is the zero address', function () {
       const to = ZERO_ADDRESS;
 
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(this.token.transfer(to, saleSupply, { from: tokenSaleAccount }));
       });
     });
@@ -112,7 +110,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         describe('when the initial holder has enough balance', function () {
           const amount = saleSupply;
 
-          it('transfers the requested amount', async function () {
+          it('should transfer the requested amount', async function () {
             await this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender });
 
             (await this.token.balanceOf(tokenSaleAccount)).should.be.bignumber.equal('0');
@@ -120,13 +118,13 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             (await this.token.balanceOf(to)).should.be.bignumber.equal(amount);
           });
 
-          it('decreases the spender allowance', async function () {
+          it('should decrease the spender allowance', async function () {
             await this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender });
 
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal('0');
           });
 
-          it('emits a transfer event', async function () {
+          it('should emit a transfer event', async function () {
             const { logs } = await this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender });
 
             expectEvent.inLogs(logs, 'Transfer', {
@@ -136,7 +134,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             });
           });
 
-          it('emits an approval event', async function () {
+          it('should emit an approval event', async function () {
             const { logs } = await this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender });
 
             expectEvent.inLogs(logs, 'Approval', {
@@ -150,7 +148,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         describe('when the initial holder does not have enough balance', function () {
           const amount = saleSupply.addn(1);
 
-          it('reverts', async function () {
+          it('should revert', async function () {
             await shouldFail.reverting(this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender }));
           });
         });
@@ -164,7 +162,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         describe('when the initial holder has enough balance', function () {
           const amount = saleSupply;
 
-          it('reverts', async function () {
+          it('should revert', async function () {
             await shouldFail.reverting(this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender }));
           });
         });
@@ -172,7 +170,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         describe('when the initial holder does not have enough balance', function () {
           const amount = saleSupply.addn(1);
 
-          it('reverts', async function () {
+          it('should revert', async function () {
             await shouldFail.reverting(this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender }));
           });
         });
@@ -187,7 +185,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         await this.token.approve(spender, amount, { from: tokenSaleAccount });
       });
 
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(this.token.transferFrom(tokenSaleAccount, to, amount, { from: spender }));
       });
     });
@@ -199,7 +197,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
 
       function shouldDecreaseApproval (amount) {
         describe('when there was no approved amount before', function () {
-          it('reverts', async function () {
+          it('should revert', async function () {
             await shouldFail.reverting(this.token.decreaseAllowance(spender, amount, { from: tokenSaleAccount }));
           });
         });
@@ -211,7 +209,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             ({ logs: this.logs } = await this.token.approve(spender, approvedAmount, { from: tokenSaleAccount }));
           });
 
-          it('emits an approval event', async function () {
+          it('should emit an approval event', async function () {
             const { logs } = await this.token.decreaseAllowance(spender, approvedAmount, { from: tokenSaleAccount });
 
             expectEvent.inLogs(logs, 'Approval', {
@@ -221,18 +219,18 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             });
           });
 
-          it('decreases the spender allowance subtracting the requested amount', async function () {
+          it('should decrease the spender allowance subtracting the requested amount', async function () {
             await this.token.decreaseAllowance(spender, approvedAmount.subn(1), { from: tokenSaleAccount });
 
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal('1');
           });
 
-          it('sets the allowance to zero when all allowance is removed', async function () {
+          it('should set the allowance to zero when all allowance is removed', async function () {
             await this.token.decreaseAllowance(spender, approvedAmount, { from: tokenSaleAccount });
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal('0');
           });
 
-          it('reverts when more than the full allowance is removed', async function () {
+          it('should revert when more than the full allowance is removed', async function () {
             await shouldFail.reverting(
               this.token.decreaseAllowance(spender, approvedAmount.addn(1), { from: tokenSaleAccount })
             );
@@ -257,7 +255,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       const amount = saleSupply;
       const spender = ZERO_ADDRESS;
 
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(this.token.decreaseAllowance(spender, amount, { from: tokenSaleAccount }));
       });
     });
@@ -270,7 +268,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       const spender = recipient;
 
       describe('when the sender has enough balance', function () {
-        it('emits an approval event', async function () {
+        it('should emit an approval event', async function () {
           const { logs } = await this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount });
 
           expectEvent.inLogs(logs, 'Approval', {
@@ -281,7 +279,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         });
 
         describe('when there was no approved amount before', function () {
-          it('approves the requested amount', async function () {
+          it('should approve the requested amount', async function () {
             await this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount });
 
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal(amount);
@@ -293,7 +291,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             await this.token.approve(spender, new BN(1), { from: tokenSaleAccount });
           });
 
-          it('increases the spender allowance adding the requested amount', async function () {
+          it('should increase the spender allowance adding the requested amount', async function () {
             await this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount });
 
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal(amount.addn(1));
@@ -304,7 +302,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       describe('when the sender does not have enough balance', function () {
         const amount = saleSupply.addn(1);
 
-        it('emits an approval event', async function () {
+        it('should emit an approval event', async function () {
           const { logs } = await this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount });
 
           expectEvent.inLogs(logs, 'Approval', {
@@ -315,7 +313,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         });
 
         describe('when there was no approved amount before', function () {
-          it('approves the requested amount', async function () {
+          it('should approve the requested amount', async function () {
             await this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount });
 
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal(amount);
@@ -327,7 +325,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             await this.token.approve(spender, new BN(1), { from: tokenSaleAccount });
           });
 
-          it('increases the spender allowance adding the requested amount', async function () {
+          it('should increase the spender allowance adding the requested amount', async function () {
             await this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount });
 
             (await this.token.allowance(tokenSaleAccount, spender)).should.be.bignumber.equal(amount.addn(1));
@@ -339,7 +337,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
     describe('when the spender is the zero address', function () {
       const spender = ZERO_ADDRESS;
 
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(this.token.increaseAllowance(spender, amount, { from: tokenSaleAccount }));
       });
     });
@@ -356,7 +354,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       describe('when the sender has enough balance', function () {
         const amount = supply;
 
-        it('emits an approval event', async function () {
+        it('should emit an approval event', async function () {
           const { logs } = await approve.call(this, owner, spender, amount);
 
           expectEvent.inLogs(logs, 'Approval', {
@@ -367,7 +365,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         });
 
         describe('when there was no approved amount before', function () {
-          it('approves the requested amount', async function () {
+          it('should approve the requested amount', async function () {
             await approve.call(this, owner, spender, amount);
 
             (await this.token.allowance(owner, spender)).should.be.bignumber.equal(amount);
@@ -379,7 +377,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             await approve.call(this, owner, spender, new BN(1));
           });
 
-          it('approves the requested amount and replaces the previous one', async function () {
+          it('should approve the requested amount and replaces the previous one', async function () {
             await approve.call(this, owner, spender, amount);
 
             (await this.token.allowance(owner, spender)).should.be.bignumber.equal(amount);
@@ -390,7 +388,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
       describe('when the sender does not have enough balance', function () {
         const amount = supply.addn(1);
 
-        it('emits an approval event', async function () {
+        it('should emit an approval event', async function () {
           const { logs } = await approve.call(this, owner, spender, amount);
 
           expectEvent.inLogs(logs, 'Approval', {
@@ -401,7 +399,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
         });
 
         describe('when there was no approved amount before', function () {
-          it('approves the requested amount', async function () {
+          it('should approve the requested amount', async function () {
             await approve.call(this, owner, spender, amount);
 
             (await this.token.allowance(owner, spender)).should.be.bignumber.equal(amount);
@@ -413,7 +411,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
             await approve.call(this, owner, spender, new BN(1));
           });
 
-          it('approves the requested amount and replaces the previous one', async function () {
+          it('should approve the requested amount and replaces the previous one', async function () {
             await approve.call(this, owner, spender, amount);
 
             (await this.token.allowance(owner, spender)).should.be.bignumber.equal(amount);
@@ -423,7 +421,7 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
     });
 
     describe('when the spender is the zero address', function () {
-      it('reverts', async function () {
+      it('should revert', async function () {
         await shouldFail.reverting(approve.call(this, owner, ZERO_ADDRESS, supply));
       });
     });
