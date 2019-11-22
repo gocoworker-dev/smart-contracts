@@ -62,7 +62,7 @@ TODO
 
 # 5. <a name="5"></a>Medium
 
-| Tag       | Contrat        | Commentaires  |
+| Tag       | Contrat(s)        | Commentaires  |
 |-----------|:--------------:|---------------|
 | MEDIUM_01 | GCWPreSale.sol | La fonction ne fait rien. |
 | MEDIUM_02 | GCWPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
@@ -76,7 +76,7 @@ TODO
 
 # 6. <a name="6"></a>Mineur
 
-| Tag      | Contrat                                     | Commentaires  |
+| Tag      | Contrat(s)                                     | Commentaires  |
 |----------|:-------------------------------------------:|---------------|
 | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
 | MINOR_02 (supprimé) | NA | NA |
@@ -93,7 +93,7 @@ TODO
 
 # 7. <a name="7"></a>Vigilance
 
-| Tag      | Contrat        | Commentaires  |
+| Tag      | Contrat(s)        | Commentaires  |
 |----------|:--------------:|---------------|
 | WATCH_01 | GCWPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
 | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
