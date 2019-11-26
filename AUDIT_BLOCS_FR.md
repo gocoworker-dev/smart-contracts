@@ -8,9 +8,9 @@ Ce document passe en revu les trois contrats suivants :
 - [GCWPreSale](contracts/GCWPreSale.sol) : Presale du jeton GCW ;
 - [GCWSale](contracts/GCWSale.sol) : Vente périodique de jetons sur cycles de 21 heures ;
 
-Toutes les vulnérabilités potentielles et les bonnes pratiques de code sont relevés par 3 marqueurs présents dans le code source des contrats en commentaires et dans les tests en de rares occasions :
+Toutes les vulnérabilités potentielles et les bonnes pratiques de code sont relevées par 3 marqueurs présents dans le code source des contrats en commentaires et dans les tests en de rares occasions :
 - `MAJOR_x` où x est un nombre à 2 chiffres : Ce sont les parties qui ont un impact sur la logique du code ;
-- `MEDIUM_x` où x est un nombre à 2 chiffres : Ce sont les parties qui nécessite une attention particulière ;
+- `MEDIUM_x` où x est un nombre à 2 chiffres : Ce sont les parties qui nécessitent une attention particulière ;
 - `MINOR_x` où x est un nombre à 2 chiffres : Ce sont les parties qui peuvent être améliorées ;
 - `WATCH_x` où x est un nombre à 2 chiffres : Ce sont tous les points où l'attention est demandée lorsque une curiosité est levée mais qu'il se peut que ce soit un choix de conception ;
 
