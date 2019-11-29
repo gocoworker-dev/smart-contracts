@@ -18,7 +18,7 @@ All potential vulnerabilities and good code practices are noticed by 3 tags as c
 
 1. [Prelude](#1)
 2. [Overview](#2)
-3. [Attacks done](#3)
+3. [Attacks verified](#3)
 4. [Major](#4)
 5. [Medium](#5)
 6. [Minor](#6)
@@ -47,19 +47,66 @@ Limited quantity sale of GOCO Tokens through multiple periods of 21 hours.
 
 All Tokens are distributed to investors once the sale ends.
 
-# 3. <a name="3"></a>Attacks done
+# 3. <a name="3"></a>Attacks verified
 
+## Short address attack
+
+Quoted from [vessenes.com](https://vessenes.com/the-erc20-short-address-attack-explained/) :
+
+>The server taking in user data allowed an Ethereum address that was less than 20 bytes: usually an Ethereum address looks like 0x1234567890123456789012345678901234567800.
+What if you leave off those trailing two zeros (one hex byte equal to 0)? The Ethereum VM will supply it, but at the end of the packaged function arguments, and that's a very bad place to add extra zeros.
+
+Thoughout the code there is only in `ERC20` that this attack might be possible and interesting for attacker. Specifically on functions `transfer`, `transferFrom` and `approve`.
+
+The short address attack is prevented since [Solidity version 0.5.0](https://github.com/ethereum/solidity/pull/4224). All source code _must_ be at least at this version. The version of `ERC20` in OpenZeppelin is `^0.5.0`.
+
+## Reentrancy
+
+Reentrancy attack was one used against the infamous TheDAO project. The basic usage of the attack is to fake revert with an attacker contract. The victim contract think something is failing while it's not. Here is a simplified example :
+
+```js
+contract VictimContract {
+  mapping (address => uint) private balances;
+
+  transfer(address to, uint256 value) external return (bool) {
+    // call fallback of AttackContract
+    (bool success, ) = to.call.value(value)("");
+    require(success);
+
+    // never updated
+    balances[msg.sender] = balances[msg.sender].sub(value);
+  }
+}
+
+contract AttackContract {
+  // fallback function for reentrant
+  function () {
+    // call transfer of VictimContract
+    VictimContract.transfer(0x123456789abcdef123, 10);
+    throw;
+  }
+}
 ```
-TODO
-```
+
+In GOCO contract there a only one place where reentrancy might be usable and interesting for attacker. It's the function `buyTokens`. `RetrancyGuard` is used, thus this function is protected against this attack. No untrusted call are made which avoid some reetrancy attacks.
+
+Although, be careful on tag `MAJOR_03` which is about this function.
+
+## Number overflow
+
+// TODO
+
+## Claim
+
+// TODO
 
 # 4. <a name="4"></a>Major
 
-| Tag      | Contract       | Details       |
-|----------|:--------------:|---------------|
-| MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
-| MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
-| MAJOR_03 | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase` |
+|   | Tag      | Contract       | Details       |
+|---|----------|:--------------:|---------------|
+|[ ]| MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
+|[ ]| MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
+|[ ]| MAJOR_03 | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase` |
 
 # 5. <a name="5"></a>Medium
 
@@ -74,6 +121,7 @@ TODO
 | MEDIUM_07 | GCWSale.sol    | Should used `require` insteand of conditions. |
 | MEDIUM_08 (moved) | GCWSale.sol    | See MAJOR_03 |
 | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
+| MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
 
 # 6. <a name="6"></a>Minor
 

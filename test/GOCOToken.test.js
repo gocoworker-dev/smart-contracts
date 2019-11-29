@@ -145,6 +145,19 @@ contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAcco
           });
         });
 
+        it('Should not be possible to make the short address attack on allowance', async function () {
+          const amount = founderSupply;
+          // tokenSaleAccount is an address finishing by 0
+          await this.token.approve(tokenSaleAccount, amount, { from: founderAccount });
+
+          try {
+            // Sign with tokenSaleAccount and removes the trailing 0
+            await this.token.transferFrom(founderAccount, to, amount, { from: tokenSaleAccount.substring(0, tokenSaleAccount.length - 1) });
+          } catch (_) {
+            assert(true);
+          }
+        });
+
         describe('when the initial holder does not have enough balance', function () {
           const amount = saleSupply.addn(1);
 

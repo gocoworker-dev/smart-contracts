@@ -285,6 +285,9 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
 
 
     // MAJOR_03 This should not be overriden. For extended code use
+    // MEDIUM_10 nonReentrant modifier should be applied to external function as
+    // recommended in OpenZeppelin ReentrancyGuard. It avoid the function to
+    // called inside the contract
     // _preValidatePurchase for validations and ;
     // _postValidatePurchase for further instructions ;
     // userBuys and dailyTotal must be updated after transfer is successful, thus in
@@ -317,6 +320,8 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
         
 =======
 
+    // MEDIUM_10 nonReentrant modifier should be applied to external function as
+    // recommended in OpenZeppelin ReentrancyGuard
     function claim(uint256 period, address beneficiary) public nonReentrant whenNotPaused {
         require(today() > period);
 
