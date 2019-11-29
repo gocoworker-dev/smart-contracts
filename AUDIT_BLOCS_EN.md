@@ -104,24 +104,24 @@ Although, be careful on tag `MAJOR_03` which is about this function.
 
 |                    | Tag      | Contract       | Details       |
 |--------------------|----------|:--------------:|---------------|
-| :white_check_mark: | MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
-| :white_check_mark: | MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
-| :white_check_mark: | MAJOR_03 | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase` |
+| :white_large_square: | MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
+| :white_large_square: | MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
+| :white_large_square: | MAJOR_03 | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase` |
 
 # 5. <a name="5"></a>Medium
 
 |                    | Tag       | Contract(s)    | Details       |
 |--------------------|-----------|:--------------:|---------------|
-| :white_check_mark: | MEDIUM_01 | GCWPreSale.sol | Empty function |
-| :white_check_mark: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
-| :white_check_mark: | MEDIUM_03 (removed) | NA | NA |
-| :white_check_mark: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Must inherit |
-| :white_check_mark: | MEDIUM_05 | GCWPreSale.sol | Should used `require` insteand of conditions. |
-| :white_check_mark: | MEDIUM_06 | GCWPreSale.sol | `require` missing |
-| :white_check_mark: | MEDIUM_07 | GCWSale.sol    | Should used `require` insteand of conditions. |
-| :white_check_mark: | MEDIUM_08 (moved) | GCWSale.sol    | See MAJOR_03 |
-| :white_check_mark: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
-| :white_check_mark: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
+| :white_large_square: | MEDIUM_01 | GCWPreSale.sol | Empty function |
+| :white_large_square: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
+| :white_large_square: | MEDIUM_03 (removed) | NA | NA |
+| :white_large_square: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Must inherit |
+| :white_large_square: | MEDIUM_05 | GCWPreSale.sol | Should used `require` insteand of conditions. |
+| :white_large_square: | MEDIUM_06 | GCWPreSale.sol | `require` missing |
+| :white_large_square: | MEDIUM_07 | GCWSale.sol    | Should used `require` insteand of conditions. |
+| :white_large_square: | MEDIUM_08 (moved) | GCWSale.sol    | See MAJOR_03 |
+| :white_large_square: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
+| :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
 
 # 6. <a name="6"></a>Minor
 
