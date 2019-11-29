@@ -102,16 +102,16 @@ Although, be careful on tag `MAJOR_03` which is about this function.
 
 # 4. <a name="4"></a>Major
 
-|                    | Tag      | Contract       | Details       |
-|--------------------|----------|:--------------:|---------------|
+|                      | Tag      | Contract       | Details       |
+|----------------------|----------|:--------------:|---------------|
 | :white_large_square: | MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
 | :white_large_square: | MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
 | :white_large_square: | MAJOR_03 | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase` |
 
 # 5. <a name="5"></a>Medium
 
-|                    | Tag       | Contract(s)    | Details       |
-|--------------------|-----------|:--------------:|---------------|
+|                      | Tag       | Contract(s)    | Details       |
+|----------------------|-----------|:--------------:|---------------|
 | :white_large_square: | MEDIUM_01 | GCWPreSale.sol | Empty function |
 | :white_large_square: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
 | :white_large_square: | MEDIUM_03 (removed) | NA | NA |
@@ -125,28 +125,28 @@ Although, be careful on tag `MAJOR_03` which is about this function.
 
 # 6. <a name="6"></a>Minor
 
-| Tag      | Contract(s)                                 | Details       |
-|----------|:-------------------------------------------:|---------------|
-| MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
-| MINOR_02 (removed) | NA | NA |
-| MINOR_03 | GCWPreSale.sol / GCWSale.sol | Revert conditions for code readability. |
-| MINOR_04 | GCWPreSale.sol | Enhance instructions order. |
-| MINOR_05 | GCWPreSale.sol | `require` should be splitted for code readability. |
-| MINOR_06 | GCWPreSale.sol | Enhance conditions. |
-| MINOR_07 | GCWPreSale.sol | Add a `require` to avoid GAS consumption. |
-| MINOR_08 | GCWSale.sol | Add a `require` to avoid human error. |
-| MINOR_09 | GCWSale.sol | Rename the function to be more explicit, should start by a verb. Self documentation conventions. |
-| MINOR_10 | GCWSale.sol | Add constant variable for this value. |
-| MINOR_11 | GCWSale.sol | Avoid ternaries. |
-| MINOR_12 | GCWSale.sol | Should call `token()`. |
+|                      | Tag      | Contract(s)                                 | Details       |
+|----------------------|----------|:-------------------------------------------:|---------------|
+| :white_large_square: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
+| :white_large_square: | MINOR_02 (removed) | NA | NA |
+| :white_large_square: | MINOR_03 | GCWPreSale.sol / GCWSale.sol | Revert conditions for code readability. |
+| :white_large_square: | MINOR_04 | GCWPreSale.sol | Enhance instructions order. |
+| :white_large_square: | MINOR_05 | GCWPreSale.sol | `require` should be splitted for code readability. |
+| :white_large_square: | MINOR_06 | GCWPreSale.sol | Enhance conditions. |
+| :white_large_square: | MINOR_07 | GCWPreSale.sol | Add a `require` to avoid GAS consumption. |
+| :white_large_square: | MINOR_08 | GCWSale.sol | Add a `require` to avoid human error. |
+| :white_large_square: | MINOR_09 | GCWSale.sol | Rename the function to be more explicit, should start by a verb. Self documentation conventions. |
+| :white_large_square: | MINOR_10 | GCWSale.sol | Add constant variable for this value. |
+| :white_large_square: | MINOR_11 | GCWSale.sol | Avoid ternaries. |
+| :white_large_square: | MINOR_12 | GCWSale.sol | Should call `token()`. |
 
 # 7. <a name="7"></a>Watch
 
-| Tag      | Contract(s)    | Details       |
-|----------|:--------------:|---------------|
-| WATCH_01 | GCWPreSale.sol | No inheritance for no apparent reason. |
-| WATCH_02 | GCWPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
-| WATCH_03 | GCWSale.sol | This function already exists in parent contract. |
+|                      |          | Tag      | Contract(s)    | Details       |
+|----------------------|----------|----------|:--------------:|---------------|
+| :white_large_square: | WATCH_01 | GCWPreSale.sol | No inheritance for no apparent reason. |
+| :white_large_square: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
+| :white_large_square: | WATCH_03 | GCWSale.sol | This function already exists in parent contract. |
 
 # 8. <a name="8"></a>Conclusion
 
