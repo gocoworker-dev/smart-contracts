@@ -54,50 +54,51 @@ TODO
 
 # 4. <a name="4"></a>Majeur
 
-| Tag      | Contrat        | Commentaires  |
-|----------|:--------------:|---------------|
-| MAJOR_01 | GCWPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
-| MAJOR_02 | GCWPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
-| MAJOR_03 | GCWSale.sol    | `buyTokens` doit profiter de l'héritage OpenZeppelin afin de profiter un maximum des contrats audités. L'ordre est à revoir. La mise à jour des états `dailyTotals` et `userBuys` doit être lancée à la fin de la fonction, en `_postValidatePurchase`.  |
+|                      | Tag      | Contract       | Details       |
+|----------------------|----------|:--------------:|---------------|
+| :white_large_square: | MAJOR_01 | GCWPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
+| :white_large_square: | MAJOR_02 | GCWPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
+| :white_large_square: | MAJOR_03 | GCWSale.sol    | `buyTokens` doit profiter de l'héritage OpenZeppelin afin de profiter un maximum des contrats audités. L'ordre est à revoir. La mise à jour des états `dailyTotals` et `userBuys` doit être lancée à la fin de la fonction, en `_postValidatePurchase`.  |
 
 # 5. <a name="5"></a>Medium
 
-| Tag       | Contrat(s)        | Commentaires  |
-|-----------|:--------------:|---------------|
-| MEDIUM_01 | GCWPreSale.sol | La fonction ne fait rien. |
-| MEDIUM_02 | GCWPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
-| MEDIUM_03 (removed) | NA | NA |
-| MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
-| MEDIUM_05 | GCWPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
-| MEDIUM_06 | GCWPreSale.sol | `require` manquant |
-| MEDIUM_07 | GCWSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
-| MEDIUM_08 (déplacé) | GCWSale.sol    | Voir MAJOR_03 |
-| MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
+|                      | Tag       | Contract(s)    | Details       |
+|----------------------|-----------|:--------------:|---------------|
+| :white_large_square: | MEDIUM_01 | GCWPreSale.sol | La fonction ne fait rien. |
+| :white_large_square: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
+| :white_large_square: | MEDIUM_03 (removed) | NA | NA |
+| :white_large_square: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
+| :white_large_square: | MEDIUM_05 | GCWPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
+| :white_large_square: | MEDIUM_06 | GCWPreSale.sol | `require` manquant |
+| :white_large_square: | MEDIUM_07 | GCWSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
+| :white_large_square: | MEDIUM_08 (déplacé) | GCWSale.sol    | Voir MAJOR_03 |
+| :white_large_square: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
+| :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
 
 # 6. <a name="6"></a>Mineur
 
-| Tag      | Contrat(s)                                     | Commentaires  |
-|----------|:-------------------------------------------:|---------------|
-| MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
-| MINOR_02 (supprimé) | NA | NA |
-| MINOR_03 | GCWPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
-| MINOR_04 | GCWPreSale.sol | Améliorer l'ordre des appels. |
-| MINOR_05 | GCWPreSale.sol | Séparer le `require` en plusieurs `require`. |
-| MINOR_06 | GCWPreSale.sol | Améliorer la condition. |
-| MINOR_07 | GCWPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
-| MINOR_08 | GCWSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
-| MINOR_09 | GCWSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
-| MINOR_10 | GCWSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
-| MINOR_11 | GCWSale.sol | Eviter les instructions ternaires. |
-| MINOR_12 | GCWSale.sol | Préférer l'appel à la fonction `token()`. |
+|                      | Tag      | Contrat(s)                                     | Commentaires  |
+|----------------------|----------|:-------------------------------------------:|---------------|
+| :white_large_square: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
+| :white_large_square: | MINOR_02 (supprimé) | NA | NA |
+| :white_large_square: | MINOR_03 | GCWPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
+| :white_large_square: | MINOR_04 | GCWPreSale.sol | Améliorer l'ordre des appels. |
+| :white_large_square: | MINOR_05 | GCWPreSale.sol | Séparer le `require` en plusieurs `require`. |
+| :white_large_square: | MINOR_06 | GCWPreSale.sol | Améliorer la condition. |
+| :white_large_square: | MINOR_07 | GCWPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
+| :white_large_square: | MINOR_08 | GCWSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
+| :white_large_square: | MINOR_09 | GCWSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
+| :white_large_square: | MINOR_10 | GCWSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
+| :white_large_square: | MINOR_11 | GCWSale.sol | Eviter les instructions ternaires. |
+| :white_large_square: | MINOR_12 | GCWSale.sol | Préférer l'appel à la fonction `token()`. |
 
 # 7. <a name="7"></a>Vigilance
 
-| Tag      | Contrat(s)        | Commentaires  |
-|----------|:--------------:|---------------|
-| WATCH_01 | GCWPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
-| WATCH_02 | GCWPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
-| WATCH_03 | GCWSale.sol | La fonction existe déjà par héritage. |
+|                      | Tag      | Contrat(s)        | Commentaires  |
+|----------------------|----------|:--------------:|---------------|
+| :white_large_square: | WATCH_01 | GCWPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
+| :white_large_square: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
+| :white_large_square: | WATCH_03 | GCWSale.sol | La fonction existe déjà par héritage. |
 
 # 8. <a name="8"></a>Conclusion
 

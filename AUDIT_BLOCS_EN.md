@@ -90,7 +90,7 @@ contract AttackContract {
 
 In GOCO contract there a only one place where reentrancy might be usable and interesting for attacker. It's the function `buyTokens`. `RetrancyGuard` is used, thus this function is protected against this attack. No untrusted call are made which avoid some reetrancy attacks.
 
-Although, be careful on tag `MAJOR_03` which is about this function.
+**Although, be careful on tag `MAJOR_03` which is about this function.**
 
 ## Number overflow
 
