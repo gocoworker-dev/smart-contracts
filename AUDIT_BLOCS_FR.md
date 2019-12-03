@@ -56,7 +56,6 @@ Constructeur:
 - `tokenSaleWallet`: portefeuille de la vente et là prévente, il reçoit 12 600 000 GOCO;
 - `rewardPoolWallet`: portefeuille de la récompense, il reçoit 1 400 000 GOCO;
 
-All tokens are minted on deployment for a total of 21,000,000GOCO which is the **total supply**, `_mint` being internal.
 Tous les jetons sont créés au déploiement avec un total de 21 000 000 GOCO qui constitu le **total supply**, `_mint` est interne.
 
 #### _Presale_
