@@ -162,7 +162,7 @@ Only possible when a proxy contract is used, it's not the case here.
 
 This attack would have no effect on the contract.
 
-# 4. <a name="4"></>Contract abuse
+# 4. <a name="4"></a>Contract abuse
 
 ## Referral program in Presale
 

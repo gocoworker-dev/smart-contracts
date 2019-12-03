@@ -163,7 +163,7 @@ Uniquement possible quand le contrat utilise un proxy, ce n'est pas le cas ici.
 
 Cette attaque n'aurait aucun effet sur ce contrat.
 
-# 4. <a name="4"></>Abus du contrat
+# 4. <a name="4"></a>Abus du contrat
 
 ## Programme d'affiliation en prévente
 
