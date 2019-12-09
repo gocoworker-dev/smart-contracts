@@ -28,13 +28,14 @@ Dans ce document les parties critiques sont référencées par **CRITICAL**.
 
 1. [Note d'attention](#1)
 2. [Vue d'ensemble](#2)
-3. [Attaques réalisées](#3)
+3. [Attaques vérifiées](#3)
 4. [Abus du contrat](#4)
 5. [Majeur](#4)
 6. [Medium](#5)
 7. [Mineur](#6)
 8. [Vigilance](#7)
-9. [Conclusion](#8)
+9. [Mise à jour de OpenZeppelin](#9)
+10. [Conclusion](#10)
 
 # 1. <a name="1"></a>Note d'attention
 
@@ -83,7 +84,7 @@ Constructeur:
 
 La vente nécessite d'avoir des jetons GOCO en réserve pour opérer.
 
-# 3. <a name="3"></a>Attaques réalisées
+# 3. <a name="3"></a>Attaques vérifiées
 
 Toutes les attaques passées en revue sont listées sur https://consensys.github.io/smart-contract-best-practices/known_attacks/
 
@@ -144,7 +145,7 @@ Tous les `require` ne dépendent pas d'une adresse qui peut provoquer un revert 
 
 Cette attaque n'est pas possible.
 
-## DoS par bloc GAS Limit
+## DoS par bloc GAS Limit :ok_hand:
 
 Denial of Service en gonflant artificiellement le GAS Limit dans un lapse de temps, ce qui bloque les futures transactions vers le contrat.
 
@@ -153,6 +154,8 @@ Cette attaque est seulement possible avec les fonctions qui permettent un montan
 `batchClaim` étant public et permettant théoriquement une infinité de paramètres peut être utilisée avec cette attaque.
 
 **CRITICAL**: cette attaque peut empêcher le bon fonctionnement du contrat, donc stopper la vente.
+
+MISE A JOUR : Nous sommes conscient de cette potentielle attaque. Elle ne causerait pas de mal au bon fonctionnement du contrat.
 
 ## Attaque par GAS Insufisant
 
@@ -164,7 +167,7 @@ Cette attaque n'aurait aucun effet sur ce contrat.
 
 # 4. <a name="4"></a>Abus du contrat
 
-## Programme d'affiliation en prévente
+## Programme d'affiliation en prévente :ok_hand:
 
 Il n'y a pas de contrôle sur qui affilie qui.
 
@@ -172,56 +175,66 @@ Il n'y a pas de contrôle sur qui affilie qui.
 
 **CRITICAL**: Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute un affilié.
 
+MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a été mis à jour pour référencer jusqu'à 10 affiliés par parrain afin d'éviter à ce qu'un attaquant abuse du programme.
+
 # 5. <a name="5"></a>Majeur
 
 |                      | Tag      | Contract       | Details       |
 |----------------------|----------|:--------------:|---------------|
-| :white_large_square: | MAJOR_01 | GCWPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
-| :white_large_square: | MAJOR_02 | GCWPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
-| :white_large_square: | MAJOR_03 | GCWSale.sol    | `buyTokens` doit profiter de l'héritage OpenZeppelin afin de profiter un maximum des contrats audités. L'ordre est à revoir. La mise à jour des états `dailyTotals` et `userBuys` doit être lancée à la fin de la fonction, en `_postValidatePurchase`.  |
-| :white_large_square: | MAJOR_04 | GCWSale.sol    | Augmenter ou réduire le nombre de période doit également mettre à jour la distribution de jetons durant la vente. Cependant cette mise à jour entre en conflit avec les distributions antécédentes et entrer en conflit avec le cap de distribution. |
+| :white_check_mark: | MAJOR_01 | GCWPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
+| :white_check_mark: | MAJOR_02 | GCWPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
+| :heavy_minus_sign: | MAJOR_03 (supprimé) | GCWSale.sol    | `buyTokens` doit profiter de l'héritage OpenZeppelin afin de profiter un maximum des contrats audités. L'ordre est à revoir. La mise à jour des états `dailyTotals` et `userBuys` doit être lancée à la fin de la fonction, en `_postValidatePurchase`.  |
+| :white_check_mark: | MAJOR_04 | GCWSale.sol    | Augmenter ou réduire le nombre de période doit également mettre à jour la distribution de jetons durant la vente. Cependant cette mise à jour entre en conflit avec les distributions antécédentes et entrer en conflit avec le cap de distribution. |
 
 # 6. <a name="6"></a>Medium
 
 |                      | Tag       | Contract(s)    | Details       |
 |----------------------|-----------|:--------------:|---------------|
-| :white_large_square: | MEDIUM_01 | GCWPreSale.sol | La fonction ne fait rien. |
-| :white_large_square: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
-| :white_large_square: | MEDIUM_03 (removed) | NA | NA |
-| :white_large_square: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
-| :white_large_square: | MEDIUM_05 | GCWPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
-| :white_large_square: | MEDIUM_06 | GCWPreSale.sol | `require` manquant |
-| :white_large_square: | MEDIUM_07 | GCWSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
-| :white_large_square: | MEDIUM_08 (déplacé) | GCWSale.sol    | Voir MAJOR_03 |
-| :white_large_square: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
+| :white_check_mark: | MEDIUM_01 | GCWPreSale.sol | La fonction ne fait rien. |
+| :white_check_mark: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
+| :heavy_minus_sign: | MEDIUM_03 (removed) | NA | NA |
+| :white_check_mark: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
+| :heavy_minus_sign: | MEDIUM_05 (supprimé) | GCWPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
+| :heavy_minus_sign: | MEDIUM_06 (supprimé) | GCWPreSale.sol | `require` manquant |
+| :heavy_minus_sign: | MEDIUM_07 (supprimé) | GCWSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
+| :white_check_mark: | MEDIUM_08 (déplacé) | GCWSale.sol    | Voir MAJOR_03 |
+| :white_check_mark: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
 | :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
 
 # 7. <a name="7"></a>Mineur
 
 |                      | Tag      | Contrat(s)                                     | Commentaires  |
 |----------------------|----------|:-------------------------------------------:|---------------|
-| :white_large_square: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
-| :white_large_square: | MINOR_02 (supprimé) | NA | NA |
+| :white_check_mark: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
+| :heavy_minus_sign: | MINOR_02 (supprimé) | NA | NA |
 | :white_large_square: | MINOR_03 | GCWPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
 | :white_large_square: | MINOR_04 | GCWPreSale.sol | Améliorer l'ordre des appels. |
-| :white_large_square: | MINOR_05 | GCWPreSale.sol | Séparer le `require` en plusieurs `require`. |
-| :white_large_square: | MINOR_06 | GCWPreSale.sol | Améliorer la condition. |
-| :white_large_square: | MINOR_07 | GCWPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
-| :white_large_square: | MINOR_08 | GCWSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
+| :white_check_mark: | MINOR_05 | GCWPreSale.sol | Séparer le `require` en plusieurs `require`. |
+| :white_check_mark: | MINOR_06 | GCWPreSale.sol | Améliorer la condition. |
+| :white_check_mark: | MINOR_07 | GCWPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
+| :white_check_mark: | MINOR_08 | GCWSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
 | :white_large_square: | MINOR_09 | GCWSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
-| :white_large_square: | MINOR_10 | GCWSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
+| :white_check_mark: | MINOR_10 | GCWSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
 | :white_large_square: | MINOR_11 | GCWSale.sol | Eviter les instructions ternaires. |
-| :white_large_square: | MINOR_12 | GCWSale.sol | Préférer l'appel à la fonction `token()`. |
+| :heavy_minus_sign: | MINOR_12 (supprimé) | GCWSale.sol | Préférer l'appel à la fonction `token()`. |
 
 # 8. <a name="8"></a>Vigilance
 
 |                      | Tag      | Contrat(s)        | Commentaires  |
 |----------------------|----------|:--------------:|---------------|
-| :white_large_square: | WATCH_01 | GCWPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
-| :white_large_square: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
-| :white_large_square: | WATCH_03 | GCWSale.sol | La fonction existe déjà par héritage. |
+| :ok_hand: | WATCH_01 | GCWPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
+| :white_check_mark: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
+| :ok_hand: | WATCH_03 | GCWSale.sol | La fonction existe déjà par héritage. |
 
-# 9. <a name="9"></a>Conclusion
+# 9. <a name="9"></a>Mise à jour de OpenZeppelin :white_check_mark:
+
+La version actuelle de OpenZeppelin Solidity est `2.1.2`, la version actuelle est ancienne et _DOIT_ être mise à jour vers la `2.4.0`.
+
+Cette version s'aligne avec la prochaine mise à jour d'Ethereum (Istanbul) qui devrait arriver en fin 2019 ou début 2020.
+
+Par ailleurs cette nouvelle version vient avec la librairie [`Address`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol) qui est composée de fonctionnalités améliorant la sécurité autour du type `address`.
+
+# 10. <a name="10"></a>Conclusion
 
 Le code respecte en partie l'intégration des contrats audités OpenZeppelin. L'utilisation de SafeMath est présente à tous les calculs. Bon respect de l'encapsulation.
 

@@ -144,7 +144,7 @@ All requires are free from being indefinitely reverted depending on an attacker.
 
 This attack is not possible.
 
-## DoS with block GAS limit
+## DoS with block GAS limit :ok_hand:
 
 Denial of service by stuffing the GAS Limit in a period of time, blocking the contract to operate.
 
@@ -153,6 +153,8 @@ This attack is only possible on functions that can allow unlimited GAS.
 `batchClaim` being public and allowing theoretically infinite parameters can be used for such attack.
 
 **CRITICAL**: an attack can prevent the contract to work properly, thus stop the sale.
+
+EDIT : We are aware of this issue. This wouldn't cause real treat to the contract execution.
 
 ## Insufficient GAS grieffing
 
@@ -164,7 +166,7 @@ This attack would have no effect on the contract.
 
 # 4. <a name="4"></a>Contract abuse
 
-## Referral program in Presale
+## Referral program in Presale :ok_hand:
 
 There is no limitation on token distribution for referees and who refers to who.
 
@@ -172,56 +174,58 @@ There is no limitation on token distribution for referees and who refers to who.
 
 **CRITICAL**: This abuse is likely and should be prevented by only allowing referrer to add its referee.
 
+EDIT : There is no way to prevent this to happen. The contract has been updated to allow up to 10 referees in order to prevent the abuser to block and abuse the referral program.
+
 # 5. <a name="5"></a>Major
 
 |                      | Tag      | Contract       | Details       |
 |----------------------|----------|:--------------:|---------------|
-| :white_large_square: | MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
-| :white_large_square: | MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
-| :white_large_square: | MAJOR_03 | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase` |
-| :white_large_square: | MAJOR_04 | GCWSale.sol    | Increasing or decreasing the number of period should imply to update the token distribution, but it will conflict with passed periods and distribution caps |
+| :white_check_mark: | MAJOR_01 | GCWPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
+| :white_check_mark: | MAJOR_02 | GCWPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
+| :heavy_minus_sign: | MAJOR_03 (removed) | GCWSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase`. Removed because GCWSale doesn't inherit from Crowdsale. |
+| :white_check_mark: | MAJOR_04 | GCWSale.sol    | Increasing or decreasing the number of period should imply to update the token distribution, but it will conflict with passed periods and distribution caps |
 
 # 6. <a name="6"></a>Medium
 
 |                      | Tag       | Contract(s)    | Details       |
 |----------------------|-----------|:--------------:|---------------|
-| :white_large_square: | MEDIUM_01 | GCWPreSale.sol | Empty function |
-| :white_large_square: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
-| :white_large_square: | MEDIUM_03 (removed) | NA | NA |
-| :white_large_square: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Must inherit |
-| :white_large_square: | MEDIUM_05 | GCWPreSale.sol | Should used `require` insteand of conditions. |
-| :white_large_square: | MEDIUM_06 | GCWPreSale.sol | `require` missing |
-| :white_large_square: | MEDIUM_07 | GCWSale.sol    | Should used `require` insteand of conditions. |
-| :white_large_square: | MEDIUM_08 (moved) | GCWSale.sol    | See MAJOR_03 |
-| :white_large_square: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
+| :white_check_mark: | MEDIUM_01 | GCWPreSale.sol | Empty function |
+| :white_check_mark: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
+| :heavy_minus_sign: | MEDIUM_03 (removed) | NA | NA |
+| :white_check_mark: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Must inherit |
+| :heavy_minus_sign: | MEDIUM_05 (removed) | GCWPreSale.sol | Should used `require` instead of conditions. |
+| :heavy_minus_sign: | MEDIUM_06 (removed) | GCWPreSale.sol | `require` missing |
+| :heavy_minus_sign: | MEDIUM_07 (removed) | GCWSale.sol    | Should used `require` instead of conditions. |
+| :white_check_mark: | MEDIUM_08 (moved) | GCWSale.sol    | See MAJOR_03 |
+| :white_check_mark: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
 | :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
 
 # 7. <a name="7"></a>Minor
 
 |                      | Tag      | Contract(s)                                 | Details       |
 |----------------------|----------|:-------------------------------------------:|---------------|
-| :white_large_square: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
-| :white_large_square: | MINOR_02 (removed) | NA | NA |
+| :white_check_mark: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
+| :heavy_minus_sign: | MINOR_02 (removed) | NA | NA |
 | :white_large_square: | MINOR_03 | GCWPreSale.sol / GCWSale.sol | Revert conditions for code readability. |
-| :white_large_square: | MINOR_04 | GCWPreSale.sol | Enhance instructions order. |
-| :white_large_square: | MINOR_05 | GCWPreSale.sol | `require` should be splitted for code readability. |
-| :white_large_square: | MINOR_06 | GCWPreSale.sol | Enhance conditions. |
-| :white_large_square: | MINOR_07 | GCWPreSale.sol | Add a `require` to avoid GAS consumption. |
-| :white_large_square: | MINOR_08 | GCWSale.sol | Add a `require` to avoid human error. |
+| :white_large_square: | MINOR_04 | GCWPreSale.sol | Enhance instructions order, super._preValidatePurchase checks for earlier validations (such as amount = 0). |
+| :white_check_mark: | MINOR_05 | GCWPreSale.sol | `require` should be splitted for code readability. |
+| :white_check_mark: | MINOR_06 | GCWPreSale.sol | Enhance conditions. |
+| :white_check_mark: | MINOR_07 | GCWPreSale.sol | Add a `require` to avoid GAS consumption. |
+| :white_check_mark: | MINOR_08 | GCWSale.sol | Add a `require` to avoid human error. |
 | :white_large_square: | MINOR_09 | GCWSale.sol | Rename the function to be more explicit, should start by a verb. Self documentation conventions. |
-| :white_large_square: | MINOR_10 | GCWSale.sol | Add constant variable for this value. |
+| :white_check_mark: | MINOR_10 | GCWSale.sol | Add constant variable for this value. |
 | :white_large_square: | MINOR_11 | GCWSale.sol | Avoid ternaries. |
-| :white_large_square: | MINOR_12 | GCWSale.sol | Should call `token()`. |
+| :heavy_minus_sign: | MINOR_12 (removed) | GCWSale.sol | Should call `token()`. Removed because is doesn't inherit from Crowdsale. |
 
 # 8. <a name="8"></a>Watch
 
 |                      |          | Tag      | Contract(s)    | Details       |
 |----------------------|----------|----------|:--------------:|---------------|
-| :white_large_square: | WATCH_01 | GCWPreSale.sol | No inheritance for no apparent reason. |
-| :white_large_square: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
-| :white_large_square: | WATCH_03 | GCWSale.sol | This function already exists in parent contract. |
+| :ok_hand: | WATCH_01 | GCWPreSale.sol | No inheritance for no apparent reason. Reason : the contracts needed to update private attributes from parent. |
+| :white_check_mark: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
+| :ok_hand: | WATCH_03 | GCWSale.sol | This function already exists in parent contract. |
 
-# 9. <a name="9"></a>OpenZeppelin update
+# 9. <a name="9"></a>OpenZeppelin update :white_check_mark:
 
 The current OpenZeppelin Solidity version is `2.1.2`, this one is outdated and _MUST_ be updated to the last version `2.4.0`.
 
@@ -245,4 +249,4 @@ Two critical parts have been found. The code _MUST_ be updated as consequence.
 
 **The code require in general a little bit more comments, especially around public functions** for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
 
-_Last edit on 02 December 2019_
+_Last edit on 10 December 2019_
