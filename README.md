@@ -4,6 +4,11 @@
 
 ## Getting Started
 
+### Prerequisite
+
+Node version : 10
+.env.example must be copied to .env and then edited with your information
+
 To install and test the Gocoworker smart contracts, run the following :
 ```sh
 npm install
@@ -26,6 +31,9 @@ Sale : 0xEEccDAa58ecd1a55392dB369d88527641Fa3De56
 Gocoworker smart contracts are based on [OpenZeppelin](https://github.com/OpenZeppelin/zeppelin-solidity/) which is meant to provide secure, tested and community-audited code.
 
 If you find a security issue, please email [griffon.sebastien@gmail.com](mailto:griffon.sebastien@gmail.com).
+
+## AUDIT_BLOCS integration
+Fixed MINOR_01
 
 
 ## License

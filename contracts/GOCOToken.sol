@@ -1,7 +1,7 @@
 /**
     Copyright (c) 2019 Gocoworker
 
-    GCW ERC20 Token Sales Smart Contract    
+    GOCO ERC20 Token Sales Smart Contract    
     Version 0.1
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,18 +25,18 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
-pragma solidity ^0.5.0;
+pragma solidity 0.5.13;
 
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
 
 /**
- * @title GCWToken
+ * @title GOCOToken
  * @dev All tokens are pre-assigned to the team wallet, the sale wallet and the reward pool wallet.
  * Note they can later distribute these tokens as they wish using `transfer` and other
  * `ERC20` functions.
  */
-contract GCWToken is ERC20, ERC20Detailed {
+contract GOCOToken is ERC20, ERC20Detailed {
 
   //TOTAL SUPPLY IS 21,000,000 TOKENS
   
@@ -50,6 +50,9 @@ contract GCWToken is ERC20, ERC20Detailed {
    * @dev Constructor that mint all the existing tokens and allocate them.
    */
   constructor(address teamWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("Gocoworker", "GOCO", 18) {
+
+    require(teamWallet != address(0) && tokenSaleWallet != address(0) && rewardPoolWallet != address(0), "GOCOToken: a wallet is the zero address");
+    require(teamWallet != tokenSaleWallet && teamWallet != rewardPoolWallet && tokenSaleWallet != rewardPoolWallet, "GOCOToken: wallets are not different");
     _mint(teamWallet, TEAM_SUPPLY * (10 ** uint256(decimals())));
     _mint(tokenSaleWallet, TOKEN_SALE_SUPPLY * (10 ** uint256(decimals())));
     _mint(rewardPoolWallet, REWARD_POOL_SUPPLY * (10 ** uint256(decimals())));

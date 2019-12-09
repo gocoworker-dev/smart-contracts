@@ -1,7 +1,7 @@
 /**
     Copyright (c) 2019 Gocoworker
 
-    GCW ERC20 Token Sales Smart Contract    
+    GOCO ERC20 Token Sales Smart Contract    
     Version 0.1
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,7 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
-pragma solidity ^0.5.0;
+pragma solidity 0.5.13;
 
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
@@ -33,11 +33,13 @@ import 'openzeppelin-solidity/contracts/math/SafeMath.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol';
 import 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 import 'openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol';
+import 'openzeppelin-solidity/contracts/utils/Address.sol';
 
-contract GCWSale is Ownable, ReentrancyGuard, Pausable {
+contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
 
     using SafeMath for uint256;
     using SafeERC20 for ERC20Detailed;
+    using Address for address payable;
 
     // The token being sold
     ERC20Detailed private _token;
@@ -50,7 +52,6 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     
     // Address of the reward pool 
     address private _rewardpool;
-
 
     // Amount of wei raised
     uint256 private _weiRaised;
@@ -87,11 +88,11 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     ) public {
 
         
-        require(numberOfPeriod > 0);
-        require(openingTime>0);
-        require(wallet != address(0));
-        require(rewardpool != address(0));
-        require(address(token) != address(0));
+        require(numberOfPeriod > 0, "GOCOSale: number of period must be > 0");
+        require(openingTime>block.timestamp, "GOCOSale: opening time must be > block timestamp");
+        require(wallet != address(0), "GOCOSale: wallet is the zero address");
+        require(rewardpool != address(0), "GOCOSale: rewardpool wallet is the zero address");
+        require(address(token) != address(0), "GOCOSale: token address is the zero address");
 
         _wallet = wallet;
         _rewardpool = rewardpool;
@@ -102,15 +103,18 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
         _tokenByPeriod = _tokenCap.div(numberOfPeriod);
      
         _openingTime = openingTime;
-        _closingTime = openingTime.add(numberOfPeriod.mul(21 hours));
+        _closingTime = openingTime.add(numberOfPeriod.mul(periodDuration()));
         _finalized = false;
         
     }
+
   
     function changeOpeningTime(uint256 openingTime, uint256 numberOfPeriod) public onlyOwner {
-        require(openingTime >= block.timestamp);
+        require(!isOpen(), "GOCOSale: sale is already open");
+        require(openingTime >= block.timestamp, "GOCOSale: opening time must be > block timestamp");
         _openingTime = openingTime;
-        _closingTime = openingTime.add(numberOfPeriod.mul(21 hours));
+        _closingTime = openingTime.add(numberOfPeriod.mul(periodDuration()));
+        _tokenByPeriod = _tokenCap.div(numberOfPeriod);
     }
 
       /**
@@ -153,6 +157,10 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
         buyTokens(msg.sender);
     }
 
+
+    function periodDuration() public pure returns (uint256) {
+        return 21 hours;
+    }
     /**
      * @return the token being sold.
      */
@@ -222,7 +230,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
         return timestamp < _openingTime
             ? 0
-            : timestamp.sub(_openingTime).div(21 hours) + 1;
+            : timestamp.sub(_openingTime).div(periodDuration()) + 1;
     }
 
 
@@ -247,7 +255,7 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
     function buyTokens(address beneficiary) public nonReentrant onlyWhileOpen whenNotPaused payable  {
     
-        require(msg.value >= 0.1 ether);
+        require(msg.value >= 0.1 ether, "GOCOSale: minimum contribution is 0.1 ether");
 
         uint256 weiAmount = msg.value;
         uint256 period = today();
@@ -263,8 +271,8 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
 
     }
   
-    function claim(uint256 period, address beneficiary) public nonReentrant whenNotPaused {
-        require(today() > period);
+    function _claim(uint256 period, address beneficiary) internal {
+        require(periodFor(time()-1 minutes) > period, "GOCOSale: claim is avalaible 1 minute after the end of the period");
         
         if (claimed[period][beneficiary] || userBuys[period][beneficiary] == 0 || dailyTotals[period] == 0) {
             return;
@@ -274,9 +282,9 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
         
 	    reward = reward.div(dailyTotals[period]); //fixed precision prob by dividing after multiplication
 
-        claimed[period][beneficiary] = true;
+        _token.transfer(beneficiary, reward);
 
-       _token.transfer(beneficiary, reward);
+        claimed[period][beneficiary] = true;
 
         emit LogClaim(period, beneficiary, reward);
        
@@ -287,24 +295,27 @@ contract GCWSale is Ownable, ReentrancyGuard, Pausable {
     * @param period is the period to claim
     * @param beneficiaries is an array of claiming addresses
     */
-    function batchClaim(uint256 period, address[] memory beneficiaries) public whenNotPaused {
+    function batchClaim(uint256 period, address[] calldata beneficiaries) external nonReentrant {
         for (uint i = 0; i < beneficiaries.length; i++) {
-            claim(period,beneficiaries[i]);
+            _claim(period,beneficiaries[i]);
         }
     }
 
-    function claimAll(address beneficiary) public {
+    function claimAll(address beneficiary) external nonReentrant{
         for (uint256 i = 0; i < today(); i++) {
-            claim(i, beneficiary);
+            _claim(i, beneficiary);
         }
     }
 
+    function claim (uint256 period, address beneficiary) external nonReentrant {
+        _claim(period, beneficiary);
+    }
 
     /**
     * @dev Determines how ETH is stored/forwarded on purchases.
     */
     function _forwardFunds() internal {
-        _wallet.transfer(msg.value);
+        _wallet.sendValue(msg.value);
     }
 
 }

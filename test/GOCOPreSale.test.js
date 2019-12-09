@@ -1,7 +1,7 @@
 const { BN, ether, shouldFail, time, balance, expectEvent, constants } = require('openzeppelin-test-helpers');
 const { ZERO_ADDRESS } = constants;
-const GCWPreSale = artifacts.require('GCWPreSale');
-const GCWToken = artifacts.require('GCWToken');
+const GOCOPreSale = artifacts.require('GOCOPreSale');
+const GOCOToken = artifacts.require('GOCOToken');
 
 async function tokenBalanceDifference (token, account, promiseFunc) {
   const balanceBefore = new BN(await token.balanceOf(account));
@@ -10,7 +10,7 @@ async function tokenBalanceDifference (token, account, promiseFunc) {
   return balanceAfter.sub(balanceBefore);
 }
 
-contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, rewardAccount, investor, anyone]) {
+contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, rewardAccount, investor, anyone]) {
   const value = ether('1');
   const RATE = new BN(10);
   const CAP = ether('210000');
@@ -28,9 +28,9 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
     this.closingTime = this.openingTime.add(time.duration.weeks(12));
     this.afterClosingTime = this.closingTime.add(time.duration.seconds(1));
 
-    this.token = await GCWToken.new(founderAccount, tokenSaleAccount, rewardAccount, { from });
+    this.token = await GOCOToken.new(founderAccount, tokenSaleAccount, rewardAccount, { from });
 
-    this.crowdsale = await GCWPreSale.new(this.openingTime, this.closingTime, tokenSaleAccount, rewardAccount, this.token.address, { from });
+    this.crowdsale = await GOCOPreSale.new(this.openingTime, this.closingTime, tokenSaleAccount, rewardAccount, this.token.address, { from });
 
     await this.token.transfer(this.crowdsale.address, TOKEN_SUPPLY, { from: tokenSaleAccount });
     await this.token.approve(this.crowdsale.address, TOKEN_SUPPLY.div(new BN(10)), { from: rewardAccount }); // approve the crowdsale contract to transfer reward pool tokens
@@ -55,7 +55,14 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
 
     await time.increaseTo(this.openingTime);
 
-    await this.crowdsale.buyTokens(investor, { value: investmentAmount, from: investor });
+    try {    
+      await this.crowdsale.buyTokens(investor, { value: investmentAmount, from: investor });
+  
+    } catch (error) {
+      console.log(error) 
+    }
+
+
 
     (await this.token.balanceOf(investor)).should.be.bignumber.equal(expectedTokenAmount);
   });
@@ -118,7 +125,25 @@ contract('GCWPreSale', function ([_, owner, founderAccount, tokenSaleAccount, re
 
     describe('when the referrer has no token', function () {
       it('reverts', async function () {
-        await shouldFail.reverting(this.crowdsale.addReferee(referee, referee, { from: owner }));
+        await shouldFail.reverting(this.crowdsale.addReferee(referrer, referee, { from: owner }));
+      });
+    });
+
+    describe('when the referrer add more than 10 referees', function () {
+      it('reverts', async function () {
+        let referee11Account = [11];
+        for (var i = 0; i < 11; i++) {
+          let address = '0x2bdd21761a483f71054e14f5b827213567971c' + (i + 16).toString(16);
+          referee11Account[i] = address;
+        }
+
+        await this.crowdsale.buyTokens(referrer, { from: referrer, value });
+
+        for (var i = 0; i < 10; i++) {
+          await this.crowdsale.addReferee(referrer, referee11Account[i], { from: referrer });
+        }
+
+        await shouldFail.reverting(this.crowdsale.addReferee(referrer, referee11Account[10], { from: referrer }));
       });
     });
 

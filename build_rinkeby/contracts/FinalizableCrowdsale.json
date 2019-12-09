@@ -200,15 +200,15 @@
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "/**\n    Copyright (c) 2019 Gocoworker\n\n    GCW ERC20 Token Sales Smart Contract    \n    Version 0.1\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in\n    all copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n    THE SOFTWARE.\n\n    based on the contracts of OpenZeppelin:\n    https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts\n**/\npragma solidity ^0.5.0;\n\nimport 'openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol';\nimport 'openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';\nimport 'openzeppelin-solidity/contracts/ownership/Ownable.sol';\nimport 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';\n\n\n/**\n * @title TimedCrowdsale\n * @dev Crowdsale accepting contributions only within a time frame.\n */\ncontract TimedCrowdsale is Crowdsale {\n    using SafeMath for uint256;\n\n    uint256 internal _openingTime;\n    uint256 internal _closingTime;\n\n    /**\n     * @dev Reverts if not in crowdsale time range.\n     */\n    modifier onlyWhileOpen {\n        require(isOpen());\n        _;\n    }\n\n    /**\n     * @dev Constructor, takes crowdsale opening and closing times.\n     * @param openingTime Crowdsale opening time\n     * @param closingTime Crowdsale closing time\n     */\n    constructor (uint256 openingTime, uint256 closingTime) public {\n        // solhint-disable-next-line not-rely-on-time\n        require(openingTime >= block.timestamp);\n        require(closingTime > openingTime);\n\n        _openingTime = openingTime;\n        _closingTime = closingTime;\n    }\n\n    /**\n     * @return the crowdsale opening time.\n     */\n    function openingTime() public view returns (uint256) {\n        return _openingTime;\n    }\n\n    /**\n     * @return the crowdsale closing time.\n     */\n    function closingTime() public view returns (uint256) {\n        return _closingTime;\n    }\n\n    /**\n     * @return true if the crowdsale is open, false otherwise.\n     */\n    function isOpen() public view returns (bool) {\n        // solhint-disable-next-line not-rely-on-time\n        return block.timestamp >= _openingTime && block.timestamp <= _closingTime;\n    }\n\n    /**\n     * @dev Checks whether the period in which the crowdsale is open has already elapsed.\n     * @return Whether crowdsale period has elapsed\n     */\n    function hasClosed() public view returns (bool) {\n        // solhint-disable-next-line not-rely-on-time\n        return block.timestamp > _closingTime;\n    }\n\n    /**\n     * @dev Extend parent behavior requiring to be within contributing period\n     * @param beneficiary Token purchaser\n     * @param weiAmount Amount of wei contributed\n     */\n    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal onlyWhileOpen view {\n        super._preValidatePurchase(beneficiary, weiAmount);\n    }\n}\n\n/**\n * @title FinalizableCrowdsale\n * @dev Extension of Crowdsale with a one-off finalization action, where one\n * can do extra work after finishing.\n */\ncontract FinalizableCrowdsale is TimedCrowdsale {\n    using SafeMath for uint256;\n\n    bool private _finalized;\n\n    event CrowdsaleFinalized();\n\n    constructor () internal {\n        _finalized = false;\n    }\n\n    /**\n     * @return true if the crowdsale is finalized, false otherwise.\n     */\n    function finalized() public view returns (bool) {\n        return _finalized;\n    }\n\n    /**\n     * @dev Must be called after crowdsale ends, to do some extra finalization\n     * work. Calls the contract's finalization function.\n     */\n    function finalize() public {\n        require(!_finalized);\n        require(hasClosed());\n\n        _finalized = true;\n\n        _finalization();\n        emit CrowdsaleFinalized();\n    }\n\n    /**\n     * @dev Can be overridden to add finalization logic. The overriding function\n     * should call super._finalization() to ensure the chain of finalization is\n     * executed entirely.\n     */\n    function _finalization() internal {\n        // solhint-disable-previous-line no-empty-blocks\n    }\n}\n\n\ncontract GCWPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable {\n\n  bool private referralEnabled;\n  address private rewardPool;\n  mapping (address => address) refereeMap; //map a referee adress to its referrer\n  mapping (address => mapping(address => bool)) referralMap; //map a referrer adress to its referees\n\n  constructor(\n    uint256 openingTime,\n    uint256 closingTime,\n    address payable saleWallet,\n    address rewardPoolWallet,\n    IERC20 gcwtoken\n  )\n    public\n    Crowdsale(10, saleWallet, gcwtoken) //token price is 0.1 Ether, i.e 10 token unit (10^-18) by wei\n    CappedCrowdsale(210000 ether) //Max cap  : 210,000 Ether = 2,100,000 tokens\n    TimedCrowdsale(openingTime, closingTime)\n  {\n    rewardPool = rewardPoolWallet;\n    referralEnabled = true;\n  }\n\n\n  function changeOpeningTime(uint256 openingTime) public onlyOwner {\n      require(openingTime >= block.timestamp);\n      _openingTime = openingTime;\n  }\n\n  function changeClosingTime(uint256 closingTime) public onlyWhileOpen onlyOwner {\n      require(closingTime >= block.timestamp);\n      _closingTime = closingTime;\n  }\n\n  /**\n   * @dev Extend parent behavior requiring to be unpaused\n   * @param beneficiary Token purchaser\n   * @param weiAmount Amount of wei contributed\n   */\n  function _preValidatePurchase(\n    address beneficiary,\n    uint256 weiAmount\n  )\n    internal\n    view\n    onlyWhileOpen\n    whenNotPaused\n  {\n    super._preValidatePurchase(beneficiary, weiAmount);\n  }\n\n  function addReferee(address from_referrer, address to_referee) public onlyOwner{\n    require (from_referrer != address(0) && to_referee != address(0) && from_referrer != to_referee);\n    require(refereeMap[to_referee]==address(0), 'This referee has already been added' );\n\n    referralMap[from_referrer][to_referee] = true;\n    refereeMap[to_referee]=from_referrer;\n\n  }\n\n  /**\n   * @dev called by the owner to enable referral program\n   */\n  function enableReferral() public onlyOwner{\n    referralEnabled = true;\n  }\n\n  /**\n   * @dev called by the owner to disable referral program\n   */\n  function disableReferral() public onlyOwner{\n    referralEnabled = false;\n  }\n\n\n  /**\n   * @dev Overrided for referral program call\n   * @param beneficiary Address receiving the tokens\n   * @param weiAmount Value in wei involved in the purchase\n   */\n  function _updatePurchasingState(\n    address beneficiary,\n    uint256 weiAmount\n  )\n    internal\n  {\n     if(referralEnabled && refereeMap[beneficiary]!=address(0)) {\n      uint256 tokenReferallAmount = _getTokenAmount(weiAmount).div(20);\n      token().transferFrom(rewardPool, beneficiary, tokenReferallAmount);\n      token().transferFrom(rewardPool, refereeMap[beneficiary], tokenReferallAmount);     \n     }\n\n  }\n\n  /**\n   * @dev Overrided finalization to transfer all unsold token to the reward pool\n   */\n  function _finalization() internal {\n    token().transfer(rewardPool, token().balanceOf(address(this)));\n  }\n\n}\n",
-  "sourcePath": "/home/sgriffon/GoCoworker/gocoworker-tokensale-sc/contracts/GCWPreSale.sol",
+  "source": "/**\n    Copyright (c) 2019 Gocoworker\n\n    GOCO ERC20 Token Sales Smart Contract    \n    Version 0.1\n\n    Permission is hereby granted, free of charge, to any person obtaining a copy\n    of this software and associated documentation files (the \"Software\"), to deal\n    in the Software without restriction, including without limitation the rights\n    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n    copies of the Software, and to permit persons to whom the Software is\n    furnished to do so, subject to the following conditions:\n\n    The above copyright notice and this permission notice shall be included in\n    all copies or substantial portions of the Software.\n\n    THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n    THE SOFTWARE.\n\n    based on the contracts of OpenZeppelin:\n    https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts\n**/\npragma solidity ^0.5.0;\n\nimport 'openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol';\nimport 'openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';\nimport 'openzeppelin-solidity/contracts/ownership/Ownable.sol';\nimport 'openzeppelin-solidity/contracts/lifecycle/Pausable.sol';\n\n\n/**\n * @title TimedCrowdsale\n * @dev Crowdsale accepting contributions only within a time frame.\n */\ncontract TimedCrowdsale is Crowdsale {\n    using SafeMath for uint256;\n\n    uint256 internal _openingTime;\n    uint256 internal _closingTime;\n\n    /**\n     * @dev Reverts if not in crowdsale time range.\n     */\n    modifier onlyWhileOpen {\n        require(isOpen());\n        _;\n    }\n\n    /**\n     * @dev Constructor, takes crowdsale opening and closing times.\n     * @param openingTime Crowdsale opening time\n     * @param closingTime Crowdsale closing time\n     */\n    constructor (uint256 openingTime, uint256 closingTime) public {\n        // solhint-disable-next-line not-rely-on-time\n        require(openingTime >= block.timestamp);\n        require(closingTime > openingTime);\n\n        _openingTime = openingTime;\n        _closingTime = closingTime;\n    }\n\n    /**\n     * @return the crowdsale opening time.\n     */\n    function openingTime() public view returns (uint256) {\n        return _openingTime;\n    }\n\n    /**\n     * @return the crowdsale closing time.\n     */\n    function closingTime() public view returns (uint256) {\n        return _closingTime;\n    }\n\n    /**\n     * @return true if the crowdsale is open, false otherwise.\n     */\n    function isOpen() public view returns (bool) {\n        // solhint-disable-next-line not-rely-on-time\n        return block.timestamp >= _openingTime && block.timestamp <= _closingTime;\n    }\n\n    /**\n     * @dev Checks whether the period in which the crowdsale is open has already elapsed.\n     * @return Whether crowdsale period has elapsed\n     */\n    function hasClosed() public view returns (bool) {\n        // solhint-disable-next-line not-rely-on-time\n        return block.timestamp > _closingTime;\n    }\n\n    /**\n     * @dev Extend parent behavior requiring to be within contributing period\n     * @param beneficiary Token purchaser\n     * @param weiAmount Amount of wei contributed\n     */\n    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal onlyWhileOpen view {\n        super._preValidatePurchase(beneficiary, weiAmount);\n    }\n}\n\n/**\n * @title FinalizableCrowdsale\n * @dev Extension of Crowdsale with a one-off finalization action, where one\n * can do extra work after finishing.\n */\ncontract FinalizableCrowdsale is TimedCrowdsale {\n    using SafeMath for uint256;\n\n    bool private _finalized;\n\n    event CrowdsaleFinalized();\n\n    constructor () internal {\n        _finalized = false;\n    }\n\n    /**\n     * @return true if the crowdsale is finalized, false otherwise.\n     */\n    function finalized() public view returns (bool) {\n        return _finalized;\n    }\n\n    /**\n     * @dev Must be called after crowdsale ends, to do some extra finalization\n     * work. Calls the contract's finalization function.\n     */\n    function finalize() public {\n        require(!_finalized);\n        require(hasClosed());\n\n        _finalized = true;\n\n        _finalization();\n        emit CrowdsaleFinalized();\n    }\n\n    /**\n     * @dev Can be overridden to add finalization logic. The overriding function\n     * should call super._finalization() to ensure the chain of finalization is\n     * executed entirely.\n     */\n    function _finalization() internal {\n        // solhint-disable-previous-line no-empty-blocks\n    }\n}\n\n\ncontract GOCOPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable {\n\n  bool private referralEnabled;\n  address private rewardPool;\n  mapping (address => address) refereeMap; //map a referee adress to its referrer\n  mapping (address => mapping(address => bool)) referralMap; //map a referrer adress to its referees\n\n  constructor(\n    uint256 openingTime,\n    uint256 closingTime,\n    address payable saleWallet,\n    address rewardPoolWallet,\n    IERC20 gocotoken\n  )\n    public\n    Crowdsale(10, saleWallet, gocotoken) //token price is 0.1 Ether, i.e 10 token unit (10^-18) by wei\n    CappedCrowdsale(210000 ether) //Max cap  : 210,000 Ether = 2,100,000 tokens\n    TimedCrowdsale(openingTime, closingTime)\n  {\n    rewardPool = rewardPoolWallet;\n    referralEnabled = true;\n  }\n\n\n  function changeOpeningTime(uint256 openingTime) public onlyOwner {\n      require(openingTime >= block.timestamp);\n      _openingTime = openingTime;\n  }\n\n  function changeClosingTime(uint256 closingTime) public onlyWhileOpen onlyOwner {\n      require(closingTime >= block.timestamp);\n      _closingTime = closingTime;\n  }\n\n  /**\n   * @dev Extend parent behavior requiring to be unpaused\n   * @param beneficiary Token purchaser\n   * @param weiAmount Amount of wei contributed\n   */\n  function _preValidatePurchase(\n    address beneficiary,\n    uint256 weiAmount\n  )\n    internal\n    view\n    onlyWhileOpen\n    whenNotPaused\n  {\n    super._preValidatePurchase(beneficiary, weiAmount);\n  }\n\n  function addReferee(address from_referrer, address to_referee) public onlyOwner{\n    require (from_referrer != address(0) && to_referee != address(0) && from_referrer != to_referee);\n    require(refereeMap[to_referee]==address(0), 'This referee has already been added' );\n\n    referralMap[from_referrer][to_referee] = true;\n    refereeMap[to_referee]=from_referrer;\n\n  }\n\n  /**\n   * @dev called by the owner to enable referral program\n   */\n  function enableReferral() public onlyOwner{\n    referralEnabled = true;\n  }\n\n  /**\n   * @dev called by the owner to disable referral program\n   */\n  function disableReferral() public onlyOwner{\n    referralEnabled = false;\n  }\n\n\n  /**\n   * @dev Overrided for referral program call\n   * @param beneficiary Address receiving the tokens\n   * @param weiAmount Value in wei involved in the purchase\n   */\n  function _updatePurchasingState(\n    address beneficiary,\n    uint256 weiAmount\n  )\n    internal\n  {\n     if(referralEnabled && refereeMap[beneficiary]!=address(0)) {\n      uint256 tokenReferallAmount = _getTokenAmount(weiAmount).div(20);\n      token().transferFrom(rewardPool, beneficiary, tokenReferallAmount);\n      token().transferFrom(rewardPool, refereeMap[beneficiary], tokenReferallAmount);     \n     }\n\n  }\n\n  /**\n   * @dev Overrided finalization to transfer all unsold token to the reward pool\n   */\n  function _finalization() internal {\n    token().transfer(rewardPool, token().balanceOf(address(this)));\n  }\n\n}\n",
+  "sourcePath": "/home/sgriffon/GoCoworker/gocoworker-tokensale-sc/contracts/GOCOPreSale.sol",
   "ast": {
-    "absolutePath": "/home/sgriffon/GoCoworker/gocoworker-tokensale-sc/contracts/GCWPreSale.sol",
+    "absolutePath": "/home/sgriffon/GoCoworker/gocoworker-tokensale-sc/contracts/GOCOPreSale.sol",
     "exportedSymbols": {
       "FinalizableCrowdsale": [
         167
       ],
-      "GCWPreSale": [
+      "GOCOPreSale": [
         419
       ],
       "TimedCrowdsale": [
@@ -2257,7 +2257,7 @@
           2778,
           2044
         ],
-        "name": "GCWPreSale",
+        "name": "GOCOPreSale",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
@@ -2569,7 +2569,7 @@
                   {
                     "argumentTypes": null,
                     "id": 204,
-                    "name": "gcwtoken",
+                    "name": "gocotoken",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": 199,
@@ -2797,7 +2797,7 @@
                 {
                   "constant": false,
                   "id": 199,
-                  "name": "gcwtoken",
+                  "name": "gocotoken",
                   "nodeType": "VariableDeclaration",
                   "scope": 223,
                   "src": "5385:15:0",
@@ -3375,8 +3375,8 @@
                         "referencedDeclaration": 2831,
                         "src": "6348:5:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_super$_GCWPreSale_$419",
-                          "typeString": "contract super GCWPreSale"
+                          "typeIdentifier": "t_super$_GOCOPreSale_$419",
+                          "typeString": "contract super GOCOPreSale"
                         }
                       },
                       "id": 276,
@@ -5205,16 +5205,16 @@
                                 "referencedDeclaration": 2830,
                                 "src": "7859:4:0",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_contract$_GCWPreSale_$419",
-                                  "typeString": "contract GCWPreSale"
+                                  "typeIdentifier": "t_contract$_GOCOPreSale_$419",
+                                  "typeString": "contract GOCOPreSale"
                                 }
                               }
                             ],
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_contract$_GCWPreSale_$419",
-                                  "typeString": "contract GCWPreSale"
+                                  "typeIdentifier": "t_contract$_GOCOPreSale_$419",
+                                  "typeString": "contract GOCOPreSale"
                                 }
                               ],
                               "id": 411,
@@ -5419,12 +5419,12 @@
     "src": "1309:6566:0"
   },
   "legacyAST": {
-    "absolutePath": "/home/sgriffon/GoCoworker/gocoworker-tokensale-sc/contracts/GCWPreSale.sol",
+    "absolutePath": "/home/sgriffon/GoCoworker/gocoworker-tokensale-sc/contracts/GOCOPreSale.sol",
     "exportedSymbols": {
       "FinalizableCrowdsale": [
         167
       ],
-      "GCWPreSale": [
+      "GOCOPreSale": [
         419
       ],
       "TimedCrowdsale": [
@@ -7473,7 +7473,7 @@
           2778,
           2044
         ],
-        "name": "GCWPreSale",
+        "name": "GOCOPreSale",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
@@ -7785,7 +7785,7 @@
                   {
                     "argumentTypes": null,
                     "id": 204,
-                    "name": "gcwtoken",
+                    "name": "gocotoken",
                     "nodeType": "Identifier",
                     "overloadedDeclarations": [],
                     "referencedDeclaration": 199,
@@ -8013,7 +8013,7 @@
                 {
                   "constant": false,
                   "id": 199,
-                  "name": "gcwtoken",
+                  "name": "gocotoken",
                   "nodeType": "VariableDeclaration",
                   "scope": 223,
                   "src": "5385:15:0",
@@ -8591,8 +8591,8 @@
                         "referencedDeclaration": 2831,
                         "src": "6348:5:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_super$_GCWPreSale_$419",
-                          "typeString": "contract super GCWPreSale"
+                          "typeIdentifier": "t_super$_GOCOPreSale_$419",
+                          "typeString": "contract super GOCOPreSale"
                         }
                       },
                       "id": 276,
@@ -10421,16 +10421,16 @@
                                 "referencedDeclaration": 2830,
                                 "src": "7859:4:0",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_contract$_GCWPreSale_$419",
-                                  "typeString": "contract GCWPreSale"
+                                  "typeIdentifier": "t_contract$_GOCOPreSale_$419",
+                                  "typeString": "contract GOCOPreSale"
                                 }
                               }
                             ],
                             "expression": {
                               "argumentTypes": [
                                 {
-                                  "typeIdentifier": "t_contract$_GCWPreSale_$419",
-                                  "typeString": "contract GCWPreSale"
+                                  "typeIdentifier": "t_contract$_GOCOPreSale_$419",
+                                  "typeString": "contract GOCOPreSale"
                                 }
                               ],
                               "id": 411,

@@ -1,9 +1,9 @@
 const { BN, constants, expectEvent, shouldFail } = require('openzeppelin-test-helpers');
 const { ZERO_ADDRESS } = constants;
 
-const GCWToken = artifacts.require('GCWToken');
+const GOCOToken = artifacts.require('GOCOToken');
 
-contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccount, recipient, anotherAccount]) {
+contract('GOCOToken', function ([_, founderAccount, tokenSaleAccount, rewardAccount, recipient, anotherAccount]) {
   const totalSupply = new BN(21000000).mul(new BN(10).pow(new BN(18)));
 
   const founderSupply = new BN(7000000).mul(new BN(10).pow(new BN(18)));
@@ -11,7 +11,7 @@ contract('GCWToken', function ([_, founderAccount, tokenSaleAccount, rewardAccou
   const rewardSupply = new BN(1400000).mul(new BN(10).pow(new BN(18)));
 
   beforeEach(async function () {
-    this.token = await GCWToken.new(founderAccount, tokenSaleAccount, rewardAccount);
+    this.token = await GOCOToken.new(founderAccount, tokenSaleAccount, rewardAccount);
   });
 
   it('has a name', async function () {
