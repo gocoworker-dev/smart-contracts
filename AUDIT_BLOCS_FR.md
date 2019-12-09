@@ -248,4 +248,4 @@ Deux parties critiques ont été relevées. Le code _DOIT_ être mis à jour en 
 
 **Le code doit être un peu plus commenté en particulier au niveau des fonctions publiques** pour une question d'ouverture du code et pour apporter plus de confiance au investisseurs connaisseurs.
 
-_Dernière mise à jour le 02 décembre 2019_
+_Dernière mise à jour le 10 décembre 2019_
