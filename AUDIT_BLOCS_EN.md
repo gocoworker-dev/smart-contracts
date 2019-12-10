@@ -199,6 +199,8 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 | :white_check_mark: | MEDIUM_08 (moved) | GCWSale.sol    | See MAJOR_03 |
 | :white_check_mark: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
 | :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
+| :white_large_square: | MEDIUM_11 | GCWSale.sol    | Missing require |
+
 
 # 7. <a name="7"></a>Minor
 

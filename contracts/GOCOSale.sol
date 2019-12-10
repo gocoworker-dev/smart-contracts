@@ -257,14 +257,9 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
     }
 
 
-    // MAJOR_03 This should not be overriden. For extended code use
     // MEDIUM_10 nonReentrant modifier should be applied to external function as
-    // recommended in OpenZeppelin ReentrancyGuard. It avoid the function to
-    // called inside the contract
-    // _preValidatePurchase for validations and ;
-    // _postValidatePurchase for further instructions ;
-    // userBuys and dailyTotal must be updated after transfer is successful, thus in
-    // _postValidatePurchase
+    // recommended in OpenZeppelin ReentrancyGuard.
+    // MEDIUM_11 Should require beneficiary to not be 0
     function buyTokens(address beneficiary) public nonReentrant onlyWhileOpen whenNotPaused payable  {
 
         require(msg.value >= 0.1 ether, "GOCOSale: minimum contribution is 0.1 ether");

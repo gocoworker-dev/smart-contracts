@@ -200,6 +200,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 | :white_check_mark: | MEDIUM_08 (déplacé) | GCWSale.sol    | Voir MAJOR_03 |
 | :white_check_mark: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
 | :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
+| :white_large_square: | MEDIUM_11 | GCWSale.sol    | `require` manquant |
 
 # 7. <a name="7"></a>Mineur
 
