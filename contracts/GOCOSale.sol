@@ -144,7 +144,6 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
      */
     function _finalization() internal {
         _token.transfer(_rewardpool, _token.balanceOf(address(this)));
-        // MEDIUM_04 Should call super._finalization()
     }
 
      /**
@@ -153,8 +152,6 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
      * of 2300, which is not enough to call buyTokens. Consider calling
      * buyTokens directly when purchasing tokens from a contract.
      */
-     // WATCH_02 There is already a fallback with same instructions in Crowdsale, inherited
-     // from PausableCrowdsale
     function () external payable {
         buyTokens(msg.sender);
     }
@@ -320,7 +317,6 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
     /**
     * @dev Determines how ETH is stored/forwarded on purchases.
     */
-    // WATCH_03 This fn already exists in Crowdsale with the same instructions
     function _forwardFunds() internal {
         _wallet.sendValue(msg.value);
     }

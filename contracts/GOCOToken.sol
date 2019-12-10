@@ -2,7 +2,7 @@
     Copyright (c) 2019 Gocoworker
 
 <<<<<<< HEAD:contracts/GOCOToken.sol
-    GOCO ERC20 Token Sales Smart Contract    
+    GOCO ERC20 Token Sales Smart Contract
 =======
     GCW ERC20 Token Sales Smart Contract
 >>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWToken.sol
@@ -58,14 +58,8 @@ contract GOCOToken is ERC20, ERC20Detailed {
    * @dev Constructor that mint all the existing tokens and allocate them.
    */
   constructor(address teamWallet, address tokenSaleWallet, address rewardPoolWallet) public ERC20Detailed("Gocoworker", "GOCO", 18) {
-<<<<<<< HEAD:contracts/GOCOToken.sol
-
     require(teamWallet != address(0) && tokenSaleWallet != address(0) && rewardPoolWallet != address(0), "GOCOToken: a wallet is the zero address");
     require(teamWallet != tokenSaleWallet && teamWallet != rewardPoolWallet && tokenSaleWallet != rewardPoolWallet, "GOCOToken: wallets are not different");
-=======
-    // MEDIUM_09 Control teamWallet, tokenSaleWallet and rewardPoolWallet are different to avoid human error
-    // that they are set (not 0)
->>>>>>> 8c5ea27... Adds first version of commit:contracts/GCWToken.sol
     _mint(teamWallet, TEAM_SUPPLY * (10 ** uint256(decimals())));
     _mint(tokenSaleWallet, TOKEN_SALE_SUPPLY * (10 ** uint256(decimals())));
     _mint(rewardPoolWallet, REWARD_POOL_SUPPLY * (10 ** uint256(decimals())));

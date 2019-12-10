@@ -55,11 +55,11 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
 
     await time.increaseTo(this.openingTime);
 
-    try {    
+    try {
       await this.crowdsale.buyTokens(investor, { value: investmentAmount, from: investor });
-  
+
     } catch (error) {
-      console.log(error) 
+      console.log(error)
     }
 
 
@@ -168,10 +168,6 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
         (await this.token.balanceOf(referrer)).should.be.bignumber.equal(expectedTokenReward.add(RATE.mul(value)));
       });
 
-      // WATCH_02 A better logic would be to let all listed referees to get their reward
-      // and use referal enabling for adding referees only. This will look like a false promise
-      // telling the user that a referee can be not rewarded on the decision of the contract owner
-      // even if he got referred while this was enabled.
       it('should should not transfer rewards on referee disabled', async function () {
         const expectedTokenPurchased = RATE.mul(value);
         await this.crowdsale.disableReferral({ from: owner });
