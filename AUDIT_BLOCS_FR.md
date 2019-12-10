@@ -4,9 +4,9 @@
 # Introduction
 
 Ce document passe en revu les trois contrats suivants :
-- [GCWToken](contracts/GCWToken.sol) : Jeton de Gocoworker ;
-- [GCWPreSale](contracts/GCWPreSale.sol) : Presale du jeton GCW ;
-- [GCWSale](contracts/GCWSale.sol) : Vente périodique de jetons sur cycles de 21 heures ;
+- [GOCOToken](contracts/GOCOToken.sol) : Jeton de Gocoworker ;
+- [GOCOPreSale](contracts/GOCOPreSale.sol) : Presale du jeton GOCO ;
+- [GOCOSale](contracts/GOCOSale.sol) : Vente périodique de jetons sur cycles de 21 heures ;
 
 Toutes les vulnérabilités potentielles et les bonnes pratiques de code sont relevées par 3 marqueurs présents dans le code source des contrats en commentaires et dans les tests en de rares occasions :
 - `MAJOR_x` où x est un nombre à 2 chiffres : Ce sont les parties qui ont un impact sur la logique du code ;
@@ -181,51 +181,51 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 
 |                      | Tag      | Contract       | Details       |
 |----------------------|----------|:--------------:|---------------|
-| :white_check_mark: | MAJOR_01 | GCWPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
-| :white_check_mark: | MAJOR_02 | GCWPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
-| :heavy_minus_sign: | MAJOR_03 (supprimé) | GCWSale.sol    | `buyTokens` doit profiter de l'héritage OpenZeppelin afin de profiter un maximum des contrats audités. L'ordre est à revoir. La mise à jour des états `dailyTotals` et `userBuys` doit être lancée à la fin de la fonction, en `_postValidatePurchase`.  |
-| :white_check_mark: | MAJOR_04 | GCWSale.sol    | Augmenter ou réduire le nombre de période doit également mettre à jour la distribution de jetons durant la vente. Cependant cette mise à jour entre en conflit avec les distributions antécédentes et entrer en conflit avec le cap de distribution. |
+| :white_check_mark: | MAJOR_01 | GOCOPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
+| :white_check_mark: | MAJOR_02 | GOCOPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
+| :heavy_minus_sign: | MAJOR_03 (supprimé) | GOCOSale.sol    | `buyTokens` doit profiter de l'héritage OpenZeppelin afin de profiter un maximum des contrats audités. L'ordre est à revoir. La mise à jour des états `dailyTotals` et `userBuys` doit être lancée à la fin de la fonction, en `_postValidatePurchase`.  |
+| :white_check_mark: | MAJOR_04 | GOCOSale.sol    | Augmenter ou réduire le nombre de période doit également mettre à jour la distribution de jetons durant la vente. Cependant cette mise à jour entre en conflit avec les distributions antécédentes et entrer en conflit avec le cap de distribution. |
 
 # 6. <a name="6"></a>Medium
 
 |                      | Tag       | Contract(s)    | Details       |
 |----------------------|-----------|:--------------:|---------------|
-| :white_check_mark: | MEDIUM_01 | GCWPreSale.sol | La fonction ne fait rien. |
-| :white_check_mark: | MEDIUM_02 | GCWPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
+| :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | La fonction ne fait rien. |
+| :white_check_mark: | MEDIUM_02 | GOCOPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
 | :heavy_minus_sign: | MEDIUM_03 (removed) | NA | NA |
-| :white_check_mark: | MEDIUM_04 | GCWPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
-| :heavy_minus_sign: | MEDIUM_05 (supprimé) | GCWPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
-| :heavy_minus_sign: | MEDIUM_06 (supprimé) | GCWPreSale.sol | `require` manquant |
-| :heavy_minus_sign: | MEDIUM_07 (supprimé) | GCWSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
-| :white_check_mark: | MEDIUM_08 (déplacé) | GCWSale.sol    | Voir MAJOR_03 |
-| :white_check_mark: | MEDIUM_09 | GCWToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
-| :white_large_square: | MEDIUM_10 | GCWSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
-| :white_large_square: | MEDIUM_11 | GCWSale.sol    | `require` manquant |
+| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
+| :heavy_minus_sign: | MEDIUM_05 (supprimé) | GOCOPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
+| :heavy_minus_sign: | MEDIUM_06 (supprimé) | GOCOPreSale.sol | `require` manquant |
+| :heavy_minus_sign: | MEDIUM_07 (supprimé) | GOCOSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
+| :white_check_mark: | MEDIUM_08 (déplacé) | GOCOSale.sol    | Voir MAJOR_03 |
+| :white_check_mark: | MEDIUM_09 | GOCOToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
+| :white_large_square: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
+| :white_large_square: | MEDIUM_11 | GOCOSale.sol    | `require` manquant |
 
 # 7. <a name="7"></a>Mineur
 
 |                      | Tag      | Contrat(s)                                     | Commentaires  |
 |----------------------|----------|:-------------------------------------------:|---------------|
-| :white_check_mark: | MINOR_01 | GCWPreSale.sol / GCWSale.sol / GCWToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
+| :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
 | :heavy_minus_sign: | MINOR_02 (supprimé) | NA | NA |
-| :white_large_square: | MINOR_03 | GCWPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
-| :white_large_square: | MINOR_04 | GCWPreSale.sol | Améliorer l'ordre des appels. |
-| :white_check_mark: | MINOR_05 | GCWPreSale.sol | Séparer le `require` en plusieurs `require`. |
-| :white_check_mark: | MINOR_06 | GCWPreSale.sol | Améliorer la condition. |
-| :white_check_mark: | MINOR_07 | GCWPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
-| :white_check_mark: | MINOR_08 | GCWSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
-| :white_large_square: | MINOR_09 | GCWSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
-| :white_check_mark: | MINOR_10 | GCWSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
-| :white_large_square: | MINOR_11 | GCWSale.sol | Eviter les instructions ternaires. |
-| :heavy_minus_sign: | MINOR_12 (supprimé) | GCWSale.sol | Préférer l'appel à la fonction `token()`. |
+| :white_large_square: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
+| :white_large_square: | MINOR_04 | GOCOPreSale.sol | Améliorer l'ordre des appels. |
+| :white_check_mark: | MINOR_05 | GOCOPreSale.sol | Séparer le `require` en plusieurs `require`. |
+| :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Améliorer la condition. |
+| :white_check_mark: | MINOR_07 | GOCOPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
+| :white_check_mark: | MINOR_08 | GOCOSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
+| :white_large_square: | MINOR_09 | GOCOSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
+| :white_check_mark: | MINOR_10 | GOCOSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
+| :white_large_square: | MINOR_11 | GOCOSale.sol | Eviter les instructions ternaires. |
+| :heavy_minus_sign: | MINOR_12 (supprimé) | GOCOSale.sol | Préférer l'appel à la fonction `token()`. |
 
 # 8. <a name="8"></a>Vigilance
 
 |                      | Tag      | Contrat(s)        | Commentaires  |
 |----------------------|----------|:--------------:|---------------|
-| :ok_hand: | WATCH_01 | GCWPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
-| :white_check_mark: | WATCH_02 | GCWPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
-| :ok_hand: | WATCH_03 | GCWSale.sol | La fonction existe déjà par héritage. |
+| :ok_hand: | WATCH_01 | GOCOPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
+| :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
+| :ok_hand: | WATCH_03 | GOCOSale.sol | La fonction existe déjà par héritage. |
 
 # 9. <a name="9"></a>Mise à jour de OpenZeppelin :white_check_mark:
 
