@@ -14,6 +14,12 @@ All potential vulnerabilities and good code practices are noticed by 3 tags as c
 - `MINOR_x` where x is a 2 digits number: This references all parts that can be enhanced for security or code readability ;
 - `WATCH_x` where x is a 2 digits number: This references all parts when something is unsure about business logic;
 
+All symbols are related to the state of the issue:
+- :white_large_square: : Means this has not been done or fixed ;
+- :white_check_mark: : Means this has been done or fixed ;
+- :ok_hand: : Means this has been reviewed but not fixed, the issue is concidered to not be a threat ;
+- :heavy_minus_sign: : Means the issue has been deleted ;
+
 During the audit some unit tests have been written. Those are included in the related source code.
 
 All tests have been executed in development environment using Ganache with blocks mining.
