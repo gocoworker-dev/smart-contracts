@@ -8,7 +8,7 @@ const PRESALE_TOKEN_SUPPLY = new BigNumber(2100000).multipliedBy(new BigNumber(1
 const SALE_TOKEN_SUPPLY = new BigNumber(10500000).multipliedBy(new BigNumber(10).pow(new BigNumber(18)));
 
 module.exports = function (deployer, network) {
-  if (network == "development") {
+  if (network == "testrpc") {
     deployer.then(function() {
       return GOCOToken.deployed()
     }).then(function(instance) {

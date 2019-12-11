@@ -27,6 +27,16 @@ Token : 0xCc7D5C8ad2AC270b5D7559130416911A7A59ABDB
 Presale: 0x443074dA4F0b50c98BBAed64683638EF89fc1a7d
 Sale : 0xEEccDAa58ecd1a55392dB369d88527641Fa3De56
 
+## Migration on Ropsten 
+
+```sh
+ ./node_modules/.bin/truffle migrate --network ropsten
+ node setup_sc.js
+```
+Token : 0xbc87b24723EE3BCe19CC9126e8aBa077911C5137
+Presale: 0x9253C583A98513db0B675275A3D343021FfED33d
+Sale : 0x96f0ef758DAb636A09C1613283B5d2F38e79C0ac
+
 ## Security
 Gocoworker smart contracts are based on [OpenZeppelin](https://github.com/OpenZeppelin/zeppelin-solidity/) which is meant to provide secure, tested and community-audited code.
 
