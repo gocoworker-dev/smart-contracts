@@ -17,9 +17,15 @@ module.exports = {
       
     },
     rinkeby: {
-      provider: new HDWalletProvider(process.env.MNEMONIC, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY),
+      provider: new HDWalletProvider(process.env.MNEMONIC, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY, 0, 5),
       gas: 4700000,
       network_id: 4,
+      skipDryRun: true
+    },
+    ropsten: {
+      provider: new HDWalletProvider(process.env.MNEMONIC, 'https://ropsten.infura.io/' + process.env.INFURA_API_KEY, 0, 5),
+      gas: 4700000,
+      network_id: 3,
       skipDryRun: true
     },
     testrpc: {

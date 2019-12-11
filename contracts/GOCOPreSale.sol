@@ -59,10 +59,6 @@ contract GOCOPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable
   }
 
 
-  // function changeOpeningTime(uint256 newOpeningTime) public onlyOwner {
-  //    _changeOpening(newOpeningTime);
-  // }
-
   function changeClosingTime(uint256 newClosingTime) public onlyOwner {
      _extendTime(newClosingTime);
   }
@@ -80,8 +76,8 @@ contract GOCOPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable
     view
     whenNotPaused
   {
+    super._preValidatePurchase(beneficiary, weiAmount);
     require(weiAmount >= 0.1 ether, "GOCOPreSale: minimum contribution is 0.1 ether");
-    super._preValidatePurchase(beneficiary, weiAmount);    
   }
 
   function addReferee(address from_referrer, address to_referee) public {
@@ -127,8 +123,8 @@ contract GOCOPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable
   {
     if(referralEnabled && refereeMap[beneficiary]!=address(0)) {
       uint256 tokenReferallAmount = _getTokenAmount(weiAmount).div(20);
-      token().transferFrom(rewardPool, beneficiary, tokenReferallAmount);
-      token().transferFrom(rewardPool, refereeMap[beneficiary], tokenReferallAmount);
+      token().transfer(beneficiary, tokenReferallAmount);
+      token().transfer(refereeMap[beneficiary], tokenReferallAmount);
     }
   }
 

@@ -255,6 +255,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
 
     function buyTokens(address beneficiary) public nonReentrant onlyWhileOpen whenNotPaused payable  {
     
+        require(beneficiary != address(0), "GOCOSale: beneficiary is the zero address");
         require(msg.value >= 0.1 ether, "GOCOSale: minimum contribution is 0.1 ether");
 
         uint256 weiAmount = msg.value;

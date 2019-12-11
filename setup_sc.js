@@ -10,29 +10,28 @@ var GOCOToken = contract(token);
 var GOCOPresale = contract(presale);
 var GOCOSale = contract(sale);
 
-const PRESALE_TOKEN_SUPPLY = new BigNumber(2100000).mul(new BigNumber(10).pow(new BigNumber(18)));
-const SALE_TOKEN_SUPPLY = new BigNumber(10500000).mul(new BigNumber(10).pow(new BigNumber(18)));
+const PRESALE_TOKEN_SUPPLY = new BigNumber(2100000).multipliedBy(new BigNumber(10).pow(new BigNumber(18)));
+const SALE_TOKEN_SUPPLY = new BigNumber(10500000).multipliedBy(new BigNumber(10).pow(new BigNumber(18)));
 
 
-var provider = new HDWalletProvider(process.env.MNEMONIC, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY, 0, 5)
-
+var provider = new HDWalletProvider(process.env.MNEMONIC, 'https://ropsten.infura.io/' + process.env.INFURA_API_KEY, 0, 5)
 
 GOCOToken.setProvider(provider);
-GOCOToken.setNetwork(4)
+GOCOToken.setNetwork(3)
 
 GOCOPresale.setProvider(provider);
-GOCOPresale.setNetwork(4)
+GOCOPresale.setNetwork(3)
 
 GOCOSale.setProvider(provider);
-GOCOSale.setNetwork(4)
+GOCOSale.setNetwork(3)
 
 var token;
 GOCOToken.deployed().then(function(instance) {
   token = instance;
-  return token.approve(GOCOPresale.address, PRESALE_TOKEN_SUPPLY.div(new BigNumber(10)), { from: process.env.REWARDPOOL_WALLET, gas: 210000 });// approve the presale contract to transfer reward pool tokens
+  return token.transfer(GOCOPresale.address, PRESALE_TOKEN_SUPPLY.div(new BigNumber(10)), { from: process.env.REWARDPOOL_WALLET, gas: 210000 });// approve the presale contract to transfer reward pool tokens
 }).then(function (resultvar){
   console.log("Reward Pool wallet approved Presale contract")
-  return token.transfer(GOCOPresale.address, PRESALE_TOKEN_SUPPLY, { from:  process.env.TOKENSALE_WALLET });    
+  return token.transfer(GOCOPresale.address, PRESALE_TOKEN_SUPPLY, { from:  process.env.TOKENSALE_WALLET, gas: 210000 });    
 }).then (function (result) {
   console.log("Token sale wallet transfered tokens to Presale contract")
   return token.transfer(GOCOSale.address, SALE_TOKEN_SUPPLY, { from: process.env.TOKENSALE_WALLET, gas: 210000 });// approve the sale contract to transfer tokensale wallet tokens  

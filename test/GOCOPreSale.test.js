@@ -33,7 +33,7 @@ contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, r
     this.crowdsale = await GOCOPreSale.new(this.openingTime, this.closingTime, tokenSaleAccount, rewardAccount, this.token.address, { from });
 
     await this.token.transfer(this.crowdsale.address, TOKEN_SUPPLY, { from: tokenSaleAccount });
-    await this.token.approve(this.crowdsale.address, TOKEN_SUPPLY.div(new BN(10)), { from: rewardAccount }); // approve the crowdsale contract to transfer reward pool tokens
+    //await this.token.approve(this.crowdsale.address, TOKEN_SUPPLY.div(new BN(10)), { from: rewardAccount }); // approve the crowdsale contract to transfer reward pool tokens
   });
 
   it('should create crowdsale with correct parameters', async function () {
