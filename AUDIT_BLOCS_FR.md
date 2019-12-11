@@ -14,6 +14,12 @@ Toutes les vulnérabilités potentielles et les bonnes pratiques de code sont re
 - `MINOR_x` où x est un nombre à 2 chiffres : Ce sont les parties qui peuvent être améliorées ;
 - `WATCH_x` où x est un nombre à 2 chiffres : Ce sont tous les points où l'attention est demandée lorsque une curiosité est levée mais qu'il se peut que ce soit un choix de conception ;
 
+Tous les symboles sont à propos de l'état des tickets :
+- :white_large_square: : Signifie que le ticket n'a pas été traité ;
+- :white_check_mark: : Signifie que le ticket a été traité ;
+- :ok_hand: : Signifie que le ticket n'a pas été traité mais passé en revue, ce n'est plus considéré comme une menace ou faille ;
+- :heavy_minus_sign: : Signifie que le ticket a été supprimé ;
+
 Pendant l'audit des tests unitaires ont été écrits. Ils sont inclus dans le code source associé.
 
 Tous les tests ont été exécutés dans l'environnement de développement avec Ganache en mode minage.
