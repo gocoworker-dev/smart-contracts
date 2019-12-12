@@ -28,7 +28,8 @@ Certaines attaques on été testées avec `truffle console`.
 
 Tous le code source à l'excepté de `Migrations.sol` et tous les contrats de OpenZeppelin Solidity sont été méticuleusement revus.
 
-Dans ce document les parties critiques sont référencées par **CRITICAL**.
+Dans ce document les parties critiques sont référencées par **
+**.
 
 # Sommaire
 
@@ -159,8 +160,6 @@ Cette attaque est seulement possible avec les fonctions qui permettent un montan
 
 `batchClaim` étant public et permettant théoriquement une infinité de paramètres peut être utilisée avec cette attaque.
 
-**CRITICAL**: cette attaque peut empêcher le bon fonctionnement du contrat, donc stopper la vente.
-
 MISE A JOUR : Nous sommes conscient de cette potentielle attaque. Elle ne causerait pas de mal au bon fonctionnement du contrat.
 
 ## Attaque par GAS Insufisant
@@ -179,7 +178,7 @@ Il n'y a pas de contrôle sur qui affilie qui.
 
 `addReferee` prend deux paramètres, l'affilié et le parrain. Il n'y a pas de contrôle sur qui appelle cette fonction. Un attaquant peut contrôler une liste d'investisseurs et s'affilier lui même à ces derniers, bénéficiant des futurs investissements.
 
-**CRITICAL**: Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute un affilié.
+Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute un affilié.
 
 MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a été mis à jour pour référencer jusqu'à 10 affiliés par parrain afin d'éviter à ce qu'un attaquant abuse du programme.
 
@@ -250,8 +249,6 @@ Dans certaines parties l'héritage est sous exploité (voir les tags).
 Les contrats OpenZeppelin sont audités par une communauté de professionnels. Dans cet audit ils n'ont pas été passés en revu.
 
 Avant le déploiement du contrat le contrat _DOIT_ être déployé sur Ropsten avec des périodes limitées pour toutes les passer en revue, environnement pre-production. Le déploiement pre-production doit être fait de la même façon que le déploiement en production, avec les paramètres mis à jour.
-
-Deux parties critiques ont été relevées. Le code _DOIT_ être mis à jour en conséquence.
 
 **Le code doit être un peu plus commenté en particulier au niveau des fonctions publiques** pour une question d'ouverture du code et pour apporter plus de confiance au investisseurs connaisseurs.
 
