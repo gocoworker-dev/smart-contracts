@@ -158,8 +158,6 @@ This attack is only possible on functions that can allow unlimited GAS.
 
 `batchClaim` being public and allowing theoretically infinite parameters can be used for such attack.
 
-**CRITICAL**: an attack can prevent the contract to work properly, thus stop the sale.
-
 EDIT : We are aware of this issue. This wouldn't cause real treat to the contract execution.
 
 ## Insufficient GAS grieffing
@@ -177,8 +175,6 @@ This attack would have no effect on the contract.
 There is no limitation on token distribution for referees and who refers to who.
 
 `addReferee` takes two parameters, the referrer and the referee. There is not control on who refers to who. An abuser could watch investors address and put himself has their referee in order to profit from future buys by those investors.
-
-**CRITICAL**: This abuse is likely and should be prevented by only allowing referrer to add its referee.
 
 EDIT : There is no way to prevent this to happen. The contract has been updated to allow up to 10 referees in order to prevent the abuser to block and abuse the referral program.
 
@@ -252,8 +248,6 @@ In some part inheritance is not exploited as it should be (see tags).
 OpenZeppelin contracts are audited by a professional community. Those contracts are not audited here.
 
 Before deployment the contract _MUST_ be deployed on Ropsten with limited timers in order to test all periods in pre-prod environment. The pre-prod deployment should be the same for prod, with different parameters and network (mainnet).
-
-Two critical parts have been found. The code _MUST_ be updated as consequence.
 
 **The code require in general a little bit more comments, especially around public functions** for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
 
