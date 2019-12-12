@@ -17,7 +17,7 @@ All potential vulnerabilities and good code practices are noticed by 3 tags as c
 All symbols are related to the state of the issue:
 - :white_large_square: : Means this has not been done or fixed ;
 - :white_check_mark: : Means this has been done or fixed ;
-- :ok_hand: : Means this has been reviewed but not fixed, the issue is concidered to not be a threat ;
+- :ok_hand: : Means this has been reviewed but not fixed, the issue is considered to not be a threat ;
 - :heavy_minus_sign: : Means the issue has been deleted ;
 
 During the audit some unit tests have been written. Those are included in the related source code.
@@ -214,15 +214,15 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 |----------------------|----------|:-------------------------------------------:|---------------|
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
 | :heavy_minus_sign: | MINOR_02 (removed) | NA | NA |
-| :white_large_square: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Revert conditions for code readability. |
-| :white_large_square: | MINOR_04 | GOCOPreSale.sol | Enhance instructions order, super._preValidatePurchase checks for earlier validations (such as amount = 0). |
+| :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Revert conditions for code readability. |
+| :heavy_minus_sign: | MINOR_04 | GOCOPreSale.sol | Enhance instructions order, super._preValidatePurchase checks for earlier validations (such as amount = 0). |
 | :white_check_mark: | MINOR_05 | GOCOPreSale.sol | `require` should be splitted for code readability. |
 | :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Enhance conditions. |
 | :white_check_mark: | MINOR_07 | GOCOPreSale.sol | Add a `require` to avoid GAS consumption. |
 | :white_check_mark: | MINOR_08 | GOCOSale.sol | Add a `require` to avoid human error. |
-| :white_large_square: | MINOR_09 | GOCOSale.sol | Rename the function to be more explicit, should start by a verb. Self documentation conventions. |
+| :ok_hand: | MINOR_09 | GOCOSale.sol | Rename the function to be more explicit, should start by a verb. Self documentation conventions. |
 | :white_check_mark: | MINOR_10 | GOCOSale.sol | Add constant variable for this value. |
-| :white_large_square: | MINOR_11 | GOCOSale.sol | Avoid ternaries. |
+| :white_check_mark: | MINOR_11 | GOCOSale.sol | Avoid ternaries. |
 | :heavy_minus_sign: | MINOR_12 (removed) | GOCOSale.sol | Should call `token()`. Removed because is doesn't inherit from Crowdsale. |
 
 # 8. <a name="8"></a>Watch
