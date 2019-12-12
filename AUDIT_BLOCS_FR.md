@@ -184,7 +184,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 
 # 5. <a name="5"></a>Majeur
 
-|                      | Tag      | Contract       | Details       |
+| État                 | Tag      | Contract       | Details       |
 |----------------------|----------|:--------------:|---------------|
 | :white_check_mark: | MAJOR_01 | GOCOPreSale.sol | Présent à deux reprises. La mise à jour de la date de cloture et de fermeture de la vente peut permettre de mettre une date d'ouverture supérieure à la date de fermeture. Cela peut impacter la logique du contrat en cas d'erreur humaine.              |
 | :white_check_mark: | MAJOR_02 | GOCOPreSale.sol | Un filleul peut être ajouté quand bien même le programme de parrainage est désactivé. Il se peut que ce soit une volonté, voir `WATCH_02`              |
@@ -193,7 +193,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 
 # 6. <a name="6"></a>Medium
 
-|                      | Tag       | Contract(s)    | Details       |
+| État                 | Tag       | Contract(s)    | Details       |
 |----------------------|-----------|:--------------:|---------------|
 | :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | La fonction ne fait rien. |
 | :white_check_mark: | MEDIUM_02 | GOCOPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
@@ -209,7 +209,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 
 # 7. <a name="7"></a>Mineur
 
-|                      | Tag      | Contrat(s)                                     | Commentaires  |
+| État                 | Tag      | Contrat(s)                                     | Commentaires  |
 |----------------------|----------|:-------------------------------------------:|---------------|
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
 | :heavy_minus_sign: | MINOR_02 (supprimé) | NA | NA |
@@ -226,7 +226,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 
 # 8. <a name="8"></a>Vigilance
 
-|                      | Tag      | Contrat(s)        | Commentaires  |
+| État                 | Tag      | Contrat(s)        | Commentaires  |
 |----------------------|----------|:--------------:|---------------|
 | :ok_hand: | WATCH_01 | GOCOPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
 | :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
