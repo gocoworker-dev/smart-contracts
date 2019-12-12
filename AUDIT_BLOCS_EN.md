@@ -180,7 +180,7 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 
 # 5. <a name="5"></a>Major
 
-|                      | Tag      | Contract       | Details       |
+| State                | Tag      | Contract       | Details       |
 |----------------------|----------|:--------------:|---------------|
 | :white_check_mark: | MAJOR_01 | GOCOPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
 | :white_check_mark: | MAJOR_02 | GOCOPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
@@ -189,7 +189,7 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 
 # 6. <a name="6"></a>Medium
 
-|                      | Tag       | Contract(s)    | Details       |
+| State                | Tag       | Contract(s)    | Details       |
 |----------------------|-----------|:--------------:|---------------|
 | :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | Empty function |
 | :white_check_mark: | MEDIUM_02 | GOCOPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
@@ -206,7 +206,7 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 
 # 7. <a name="7"></a>Minor
 
-|                      | Tag      | Contract(s)                                 | Details       |
+| State                | Tag      | Contract(s)                                 | Details       |
 |----------------------|----------|:-------------------------------------------:|---------------|
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
 | :heavy_minus_sign: | MINOR_02 (removed) | NA | NA |
@@ -223,7 +223,7 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 
 # 8. <a name="8"></a>Watch
 
-|                      |          | Tag      | Contract(s)    | Details       |
+| State                |          | Tag      | Contract(s)    | Details       |
 |----------------------|----------|----------|:--------------:|---------------|
 | :ok_hand: | WATCH_01 | GOCOPreSale.sol | No inheritance for no apparent reason. Reason : the contracts needed to update private attributes from parent. |
 | :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
