@@ -206,7 +206,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 | :white_check_mark: | MEDIUM_08 (déplacé) | GOCOSale.sol    | Voir MAJOR_03 |
 | :white_check_mark: | MEDIUM_09 | GOCOToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
 | :white_large_square: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
-| :white_large_square: | MEDIUM_11 | GOCOSale.sol    | `require` manquant |
+| :white_check_mark: | MEDIUM_11 | GOCOSale.sol    | `require` manquant |
 
 # 7. <a name="7"></a>Mineur
 
@@ -214,15 +214,15 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 |----------------------|----------|:-------------------------------------------:|---------------|
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
 | :heavy_minus_sign: | MINOR_02 (supprimé) | NA | NA |
-| :white_large_square: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
-| :white_large_square: | MINOR_04 | GOCOPreSale.sol | Améliorer l'ordre des appels. |
+| :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
+| :heavy_minus_sign: | MINOR_04 | GOCOPreSale.sol | Améliorer l'ordre des appels. |
 | :white_check_mark: | MINOR_05 | GOCOPreSale.sol | Séparer le `require` en plusieurs `require`. |
 | :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Améliorer la condition. |
 | :white_check_mark: | MINOR_07 | GOCOPreSale.sol | Ajouter un `require` pour éviter une consommation de GAS inutile. |
 | :white_check_mark: | MINOR_08 | GOCOSale.sol | Ajout d'un `require` supplémentaire pour éviter les erreurs humaines. |
-| :white_large_square: | MINOR_09 | GOCOSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
+| :ok_hand:: | MINOR_09 | GOCOSale.sol | Fonction publique doit être précisément nommée et doit commencer par un verbe à l'infinitif (make, build, do, etc.). Convention de code "self documented" |
 | :white_check_mark: | MINOR_10 | GOCOSale.sol | La variable devrait être constante pour améliorer la lisibilité du code. |
-| :white_large_square: | MINOR_11 | GOCOSale.sol | Eviter les instructions ternaires. |
+| :white_check_mark: | MINOR_11 | GOCOSale.sol | Eviter les instructions ternaires. |
 | :heavy_minus_sign: | MINOR_12 (supprimé) | GOCOSale.sol | Préférer l'appel à la fonction `token()`. |
 
 # 8. <a name="8"></a>Vigilance
@@ -255,4 +255,4 @@ Deux parties critiques ont été relevées. Le code _DOIT_ être mis à jour en 
 
 **Le code doit être un peu plus commenté en particulier au niveau des fonctions publiques** pour une question d'ouverture du code et pour apporter plus de confiance au investisseurs connaisseurs.
 
-_Dernière mise à jour le 10 décembre 2019_
+_Dernière mise à jour le 12 décembre 2019_
