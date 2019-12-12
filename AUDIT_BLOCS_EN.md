@@ -257,4 +257,4 @@ Two critical parts have been found. The code _MUST_ be updated as consequence.
 
 **The code require in general a little bit more comments, especially around public functions** for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
 
-_Last edit on 10 December 2019_
+_Last edit on 12 December 2019_
