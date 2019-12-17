@@ -17,7 +17,7 @@ All potential vulnerabilities and good code practices are noticed by 3 tags as c
 All symbols are related to the state of the issue:
 - :white_large_square: : Means this has not been done or fixed ;
 - :white_check_mark: : Means this has been done or fixed ;
-- :ok_hand: : Means this has been reviewed but not fixed, the issue is considered to not be a threat ;
+- :ok_hand: : Means this has been reviewed and possibly changed accordingly, the issue is considered to not be a threat ;
 - :heavy_minus_sign: : Means the issue has been deleted ;
 
 During the audit some unit tests have been written. Those are included in the related source code.
@@ -40,9 +40,12 @@ In the document critical parts are indexed with the tag **CRITICAL**.
 6. [Medium](#6)
 7. [Minor](#7)
 8. [Watch](#8)
-9. [Conclusion](#9)
+9. [Solidity and OpenZeppelin version](#9]
+9. [Conclusion](#10)
 
 # 1. <a name="1"></a>Prelude
+
+**All tickets has fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts**
 
 This audit is not about viability of the business around contracts. Only source code quality and security is audited. This audit is delivered with the following:
 - A report;
@@ -93,7 +96,7 @@ Sale requires to have GOCO Tokens in reserve in order to operate.
 
 All attacks vector reviewed are listed here https://consensys.github.io/smart-contract-best-practices/known_attacks/
 
-## Short address attack
+## Short address attack :ok_hand:
 
 Quoted from [vessenes.com](https://vessenes.com/the-erc20-short-address-attack-explained/) :
 
@@ -104,7 +107,7 @@ Thoughout the code there is only in `ERC20` that this attack might be possible a
 
 The short address attack is prevented since [Solidity version 0.5.0](https://github.com/ethereum/solidity/pull/4224). All source code _MUST_ be at least at this version. The version of `ERC20` in OpenZeppelin is `^0.5.0`.
 
-## Reentrancy
+## Reentrancy :ok_hand:
 
 Reentrancy attack was one used against the infamous TheDAO project. The basic usage of the attack is to fake revert with an attacker contract. The victim contract think something is failing while it's not. Here is a simplified example :
 
@@ -134,13 +137,11 @@ contract AttackContract {
 
 In GOCO contract there a only one place where reentrancy might be usable and interesting for attacker. It's the function `buyTokens`. `RetrancyGuard` is used, thus this function is protected against this attack. No untrusted call are made which avoid some reetrancy attacks.
 
-**Although, be careful on tag `MAJOR_03` which is about this function.**
-
-## Number overflow
+## Number overflow :ok_hand:
 
 All calculations are made through SafeMath. No overflow is possible.
 
-## DoS with revert
+## DoS with revert :ok_hand:
 
 Denial of service by setting infinite revert is not possible.
 
@@ -152,19 +153,13 @@ This attack is not possible.
 
 ## DoS with block GAS limit :ok_hand:
 
-Denial of service by stuffing the GAS Limit in a period of time, blocking the contract to operate.
+This DoS wouldn't cause real treat to the contract execution.
 
-This attack is only possible on functions that can allow unlimited GAS.
-
-`batchClaim` being public and allowing theoretically infinite parameters can be used for such attack.
-
-EDIT : We are aware of this issue. This wouldn't cause real treat to the contract execution.
-
-## Insufficient GAS grieffing
+## Insufficient GAS grieffing :ok_hand:
 
 Only possible when a proxy contract is used, it's not the case here.
 
-## Forcibly Sending Ether to a Contract
+## Forcibly Sending Ether to a Contract :ok_hand:
 
 This attack would have no effect on the contract.
 
@@ -176,7 +171,7 @@ There is no limitation on token distribution for referees and who refers to who.
 
 `addReferee` takes two parameters, the referrer and the referee. There is not control on who refers to who. An abuser could watch investors address and put himself has their referee in order to profit from future buys by those investors.
 
-EDIT : There is no way to prevent this to happen. The contract has been updated to allow up to 10 referees in order to prevent the abuser to block and abuse the referral program.
+There is no way to prevent this to happen. The contract has been updated to allow up to 10 referees in order to prevent the abuser to block and abuse the referral program.
 
 # 5. <a name="5"></a>Major
 
@@ -229,21 +224,13 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 | :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
 | :ok_hand: | WATCH_03 | GOCOSale.sol | This function already exists in parent contract. |
 
-# 9. <a name="9"></a>OpenZeppelin update :white_check_mark:
+# 9. <a name="9"></a>Solidity and OpenZeppelin version :white_check_mark:
 
-The current OpenZeppelin Solidity version is `2.1.2`, this one is outdated and _MUST_ be updated to the last version `2.4.0`.
-
-This version is following the next Ethereum hardfork (Istanbul) that should happen in the late 2019 or early 2020.
-
-Moreover this version comes with a [`Address`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol) which comes with fine-grained functions for security.
-
-This last version uses Solidity pragma version `0.5.5` instead of the current `0.5.0`.
+Solidity is on pragma version `0.5.13`. OpenZeppelin Solidity is up to date `2.4.0`.
 
 # 10. <a name="10"></a>Conclusion
 
-The source code follow audited contracts rules from OpenZeppelin. SafeMath is always used throughout calculations to avoid maths issues (overflow, zero division, etc.). Good respect of inheritance but require some enhancements.
-
-In some part inheritance is not exploited as it should be (see tags).
+The source code follow audited contracts rules from OpenZeppelin. SafeMath is always used throughout calculations to avoid maths issues (overflow, zero division, etc.). Partial respect of inheritance but no threat raised.
 
 OpenZeppelin contracts are audited by a professional community. Those contracts are not audited here.
 
@@ -251,4 +238,4 @@ Before deployment the contract _MUST_ be deployed on Ropsten with limited timers
 
 **The code require in general a little bit more comments, especially around public functions** for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
 
-_Last edit on 12 December 2019_
+_Last edit on 17 December 2019_
