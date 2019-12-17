@@ -200,7 +200,7 @@ EDIT : There is no way to prevent this to happen. The contract has been updated 
 | :heavy_minus_sign: | MEDIUM_07 (removed) | GOCOSale.sol    | Should used `require` instead of conditions. |
 | :white_check_mark: | MEDIUM_08 (moved) | GOCOSale.sol    | See MAJOR_03 |
 | :white_check_mark: | MEDIUM_09 | GOCOToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
-| :white_large_square: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
+| :ok_hand: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol). OK since OpenZeppelin uses `buyTokens` the same way. |
 | :white_check_mark: | MEDIUM_11 | GOCOSale.sol    | Missing require |
 
 
