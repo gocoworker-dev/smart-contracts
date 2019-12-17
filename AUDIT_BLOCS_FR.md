@@ -15,9 +15,9 @@ Toutes les vulnérabilités potentielles et les bonnes pratiques de code sont re
 - `WATCH_x` où x est un nombre à 2 chiffres : Ce sont tous les points où l'attention est demandée lorsque une curiosité est levée mais qu'il se peut que ce soit un choix de conception ;
 
 Tous les symboles sont à propos de l'état des tickets :
-- :white_large_square: : Signifie que le ticket n'a pas été traité ;
-- :white_check_mark: : Signifie que le ticket a été traité ;
-- :ok_hand: : Signifie que le ticket n'a pas été traité mais passé en revue, ce n'est plus considéré comme une menace ou faille ;
+- :white_large_square: : Signifie que le ticket ou l'attaque n'a pas été traité ;
+- :white_check_mark: : Signifie que le ticket ou l'attaqué a été traité ;
+- :ok_hand: : Signifie que le ticket ou l'attaqué a été passé en revue et n'est pas une menace ou faille ;
 - :heavy_minus_sign: : Signifie que le ticket a été supprimé ;
 
 Pendant l'audit des tests unitaires ont été écrits. Ils sont inclus dans le code source associé.
@@ -41,7 +41,7 @@ Dans ce document les parties critiques sont référencées par **
 6. [Medium](#5)
 7. [Mineur](#6)
 8. [Vigilance](#7)
-9. [Mise à jour de OpenZeppelin](#9)
+9. [Version de Solidity et OpenZeppelin](#9)
 10. [Conclusion](#10)
 
 # 1. <a name="1"></a>Note d'attention
@@ -64,7 +64,7 @@ Constructeur:
 - `tokenSaleWallet`: portefeuille de la vente et là prévente, il reçoit 12 600 000 GOCO;
 - `rewardPoolWallet`: portefeuille de la récompense, il reçoit 1 400 000 GOCO;
 
-Tous les jetons sont créés au déploiement avec un total de 21 000 000 GOCO qui constitu le **total supply**, `_mint` est interne.
+Tous les jetons sont créés au déploiement avec un total de 21 000 000 GOCO qui constitue le **total supply**, `_mint` est interne.
 
 #### _Presale_
 
@@ -95,7 +95,7 @@ La vente nécessite d'avoir des jetons GOCO en réserve pour opérer.
 
 Toutes les attaques passées en revue sont listées sur https://consensys.github.io/smart-contract-best-practices/known_attacks/
 
-## Attaque par Short address
+## Attaque par Short address :ok_hand:
 
 Citation de [vessenes.com](https://vessenes.com/the-erc20-short-address-attack-explained/):
 
@@ -104,9 +104,9 @@ What if you leave off those trailing two zeros (one hex byte equal to 0)? The Et
 
 Dans le code il y a seulement sur `ERC20` que l'attaque est possible et intéressante pour un attaquant. Spécifiquement avec les fonctions `transfer`, `transferFrom` and `approve`.
 
-L'attaque pas short address est limitée depuis [Solidity version 0.5.0](https://github.com/ethereum/solidity/pull/4224). Tout le code source _DOIT_ être à cette version. La version de `ERC20` dans OpenZeppelin est `^0.5.0`.
+L'attaque pas short address est limitée depuis [Solidity version 0.5.0](https://github.com/ethereum/solidity/pull/4224).
 
-## Attaque Reentrancy
+## Attaque Reentrancy :ok_hand:
 
 L'attaque Reentrancy est une attaque qui a causé le fameux TheDAO hack. L'exploitation de cette attaque consiste à tricher une erreur après un appel de fonction. Le contrat victime pense qu'une fonction de transfert de valeur échoue. Voilà un exemple :
 
@@ -136,13 +136,11 @@ contract AttackContract {
 
 Dans le contrat GOCO l'attaque Reentrancy est potentiellement exploitable dans `buyTokens`. `RetrancyGuard` est appliqué à cette fonction ce qui la protège contre l'attaque Reentrancy. Aucun appel inconnu n'est exécuté dans le contrat, ce qui limite d'autant plus les possibilités d'attaque Reentrancy.
 
-**Cependant, soyez prudent au sujet du tag `MAJOR_03` qui est à propos de cette fonction.**
-
-## Nombre Overflow
+## Nombre Overflow :ok_hand:
 
 Tous les caluls sont réalisés avec SafeMath. Aucun overflow n'est possible.
 
-## DoS avec revert
+## DoS avec revert :ok_hand:
 
 Denial of Service en préparant un revert infini.
 
@@ -160,13 +158,11 @@ Cette attaque est seulement possible avec les fonctions qui permettent un montan
 
 `batchClaim` étant public et permettant théoriquement une infinité de paramètres peut être utilisée avec cette attaque.
 
-MISE A JOUR : Nous sommes conscient de cette potentielle attaque. Elle ne causerait pas de mal au bon fonctionnement du contrat.
-
-## Attaque par GAS Insufisant
+## Attaque par GAS Insufisant :ok_hand:
 
 Uniquement possible quand le contrat utilise un proxy, ce n'est pas le cas ici.
 
-## Forçage d'envoie d'ether à un contrat
+## Forçage d'envoie d'ether à un contrat :ok_hand:
 
 Cette attaque n'aurait aucun effet sur ce contrat.
 
@@ -179,8 +175,6 @@ Il n'y a pas de contrôle sur qui affilie qui.
 `addReferee` prend deux paramètres, l'affilié et le parrain. Il n'y a pas de contrôle sur qui appelle cette fonction. Un attaquant peut contrôler une liste d'investisseurs et s'affilier lui même à ces derniers, bénéficiant des futurs investissements.
 
 Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute un affilié.
-
-MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a été mis à jour pour référencer jusqu'à 10 affiliés par parrain afin d'éviter à ce qu'un attaquant abuse du programme.
 
 # 5. <a name="5"></a>Majeur
 
@@ -232,24 +226,18 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 | :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
 | :ok_hand: | WATCH_03 | GOCOSale.sol | La fonction existe déjà par héritage. |
 
-# 9. <a name="9"></a>Mise à jour de OpenZeppelin :white_check_mark:
+# 9. <a name="9"></a>Version de Solidity et OpenZeppelin :white_check_mark:
 
-La version actuelle de OpenZeppelin Solidity est `2.1.2`, la version actuelle est ancienne et _DOIT_ être mise à jour vers la `2.4.0`.
-
-Cette version s'aligne avec la prochaine mise à jour d'Ethereum (Istanbul) qui devrait arriver en fin 2019 ou début 2020.
-
-Par ailleurs cette nouvelle version vient avec la librairie [`Address`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol) qui est composée de fonctionnalités améliorant la sécurité autour du type `address`.
+La version du pragma Solidity est `0.5.13`. La version d'Open Zeppelin Solidity est à jour `2.4.0`.
 
 # 10. <a name="10"></a>Conclusion
 
-Le code respecte en partie l'intégration des contrats audités OpenZeppelin. L'utilisation de SafeMath est présente à tous les calculs. Bon respect de l'encapsulation.
+Le code respecte en partie l'intégration des contrats audités OpenZeppelin. L'utilisation de `SafeMath` est présente à tous les calculs. Respect partiel de l'encapsulation, aucune menace relevée.
 
-Dans certaines parties l'héritage est sous exploité (voir les tags).
-
-Les contrats OpenZeppelin sont audités par une communauté de professionnels. Dans cet audit ils n'ont pas été passés en revu.
+Les contrats OpenZeppelin sont audités par une communauté de professionnels. Dans cet audit ils n'ont pas été passés en revue.
 
 Avant le déploiement du contrat le contrat _DOIT_ être déployé sur Ropsten avec des périodes limitées pour toutes les passer en revue, environnement pre-production. Le déploiement pre-production doit être fait de la même façon que le déploiement en production, avec les paramètres mis à jour.
 
-**Le code doit être un peu plus commenté en particulier au niveau des fonctions publiques** pour une question d'ouverture du code et pour apporter plus de confiance au investisseurs connaisseurs.
+Le code devrait être un peu plus commenté en particulier au niveau des fonctions publiques pour une question d'ouverture du code et pour apporter plus de confiance au investisseurs connaisseurs.
 
-_Dernière mise à jour le 12 décembre 2019_
+_Dernière mise à jour le 17 décembre 2019_
