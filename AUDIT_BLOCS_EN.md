@@ -1,7 +1,7 @@
 # Audit report of GOCO Presale, Sale and Token smart contracts
 #### _Edited on December 2019, by [Jonathan "Blocs" Serra](https://blocs.fr/)_
 
-**All tickets has been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts**
+**All tickets has been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts.**
 
 # Introduction
 
