@@ -218,8 +218,8 @@ There is no way to prevent this to happen. The contract has been updated to allo
 
 # 8. <a name="8"></a>Watch
 
-| State     | Tag      | Contract(s) | Details        |
-|-----------|----------|-------------|:--------------:|
+| State     | Tag      | Contract(s)   | Details      |
+|-----------|----------|:-------------:|--------------|
 | :ok_hand: | WATCH_01 | GOCOPreSale.sol | No inheritance for no apparent reason. Reason : the contracts needed to update private attributes from parent. |
 | :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GOCOSale.sol | Counter-intuitive referral behavior. |
 | :ok_hand: | WATCH_03 | GOCOSale.sol | This function already exists in parent contract. |
