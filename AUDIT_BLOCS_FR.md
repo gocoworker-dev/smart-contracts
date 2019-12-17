@@ -204,7 +204,7 @@ MISE A JOUR : Il n'y a aucun moyen d'empêcher cela d'arriver. Les contrat a ét
 | :heavy_minus_sign: | MEDIUM_07 (supprimé) | GOCOSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
 | :white_check_mark: | MEDIUM_08 (déplacé) | GOCOSale.sol    | Voir MAJOR_03 |
 | :white_check_mark: | MEDIUM_09 | GOCOToken.sol   | `teamWallet`, `tokenSaleWallet` et `rewardPoolWallet` peuvent être identiques et 0. |
-| :white_large_square: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol) |
+| :ok_hand: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier doit être une fonction `external`. Voir [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol). OK car OpenZeppelin utilise `buyTokens` de la même façon. |
 | :white_check_mark: | MEDIUM_11 | GOCOSale.sol    | `require` manquant |
 
 # 7. <a name="7"></a>Mineur
