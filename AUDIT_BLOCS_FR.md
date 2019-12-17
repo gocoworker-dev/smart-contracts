@@ -6,7 +6,7 @@
 # Introduction
 
 Ce document passe en revu les trois contrats suivants :
-- [GOCOToken](contracts/GOCOToken.sol) : Jeton de Gocoworker ;
+- [GOCOToken](contracts/GOCOToken.sol) : Jeton GOCO ;
 - [GOCOPreSale](contracts/GOCOPreSale.sol) : Presale du jeton GOCO ;
 - [GOCOSale](contracts/GOCOSale.sol) : Vente périodique de jetons sur cycles de 21 heures ;
 
@@ -82,7 +82,7 @@ La prévente nécessite d'avoir des fonds en jetons GOCO pour opérer.
 
 Vente limitée en quantité et en temps de jetons GOCO. La vente est quantifiée sur des intervales de temps de 21 heures renouvellé jusqu'à la fin de la vente.
 
-Tous les jetons sont redistribués à des portefeuilles à la finalisation.
+Tous les jetons sont redistribués à des portefeuilles à la fin de la période courante.
 
 Constructeur:
 - `openingTime`: date de début de la vente;
