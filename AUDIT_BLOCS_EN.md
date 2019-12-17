@@ -81,7 +81,7 @@ Presale requires to have GOCO Tokens in reserve in order to operate.
 
 Limited quantity sale of GOCO Tokens through multiple periods of 21 hours.
 
-All Tokens are distributed to investors once the sale ends.
+All Tokens are distributed to investors once the current period ends.
 
 Constructor:
 - `openingTime`: timestamp for opening time ;
@@ -218,8 +218,8 @@ There is no way to prevent this to happen. The contract has been updated to allo
 
 # 8. <a name="8"></a>Watch
 
-| State                |          | Tag      | Contract(s)    | Details       |
-|----------------------|----------|----------|:--------------:|---------------|
+| State     | Tag      | Contract(s) | Details        |
+|-----------|----------|-------------|:--------------:|
 | :ok_hand: | WATCH_01 | GOCOPreSale.sol | No inheritance for no apparent reason. Reason : the contracts needed to update private attributes from parent. |
 | :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GOCOSale.sol | Counter-intuitive referral behavior. |
 | :ok_hand: | WATCH_03 | GOCOSale.sol | This function already exists in parent contract. |
@@ -238,6 +238,6 @@ OpenZeppelin contracts are audited by a professional community. Those contracts 
 
 Before deployment the contract _MUST_ be deployed on Ropsten with limited timers in order to test all periods in pre-prod environment. The pre-prod deployment should be the same for prod, with different parameters and network (mainnet).
 
-The code require in general a little bit more comments, especially around public functions for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
+The code require in general a little bit more comments for readability.
 
 _Last edit on 17 December 2019_
