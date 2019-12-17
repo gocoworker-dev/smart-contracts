@@ -1,6 +1,8 @@
 # Audit report of GOCO Presale, Sale and Token smart contracts
 #### _Edited on December 2019, by [Jonathan "Blocs" Serra](https://blocs.fr/)_
 
+**All tickets has been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts**
+
 # Introduction
 
 This report is about the three following contracts :
@@ -44,8 +46,6 @@ In the document critical parts are indexed with the tag **CRITICAL**.
 9. [Conclusion](#10)
 
 # 1. <a name="1"></a>Prelude
-
-**All tickets has fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts**
 
 This audit is not about viability of the business around contracts. Only source code quality and security is audited. This audit is delivered with the following:
 - A report;
@@ -230,12 +230,14 @@ Solidity is on pragma version `0.5.13`. OpenZeppelin Solidity is up to date `2.4
 
 # 10. <a name="10"></a>Conclusion
 
-The source code follow audited contracts rules from OpenZeppelin. SafeMath is always used throughout calculations to avoid maths issues (overflow, zero division, etc.). Partial respect of inheritance but no threat raised.
+**The last version of the contracts has no detected security issues.**
+
+The source code follow audited contracts rules from OpenZeppelin. `SafeMath` is always used throughout calculations to avoid maths issues (overflow, zero division, etc.). Partial respect of inheritance but no threat raised.
 
 OpenZeppelin contracts are audited by a professional community. Those contracts are not audited here.
 
 Before deployment the contract _MUST_ be deployed on Ropsten with limited timers in order to test all periods in pre-prod environment. The pre-prod deployment should be the same for prod, with different parameters and network (mainnet).
 
-**The code require in general a little bit more comments, especially around public functions** for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
+The code require in general a little bit more comments, especially around public functions for opening more the contract to the public, it will facilitate investors confidence on the Token and the Sale.
 
 _Last edit on 17 December 2019_
