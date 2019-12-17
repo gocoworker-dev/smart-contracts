@@ -40,7 +40,7 @@ In the document critical parts are indexed with the tag **CRITICAL**.
 6. [Medium](#6)
 7. [Minor](#7)
 8. [Watch](#8)
-9. [Solidity and OpenZeppelin version](#9]
+9. [Solidity and OpenZeppelin version](#9)
 9. [Conclusion](#10)
 
 # 1. <a name="1"></a>Prelude
