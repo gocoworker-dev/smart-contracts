@@ -1,5 +1,7 @@
-# Compte rendu de l'audit des contrats GCW Presale, Sale et Token
+# Compte rendu de l'audit des contrats GOCO Presale, Sale et Token
 #### _Fait en décembre 2019, par [Jonathan "Blocs" Serra](https://blocs.fr/)_
+
+**Tous les tickets on été corrigés et revus par l'équipe, il n'y a pas de menace relevée dans la dernière version des contrats.**
 
 # Introduction
 
@@ -68,7 +70,7 @@ Tous les jetons sont créés au déploiement avec un total de 21 000 000 GOCO qu
 
 #### _Presale_
 
-Vente limitée en quantité et en temps de jetons GCW. Programme de parrainage pour associer un investisseur avec un filleul qui recevront tous deux une récompense de jetons lorsque l'investisseur achète des jetons.
+Vente limitée en quantité et en temps de jetons GOCO. Programme de parrainage pour associer un investisseur avec un filleul qui recevront tous deux une récompense de jetons lorsque l'investisseur achète des jetons.
 
 Constructeur:
 - `openingTime`: date de début de la prévente;
@@ -78,7 +80,7 @@ La prévente nécessite d'avoir des fonds en jetons GOCO pour opérer.
 
 #### _Sale_
 
-Vente limitée en quantité et en temps de jetons GCW. La vente est quantifiée sur des intervales de temps de 21 heures renouvellé jusqu'à la fin de la vente.
+Vente limitée en quantité et en temps de jetons GOCO. La vente est quantifiée sur des intervales de temps de 21 heures renouvellé jusqu'à la fin de la vente.
 
 Tous les jetons sont redistribués à des portefeuilles à la finalisation.
 
@@ -192,7 +194,7 @@ Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute 
 | :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | La fonction ne fait rien. |
 | :white_check_mark: | MEDIUM_02 | GOCOPreSale.sol | `saleWallet` et `rewardPoolWallet` peuvent être identiques. |
 | :heavy_minus_sign: | MEDIUM_03 (removed) | NA | NA |
-| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GCWSale.sol | Doit respecter l'héritage |
+| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GOCOSale.sol | Doit respecter l'héritage |
 | :heavy_minus_sign: | MEDIUM_05 (supprimé) | GOCOPreSale.sol | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
 | :heavy_minus_sign: | MEDIUM_06 (supprimé) | GOCOPreSale.sol | `require` manquant |
 | :heavy_minus_sign: | MEDIUM_07 (supprimé) | GOCOSale.sol    | Préférer l'usage d'un `require` plutôt qu'une condition pour reverser les gas. |
@@ -207,7 +209,7 @@ Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute 
 |----------------------|----------|:-------------------------------------------:|---------------|
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma doit être une valeur fixe. Retirer le `^` et préférer une version à jour. |
 | :heavy_minus_sign: | MINOR_02 (supprimé) | NA | NA |
-| :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
+| :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GOCOSale.sol | Inverser les conditions pour améliorer la lisibilité du code. |
 | :heavy_minus_sign: | MINOR_04 | GOCOPreSale.sol | Améliorer l'ordre des appels. |
 | :white_check_mark: | MINOR_05 | GOCOPreSale.sol | Séparer le `require` en plusieurs `require`. |
 | :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Améliorer la condition. |
@@ -223,7 +225,7 @@ Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute 
 | État                 | Tag      | Contrat(s)        | Commentaires  |
 |----------------------|----------|:--------------:|---------------|
 | :ok_hand: | WATCH_01 | GOCOPreSale.sol | Le code ne profite pas de l'héritage OpenZeppelin sans que la raison semble justifiée. |
-| :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
+| :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GOCOSale.sol | Logique de parrainage contre-intuitive pour l'utilisateur. Lorsqu'un utilisateur a un filleul, l'activation du parrainage est garrante de la distribution de la récompense. Cela pourrait amener de la confusion de point de vue des investisseurs. |
 | :ok_hand: | WATCH_03 | GOCOSale.sol | La fonction existe déjà par héritage. |
 
 # 9. <a name="9"></a>Version de Solidity et OpenZeppelin :white_check_mark:
@@ -231,6 +233,8 @@ Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute 
 La version du pragma Solidity est `0.5.13`. La version d'Open Zeppelin Solidity est à jour `2.4.0`.
 
 # 10. <a name="10"></a>Conclusion
+
+**Aucune menace n'a été relevée dans la dernière version des contrats.**
 
 Le code respecte en partie l'intégration des contrats audités OpenZeppelin. L'utilisation de `SafeMath` est présente à tous les calculs. Respect partiel de l'encapsulation, aucune menace relevée.
 
