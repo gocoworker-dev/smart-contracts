@@ -1,7 +1,7 @@
 # Audit report of GOCO Presale, Sale and Token smart contracts
 #### _Edited on December 2019, by [Jonathan "Blocs" Serra](https://blocs.fr/)_
 
-**All tickets has been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts.**
+**All issues has been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts.**
 
 # Introduction
 
@@ -179,7 +179,7 @@ There is no way to prevent this to happen. The contract has been updated to allo
 |----------------------|----------|:--------------:|---------------|
 | :white_check_mark: | MAJOR_01 | GOCOPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
 | :white_check_mark: | MAJOR_02 | GOCOPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
-| :heavy_minus_sign: | MAJOR_03 (removed) | GOCOSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase`. Removed because GCWSale doesn't inherit from Crowdsale. |
+| :heavy_minus_sign: | MAJOR_03 (removed) | GOCOSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase`. Removed because GOCOSale doesn't inherit from Crowdsale. |
 | :white_check_mark: | MAJOR_04 | GOCOSale.sol    | Increasing or decreasing the number of period should imply to update the token distribution, but it will conflict with passed periods and distribution caps |
 
 # 6. <a name="6"></a>Medium
@@ -189,7 +189,7 @@ There is no way to prevent this to happen. The contract has been updated to allo
 | :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | Empty function |
 | :white_check_mark: | MEDIUM_02 | GOCOPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
 | :heavy_minus_sign: | MEDIUM_03 (removed) | NA | NA |
-| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GCWSale.sol | Must inherit |
+| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GOCOSale.sol | Must inherit |
 | :heavy_minus_sign: | MEDIUM_05 (removed) | GOCOPreSale.sol | Should used `require` instead of conditions. |
 | :heavy_minus_sign: | MEDIUM_06 (removed) | GOCOPreSale.sol | `require` missing |
 | :heavy_minus_sign: | MEDIUM_07 (removed) | GOCOSale.sol    | Should used `require` instead of conditions. |
@@ -205,7 +205,7 @@ There is no way to prevent this to happen. The contract has been updated to allo
 |----------------------|----------|:-------------------------------------------:|---------------|
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
 | :heavy_minus_sign: | MINOR_02 (removed) | NA | NA |
-| :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GCWSale.sol | Revert conditions for code readability. |
+| :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GOCOSale.sol | Revert conditions for code readability. |
 | :heavy_minus_sign: | MINOR_04 | GOCOPreSale.sol | Enhance instructions order, super._preValidatePurchase checks for earlier validations (such as amount = 0). |
 | :white_check_mark: | MINOR_05 | GOCOPreSale.sol | `require` should be splitted for code readability. |
 | :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Enhance conditions. |
@@ -221,7 +221,7 @@ There is no way to prevent this to happen. The contract has been updated to allo
 | State                |          | Tag      | Contract(s)    | Details       |
 |----------------------|----------|----------|:--------------:|---------------|
 | :ok_hand: | WATCH_01 | GOCOPreSale.sol | No inheritance for no apparent reason. Reason : the contracts needed to update private attributes from parent. |
-| :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GCWSale.sol | Counter-intuitive referral behavior. |
+| :white_check_mark: | WATCH_02 | GOCOPreSale.sol / GOCOSale.sol | Counter-intuitive referral behavior. |
 | :ok_hand: | WATCH_03 | GOCOSale.sol | This function already exists in parent contract. |
 
 # 9. <a name="9"></a>Solidity and OpenZeppelin version :white_check_mark:
@@ -230,7 +230,7 @@ Solidity is on pragma version `0.5.13`. OpenZeppelin Solidity is up to date `2.4
 
 # 10. <a name="10"></a>Conclusion
 
-**The last version of the contracts has no detected security issues.**
+**The last version of the contracts has no raised security issues.**
 
 The source code follow audited contracts rules from OpenZeppelin. `SafeMath` is always used throughout calculations to avoid maths issues (overflow, zero division, etc.). Partial respect of inheritance but no threat raised.
 
