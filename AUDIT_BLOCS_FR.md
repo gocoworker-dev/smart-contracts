@@ -242,6 +242,6 @@ Les contrats OpenZeppelin sont audités par une communauté de professionnels. D
 
 Avant le déploiement du contrat le contrat _DOIT_ être déployé sur Ropsten avec des périodes limitées pour toutes les passer en revue, environnement pre-production. Le déploiement pre-production doit être fait de la même façon que le déploiement en production, avec les paramètres mis à jour.
 
-Le code devrait être un peu plus commenté en particulier au niveau des fonctions publiques pour une question d'ouverture du code et pour apporter plus de confiance au investisseurs connaisseurs.
+Le code devrait être un peu plus commenté pour être plus lisible.
 
 _Dernière mise à jour le 17 décembre 2019_
