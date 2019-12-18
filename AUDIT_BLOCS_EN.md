@@ -8,15 +8,15 @@
 This report is about the three following contracts :
 - [GOCOToken](contracts/GOCOToken.sol) : GOCO Token ;
 - [GOCOPreSale](contracts/GOCOPreSale.sol) : GOCO Presale ;
-- [GOCOSale](contracts/GOCOSale.sol) : GOCO sale with periods of 21 hours ;
+- [GOCOSale](contracts/GOCOSale.sol) : GOCO Sale with periods of 21 hours ;
 
-All potential vulnerabilities and good code practices are noticed by 3 tags as commentaries written in the contracts source code and all related tests:
-- `MAJOR_x` where x is a 2 digits number: This references all parts that have impact in contracts logics ;
-- `MEDIUM_x` where x is a 2 digits number: This references all parts where particular care is required ;
+All potential vulnerabilities and good code practices are noticed by 3 tags as commentaries written in the contracts source code and all related tests :
+- `MAJOR_x` where x is a 2 digits number : This references all parts that have impact in contracts logics ;
+- `MEDIUM_x` where x is a 2 digits number : This references all parts where particular care is required ;
 - `MINOR_x` where x is a 2 digits number: This references all parts that can be enhanced for security or code readability ;
 - `WATCH_x` where x is a 2 digits number: This references all parts when something is unsure about business logic ;
 
-All symbols are related to the state of the issue:
+All symbols are related to the state of the issue :
 - :white_large_square: : Means this has not been done or fixed ;
 - :white_check_mark: : Means this has been done or fixed ;
 - :ok_hand: : Means this has been reviewed and possibly changed accordingly, the issue is considered to not be a threat ;
@@ -47,7 +47,7 @@ In the document critical parts are indexed with the tag **CRITICAL**.
 
 # 1. <a name="1"></a>Prelude
 
-This audit is not about viability of the business around contracts. Only source code quality and security is audited. This audit is delivered with the following:
+This audit is not about viability of the business around contracts. Only source code quality and security is audited. This audit is delivered with the following :
 - A report ;
 - Source code commented with references ;
 - Updates on unit tests ;
@@ -60,10 +60,10 @@ The contracts purpose is to sell GOCO (ERC20) Tokens, all integrated with [OpenZ
 
 Token ERC20 GOCO.
 
-Constructor:
-- `teamWallet`: founder wallet to receive 7,000,000 GOCO ;
-- `tokenSaleWallet`: sale and presale to receive 12,600,000 GOCO ;
-- `rewardPoolWallet`: reward wallet to receive 1,400,000 GOCO ;
+Constructor :
+- `teamWallet` : founder wallet to receive 7,000,000 GOCO ;
+- `tokenSaleWallet` : sale and presale to receive 12,600,000 GOCO ;
+- `rewardPoolWallet` : reward wallet to receive 1,400,000 GOCO ;
 
 All tokens are minted on deployment for a total of 21,000,000 GOCO which is the **total supply**, `_mint` being internal.
 
@@ -71,9 +71,9 @@ All tokens are minted on deployment for a total of 21,000,000 GOCO which is the 
 
 Limited quantity sale of GOCO Tokens. The Presale is followed with a referral program allowing referees and investors to receive Tokens as reward.
 
-Constructor:
-- `openingTime`: timestamp for opening time ;
-- `closingTime`: timestamp for closing time ;
+Constructor :
+- `openingTime` : timestamp for opening time ;
+- `closingTime` : timestamp for closing time ;
 
 Presale requires to have GOCO Tokens in reserve in order to operate.
 
@@ -83,12 +83,12 @@ Limited quantity sale of GOCO Tokens through multiple periods of 21 hours.
 
 All Tokens are distributed to investors once the current period ends.
 
-Constructor:
-- `openingTime`: timestamp for opening time ;
-- `wallet`: the wallet to receive funds at the end of the crowdsale ;
-- `rewardpool`: reward wallet to receive the remaining tokens at the end of the crowdsale ;
-- `numberOfPeriod`: number of sales periods ;
-- `token`: GOCO Token contract ;
+Constructor :
+- `openingTime` : timestamp for opening time ;
+- `wallet` : the wallet to receive funds at the end of the crowdsale ;
+- `rewardpool` : reward wallet to receive the remaining tokens at the end of the crowdsale ;
+- `numberOfPeriod` : number of sales periods ;
+- `token` : GOCO Token contract ;
 
 Sale requires to have GOCO Tokens in reserve in order to operate.
 
@@ -240,4 +240,4 @@ Before deployment the contract _MUST_ be deployed on Ropsten with limited timers
 
 The code require in general a little bit more comments for readability.
 
-_Last edit on 17 December 2019_
+_Last edit on 18 December 2019_
