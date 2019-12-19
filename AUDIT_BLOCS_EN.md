@@ -242,6 +242,6 @@ OpenZeppelin contracts are audited by a professional community. Those contracts 
 
 Before deployment the contract _MUST_ be deployed on Ropsten with limited timers in order to test all periods in pre-prod environment. The pre-prod deployment should be the same for prod, with different parameters and network (mainnet).
 
-The code require in general a little bit more comments for readability.
+The code requires in general a little bit more comments for readability.
 
-_Last edit on 18 December 2019_
+_Last edit on 19 December 2019_
