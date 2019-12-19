@@ -1,7 +1,7 @@
 # Audit report of GOCO Presale, Sale and Token smart contracts
 #### _Edited on December 2019, by [Jonathan "Blocs" Serra](https://blocs.fr/)_
 
-**All issues has been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts.**
+**All issues have been fixed and reviewed by the team, there is no raised threat or security issues on the last version of the contracts.**
 
 # Introduction
 
@@ -10,15 +10,15 @@ This report is about the three following contracts :
 - [GOCOPreSale](contracts/GOCOPreSale.sol) : GOCO Presale ;
 - [GOCOSale](contracts/GOCOSale.sol) : GOCO Sale with periods of 21 hours ;
 
-All potential vulnerabilities and good code practices are noticed by 3 tags as commentaries written in the contracts source code and all related tests :
+All potential vulnerabilities and best code practices are marked by 3 tags as commentaries written in the contracts source code and all related tests :
 - `MAJOR_x` where x is a 2 digits number : This references all parts that have impact in contracts logics ;
 - `MEDIUM_x` where x is a 2 digits number : This references all parts where particular care is required ;
-- `MINOR_x` where x is a 2 digits number: This references all parts that can be enhanced for security or code readability ;
-- `WATCH_x` where x is a 2 digits number: This references all parts when something is unsure about business logic ;
+- `MINOR_x` where x is a 2 digits number : This references all parts that can be enhanced for security or code readability ;
+- `WATCH_x` where x is a 2 digits number : This references all parts when something is unsure about business logic ;
 
 All symbols are related to the state of the issue :
-- :white_large_square: : Means this has not been done or fixed ;
-- :white_check_mark: : Means this has been done or fixed ;
+- :white_large_square: : Means this has not been reviewed or fixed ;
+- :white_check_mark: : Means this has been fixed ;
 - :ok_hand: : Means this has been reviewed and possibly changed accordingly, the issue is considered to not be a threat ;
 - :heavy_minus_sign: : Means the issue has been deleted ;
 
@@ -47,9 +47,9 @@ In the document critical parts are indexed with the tag **CRITICAL**.
 
 # 1. <a name="1"></a>Prelude
 
-This audit is not about viability of the business around contracts. Only source code quality and security is audited. This audit is delivered with the following :
+This audit is not about viability of the business around contracts. Only source code quality and security were audited. This audit is delivered with the following items :
 - A report ;
-- Source code commented with references ;
+- The source code commented with references ;
 - Updates on unit tests ;
 
 # 2. <a name="2"></a>Overview
@@ -61,19 +61,19 @@ The contracts purpose is to sell GOCO (ERC20) Tokens, all integrated with [OpenZ
 Token ERC20 GOCO.
 
 Constructor :
-- `teamWallet` : founder wallet to receive 7,000,000 GOCO ;
-- `tokenSaleWallet` : sale and presale to receive 12,600,000 GOCO ;
-- `rewardPoolWallet` : reward wallet to receive 1,400,000 GOCO ;
+- `teamWallet` : Founder wallet to receive 7,000,000 GOCO ;
+- `tokenSaleWallet` : Sale and presale to receive 12,600,000 GOCO ;
+- `rewardPoolWallet` : Reward wallet to receive 1,400,000 GOCO ;
 
 All tokens are minted on deployment for a total of 21,000,000 GOCO which is the **total supply**, `_mint` being internal.
 
 #### _Presale_
 
-Limited quantity sale of GOCO Tokens. The Presale is followed with a referral program allowing referees and investors to receive Tokens as reward.
+Limited quantity sale of GOCO Tokens. The Presale is followed with a referral program allowing referees and investors to receive tokens as reward.
 
 Constructor :
-- `openingTime` : timestamp for opening time ;
-- `closingTime` : timestamp for closing time ;
+- `openingTime` : Timestamp for opening time ;
+- `closingTime` : Timestamp for closing time ;
 
 Presale requires to have GOCO Tokens in reserve in order to operate.
 
@@ -81,14 +81,14 @@ Presale requires to have GOCO Tokens in reserve in order to operate.
 
 Limited quantity sale of GOCO Tokens through multiple periods of 21 hours.
 
-All Tokens are distributed to investors once the current period ends.
+All tokens are distributed to investors once the current period ends.
 
 Constructor :
-- `openingTime` : timestamp for opening time ;
-- `wallet` : the wallet to receive funds at the end of the crowdsale ;
-- `rewardpool` : reward wallet to receive the remaining tokens at the end of the crowdsale ;
-- `numberOfPeriod` : number of sales periods ;
-- `token` : GOCO Token contract ;
+- `openingTime` : Timestamp for opening time ;
+- `wallet` : The wallet to receive funds at the end of the crowdsale ;
+- `rewardpool` : Reward wallet to receive the remaining tokens at the end of the crowdsale ;
+- `numberOfPeriod` : Number of sales periods ;
+- `token` : ERC20 GOCO Token contract ;
 
 Sale requires to have GOCO Tokens in reserve in order to operate.
 
@@ -103,7 +103,7 @@ Quoted from [vessenes.com](https://vessenes.com/the-erc20-short-address-attack-e
 >The server taking in user data allowed an Ethereum address that was less than 20 bytes: usually an Ethereum address looks like 0x1234567890123456789012345678901234567800.
 What if you leave off those trailing two zeros (one hex byte equal to 0)? The Ethereum VM will supply it, but at the end of the packaged function arguments, and that's a very bad place to add extra zeros.
 
-Thoughout the code there is only in `ERC20` that this attack might be possible and interesting for attacker. Specifically on functions `transfer`, `transferFrom` and `approve`.
+Thoughout the code there is only in `ERC20` that this attack might be possible and interesting for an attacker. Specifically on functions `transfer`, `transferFrom` and `approve`.
 
 The short address attack is prevented since [Solidity version 0.5.0](https://github.com/ethereum/solidity/pull/4224). All source code _MUST_ be at least at this version. The version of `ERC20` in OpenZeppelin is `^0.5.0`.
 
@@ -135,11 +135,11 @@ contract AttackContract {
 }
 ```
 
-In GOCO contract there a only one place where reentrancy might be usable and interesting for attacker. It's the function `buyTokens`. `RetrancyGuard` is used, thus this function is protected against this attack. No untrusted call are made which avoid some reetrancy attacks.
+In GOCO contract there a only one place where reentrancy might be usable and interesting for an attacker. It's the function `buyTokens`. `RetrancyGuard` is used, thus **this function is protected against this attack**. No untrusted call are made which avoid some reetrancy attacks.
 
 ## Number overflow :ok_hand:
 
-All calculations are made through SafeMath. No overflow is possible.
+All calculations are made through SafeMath. **No overflow is possible.**
 
 ## DoS with revert :ok_hand:
 
@@ -149,11 +149,13 @@ It's an attack which consist on denying a function when it depends on a user add
 
 All requires are free from being indefinitely reverted depending on an attacker.
 
-This attack is not possible.
+**This attack is not possible.**
 
 ## DoS with block GAS limit :ok_hand:
 
-This DoS wouldn't cause real treat to the contract execution.
+This attack requires specific cares when part of contracts rely on time. Only `claim` in `GOCOSale` depends on time.
+
+**This DoS wouldn't cause real treat to the contract execution.**
 
 ## Insufficient GAS grieffing :ok_hand:
 
@@ -161,7 +163,9 @@ Only possible when a proxy contract is used, it's not the case here.
 
 ## Forcibly Sending Ether to a Contract :ok_hand:
 
-This attack would have no effect on the contract.
+There is no particular behavior depending on receiving values.
+
+**This attack would have no effect on the contract.**
 
 # 4. <a name="4"></a>Contract abuse
 
@@ -171,7 +175,7 @@ There is no limitation on token distribution for referees and who refers to who.
 
 `addReferee` takes two parameters, the referrer and the referee. There is not control on who refers to who. An abuser could watch investors address and put himself has their referee in order to profit from future buys by those investors.
 
-There is no way to prevent this to happen. The contract has been updated to allow up to 10 referees in order to prevent the abuser to block and abuse the referral program.
+There is no way to prevent this to happen. **The contract has been updated to allow up to 10 referees in order to prevent the abuser to block and abuse the referral program.**
 
 # 5. <a name="5"></a>Major
 
@@ -230,9 +234,9 @@ Solidity is on pragma version `0.5.13`. OpenZeppelin Solidity is up to date `2.4
 
 # 10. <a name="10"></a>Conclusion
 
-**The last version of the contracts has no raised security issues.**
+**The last version of the contracts have no raised security issues.**
 
-The source code follow audited contracts rules from OpenZeppelin. `SafeMath` is always used throughout calculations to avoid maths issues (overflow, zero division, etc.). Partial respect of inheritance but no threat raised.
+The source code follows audited contracts rules from OpenZeppelin. `SafeMath` and `Address` are always used throughout calculations to avoid maths issues (overflow, zero division, etc.) and transfer issues regarding the coming Istanbul hardfork. Partial respect of inheritance but **no threat raised**.
 
 OpenZeppelin contracts are audited by a professional community. Those contracts are not audited here.
 
