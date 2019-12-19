@@ -62,9 +62,9 @@ Les contrats consistent en la vente de jetons ERC20, implémentés avec la libra
 Token ERC20 GOCO.
 
 Constructeur:
-- `teamWallet`: portefeuille du fondateur, il reçoit 7 000 000 GOCO;
-- `tokenSaleWallet`: portefeuille de la vente et là prévente, il reçoit 12 600 000 GOCO;
-- `rewardPoolWallet`: portefeuille de la récompense, il reçoit 1 400 000 GOCO;
+- `teamWallet` : portefeuille du fondateur, il reçoit 7 000 000 GOCO ;
+- `tokenSaleWallet` : portefeuille de la vente et là prévente, il reçoit 12 600 000 GOCO ;
+- `rewardPoolWallet` : portefeuille de la récompense, il reçoit 1 400 000 GOCO ;
 
 Tous les jetons sont créés au déploiement avec un total de 21 000 000 GOCO qui constitue le **total supply**, `_mint` est interne.
 
@@ -73,8 +73,8 @@ Tous les jetons sont créés au déploiement avec un total de 21 000 000 GOCO qu
 Vente limitée en quantité et en temps de jetons GOCO. Programme de parrainage pour associer un investisseur avec un filleul qui recevront tous deux une récompense de jetons lorsque l'investisseur achète des jetons.
 
 Constructeur:
-- `openingTime`: date de début de la prévente;
-- `closingTime`: date de fin de la prévente;
+- `openingTime` : date de début de la prévente ;
+- `closingTime` : date de fin de la prévente ;
 
 La prévente nécessite d'avoir des fonds en jetons GOCO pour opérer.
 
@@ -84,12 +84,12 @@ Vente limitée en quantité et en temps de jetons GOCO. La vente est quantifiée
 
 Tous les jetons sont redistribués à des portefeuilles à la fin de la période courante.
 
-Constructeur:
-- `openingTime`: date de début de la vente;
-- `wallet`: portefeuille de la vente;
-- `rewardpool`: portefeuille de récompense;
-- `numberOfPeriod`: nombre de périodes de vente;
-- `token`: contrat du jeton GOCO;
+Constructeur :
+- `openingTime` : date de début de la vente ;
+- `wallet` : portefeuille de la vente ;
+- `rewardpool` : portefeuille de récompense ;
+- `numberOfPeriod` : nombre de périodes de vente ;
+- `token` : contrat du jeton GOCO ;
 
 La vente nécessite d'avoir des jetons GOCO en réserve pour opérer.
 
@@ -136,11 +136,11 @@ contract AttackContract {
 }
 ```
 
-Dans le contrat GOCO l'attaque Reentrancy est potentiellement exploitable dans `buyTokens`. `RetrancyGuard` est appliqué à cette fonction ce qui la protège contre l'attaque Reentrancy. Aucun appel inconnu n'est exécuté dans le contrat, ce qui limite d'autant plus les possibilités d'attaque Reentrancy.
+Dans le contrat GOCO l'attaque Reentrancy est potentiellement exploitable dans `buyTokens`. `RetrancyGuard` est appliqué à cette fonction ce qui la protège contre l'attaque Reentrancy. **Aucun appel inconnu n'est exécuté dans le contrat, ce qui limite d'autant plus les possibilités d'attaque Reentrancy.**
 
 ## Nombre Overflow :ok_hand:
 
-Tous les caluls sont réalisés avec SafeMath. Aucun overflow n'est possible.
+Tous les caluls sont réalisés avec SafeMath. **Aucun overflow n'est possible.**
 
 ## DoS avec revert :ok_hand:
 
@@ -148,7 +148,7 @@ Denial of Service en préparant un revert infini.
 
 C'est une attaque qui consiste à bloquer une fonction par revert infini, lorsque le contrat dépend d'une adresse utilisateur enregistrée dans les états.
 
-Tous les `require` ne dépendent pas d'une adresse qui peut provoquer un revert infini.
+**Tous les `require` ne dépendent pas d'une adresse qui peut provoquer un revert infini.**
 
 Cette attaque n'est pas possible.
 
@@ -156,9 +156,9 @@ Cette attaque n'est pas possible.
 
 Denial of Service en gonflant artificiellement le GAS Limit dans un lapse de temps, ce qui bloque les futures transactions vers le contrat.
 
-Cette attaque est seulement possible avec les fonctions qui permettent un montant de GAS illimité.
+Uniquement `claim` de `GOCOSale` dépend du temps.
 
-`batchClaim` étant public et permettant théoriquement une infinité de paramètres peut être utilisée avec cette attaque.
+**Cette attaque n'est pas une menace.**
 
 ## Attaque par GAS Insufisant :ok_hand:
 
@@ -166,7 +166,9 @@ Uniquement possible quand le contrat utilise un proxy, ce n'est pas le cas ici.
 
 ## Forçage d'envoie d'ether à un contrat :ok_hand:
 
-Cette attaque n'aurait aucun effet sur ce contrat.
+Les contrats n'ont aucun comportement dangereux en cas de réception de valeur imprévue.
+
+**Cette attaque n'aurait aucun effet sur ce contrat.**
 
 # 4. <a name="4"></a>Abus du contrat
 
@@ -176,7 +178,7 @@ Il n'y a pas de contrôle sur qui affilie qui.
 
 `addReferee` prend deux paramètres, l'affilié et le parrain. Il n'y a pas de contrôle sur qui appelle cette fonction. Un attaquant peut contrôler une liste d'investisseurs et s'affilier lui même à ces derniers, bénéficiant des futurs investissements.
 
-Cet abus est probable d'arriver et peut être évité en contrôlant qui ajoute un affilié.
+**Une liste de 10 filleuls a été intégrée pour palier à ces contraintes.**
 
 # 5. <a name="5"></a>Majeur
 
@@ -236,12 +238,12 @@ La version du pragma Solidity est `0.5.13`. La version d'Open Zeppelin Solidity 
 
 **Aucune menace n'a été relevée dans la dernière version des contrats.**
 
-Le code respecte en partie l'intégration des contrats audités OpenZeppelin. L'utilisation de `SafeMath` est présente à tous les calculs. Respect partiel de l'encapsulation, aucune menace relevée.
+Le code respecte en partie l'intégration des contrats audités OpenZeppelin. L'utilisation de `SafeMath` et `Address` est respéctée. Respect partiel de l'encapsulation, **aucune menace relevée.**
 
 Les contrats OpenZeppelin sont audités par une communauté de professionnels. Dans cet audit ils n'ont pas été passés en revue.
 
 Avant le déploiement du contrat le contrat _DOIT_ être déployé sur Ropsten avec des périodes limitées pour toutes les passer en revue, environnement pre-production. Le déploiement pre-production doit être fait de la même façon que le déploiement en production, avec les paramètres mis à jour.
 
-Le code devrait être un peu plus commenté pour être plus lisible.
+Le code devrait être un peu plus commenté afin d'être plus lisible.
 
-_Dernière mise à jour le 17 décembre 2019_
+_Dernière mise à jour le 19 décembre 2019_
