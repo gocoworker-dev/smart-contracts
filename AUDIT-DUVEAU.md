@@ -133,7 +133,7 @@ REWARDPOOL_WALLET has approved GCWPreSale.sol to spend 10 % of 2 100 000 tokens
 => OK
 ````
 
-### 4.3. Step 3 : deployment of GOCOSale.sol
+### 4.3. Step 3: deployment of GOCOSale.sol
 
 Parameters:
 ````
