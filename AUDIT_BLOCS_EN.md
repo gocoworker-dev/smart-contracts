@@ -181,26 +181,26 @@ There is no way to prevent this to happen. **The contract has been updated to al
 
 | State                | Tag      | Contract       | Details       |
 |----------------------|----------|:--------------:|---------------|
-| :white_check_mark: | MAJOR_01 | GOCOPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error |
-| :white_check_mark: | MAJOR_02 | GOCOPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02` |
+| :white_check_mark: | MAJOR_01 | GOCOPreSale.sol | Opening date can be updated and be greater than closing date. Should prevent this in case of human error. |
+| :white_check_mark: | MAJOR_02 | GOCOPreSale.sol | A referee can ba added even though the referral program is disabled. It can be a business logic, see `WATCH_02`. |
 | :heavy_minus_sign: | MAJOR_03 (removed) | GOCOSale.sol    | `buyTokens` should inherited from OpenZeppelin to profit from audited behaviors. Instructions order should be changed. `dailyTotals` and `userBuys` must be executed after `_postValidatePurchase`. Removed because GOCOSale doesn't inherit from Crowdsale. |
-| :white_check_mark: | MAJOR_04 | GOCOSale.sol    | Increasing or decreasing the number of period should imply to update the token distribution, but it will conflict with passed periods and distribution caps |
+| :white_check_mark: | MAJOR_04 | GOCOSale.sol    | Increasing or decreasing the number of period should imply to update the token distribution, but it will conflict with passed periods and distribution caps. |
 
 # 6. <a name="6"></a>Medium
 
 | State                | Tag       | Contract(s)    | Details       |
 |----------------------|-----------|:--------------:|---------------|
-| :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | Empty function |
+| :white_check_mark: | MEDIUM_01 | GOCOPreSale.sol | This function is empty. |
 | :white_check_mark: | MEDIUM_02 | GOCOPreSale.sol | `saleWallet` and `rewardPoolWallet` can be equals. |
 | :heavy_minus_sign: | MEDIUM_03 (removed) | NA | NA |
-| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GOCOSale.sol | Must inherit |
+| :white_check_mark: | MEDIUM_04 | GOCOPreSale.sol / GOCOSale.sol | It must inherit. |
 | :heavy_minus_sign: | MEDIUM_05 (removed) | GOCOPreSale.sol | Should used `require` instead of conditions. |
-| :heavy_minus_sign: | MEDIUM_06 (removed) | GOCOPreSale.sol | `require` missing |
+| :heavy_minus_sign: | MEDIUM_06 (removed) | GOCOPreSale.sol | A `require` is missing. |
 | :heavy_minus_sign: | MEDIUM_07 (removed) | GOCOSale.sol    | Should used `require` instead of conditions. |
-| :white_check_mark: | MEDIUM_08 (moved) | GOCOSale.sol    | See MAJOR_03 |
+| :white_check_mark: | MEDIUM_08 (moved) | GOCOSale.sol    | See MAJOR_03. |
 | :white_check_mark: | MEDIUM_09 | GOCOToken.sol   | `teamWallet`, `tokenSaleWallet` and `rewardPoolWallet` can be equals and 0. |
 | :ok_hand: | MEDIUM_10 | GOCOSale.sol    | `nonReentrant` modifier should be applied to external function. See [source](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/ReentrancyGuard.sol). OK since OpenZeppelin uses `buyTokens` the same way. |
-| :white_check_mark: | MEDIUM_11 | GOCOSale.sol    | Missing require |
+| :white_check_mark: | MEDIUM_11 | GOCOSale.sol    | There is a missing require. |
 
 
 # 7. <a name="7"></a>Minor
@@ -210,9 +210,9 @@ There is no way to prevent this to happen. **The contract has been updated to al
 | :white_check_mark: | MINOR_01 | GOCOPreSale.sol / GOCOSale.sol / GOCOToken.sol | Solidity pragma must be fixed. Remove `^` and should put last version. |
 | :heavy_minus_sign: | MINOR_02 (removed) | NA | NA |
 | :heavy_minus_sign: | MINOR_03 | GOCOPreSale.sol / GOCOSale.sol | Revert conditions for code readability. |
-| :heavy_minus_sign: | MINOR_04 | GOCOPreSale.sol | Enhance instructions order, super._preValidatePurchase checks for earlier validations (such as amount = 0). |
+| :heavy_minus_sign: | MINOR_04 | GOCOPreSale.sol | Enhance instructions order, super. `_preValidatePurchase` checks for earlier validations (such as amount = 0). |
 | :white_check_mark: | MINOR_05 | GOCOPreSale.sol | `require` should be splitted for code readability. |
-| :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Enhance conditions. |
+| :white_check_mark: | MINOR_06 | GOCOPreSale.sol | Must enhances this condition. |
 | :white_check_mark: | MINOR_07 | GOCOPreSale.sol | Add a `require` to avoid GAS consumption. |
 | :white_check_mark: | MINOR_08 | GOCOSale.sol | Add a `require` to avoid human error. |
 | :ok_hand: | MINOR_09 | GOCOSale.sol | Rename the function to be more explicit, should start by a verb. Self documentation conventions. |
