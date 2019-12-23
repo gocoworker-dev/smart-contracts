@@ -149,7 +149,7 @@ Hardcoded:
 _tokenCap = 10 500 000
 ````
 
-Verification :
+Verification:
 ````
 We need to transfer 10 500 000 tokens from the SALE_WALLET to the sale contract
 SALE_WALLET had 12 600 000 tokens in total
@@ -229,4 +229,4 @@ The fallback function in GOCOSale.sol buys tokens which is not dangerous, so the
 
 ## 8. Conclusion
 
-The GOCOWORKER contracts seem to be production-ready.
+The GOCOWORKER smart contracts seem to be production-ready.
