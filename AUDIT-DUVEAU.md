@@ -13,7 +13,7 @@ The information appearing in this audit is for general discussion purposes only 
 + **Project name:** GOCOWORKER smart contracts
 + **Project commit hash:** f99ea6616da12882a3eb28c7f2c0cac4567a0ac8
 + **Project repository:** private repository at the time of this audit
-+ **Project specifications:** private document at the time of this audit
++ **Project specification:** private document at the time of this audit
 + **Auditor:** [Guillaume Duveau](https://guillaumeduveau.com/en/)
 + **Audit date:** 2019-12-20
 + **Audit document:** this document
