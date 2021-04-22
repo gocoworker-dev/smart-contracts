@@ -25,7 +25,7 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
-pragma solidity 0.5.13;
+pragma solidity 0.5.17;
 
 import 'openzeppelin-solidity/contracts/ownership/Ownable.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
@@ -76,7 +76,7 @@ contract GOCOSale is Ownable, ReentrancyGuard, Pausable {
    * @dev Reverts if not in crowdsale time range.
    */
     modifier onlyWhileOpen {
-        require(isOpen());
+        require(isOpen(), "GOCOSale: sale is not open");
         _;
     }
 

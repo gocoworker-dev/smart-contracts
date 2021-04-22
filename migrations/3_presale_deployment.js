@@ -2,9 +2,10 @@
 const GOCOToken = artifacts.require('./GOCOToken.sol');
 const GOCOPreSale = artifacts.require('./GOCOPreSale.sol');
 
-var days = 4;
-var openingTime = Date.parse("2019-12-13T09:00:00");
-var closingTime = openingTime + (days*24*60*60);
+
+var openingTime = Math.floor(Date.parse("2021-06-21T12:00:00Z") / 1000);
+var closingTime = Math.floor(Date.parse("2021-09-01T11:59:59Z") / 1000);
+
 // var days = 90;
 // var openingTime = Math.floor((new Date()).getTime() / 1000) + 120;
 // var closingTime = openingTime + (days*24*60*60);

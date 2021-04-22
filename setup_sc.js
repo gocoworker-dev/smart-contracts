@@ -14,7 +14,7 @@ const PRESALE_TOKEN_SUPPLY = new BigNumber(2100000).multipliedBy(new BigNumber(1
 const SALE_TOKEN_SUPPLY = new BigNumber(10500000).multipliedBy(new BigNumber(10).pow(new BigNumber(18)));
 
 
-var provider = new HDWalletProvider(process.env.MNEMONIC, 'https://ropsten.infura.io/' + process.env.INFURA_API_KEY, 0, 5)
+var provider = new HDWalletProvider(process.env.MNEMONIC, 'https://goerli.infura.io/' + process.env.INFURA_API_KEY, 0, 5)
 
 GOCOToken.setProvider(provider);
 GOCOToken.setNetwork(3)

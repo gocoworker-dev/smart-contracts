@@ -25,7 +25,7 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
-pragma solidity 0.5.13;
+pragma solidity 0.5.17;
 
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 import 'openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';

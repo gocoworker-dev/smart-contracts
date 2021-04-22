@@ -12,8 +12,8 @@ async function tokenBalanceDifference (token, account, promiseFunc) {
 
 contract('GOCOPreSale', function ([_, owner, founderAccount, tokenSaleAccount, rewardAccount, investor, anyone]) {
   const value = ether('1');
-  const RATE = new BN(10);
-  const CAP = ether('210000');
+  const RATE = new BN(200);
+  const CAP = ether('10500');
 
   const TOKEN_SUPPLY = new BN(2100000).mul(new BN(10).pow(new BN(18)));
 

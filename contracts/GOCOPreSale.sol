@@ -25,7 +25,7 @@
     based on the contracts of OpenZeppelin:
     https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts
 **/
-pragma solidity 0.5.13;
+pragma solidity 0.5.17;
 
 import 'openzeppelin-solidity/contracts/crowdsale/distribution/FinalizableCrowdsale.sol';
 import 'openzeppelin-solidity/contracts/crowdsale/validation/CappedCrowdsale.sol';
@@ -49,8 +49,8 @@ contract GOCOPreSale is Ownable, CappedCrowdsale, FinalizableCrowdsale, Pausable
     IERC20 gocotoken
   )
     public
-    Crowdsale(10, saleWallet, gocotoken) //token price is 0.1 Ether, i.e 10 token unit (10^-18) by wei
-    CappedCrowdsale(210000 ether) //Max cap  : 210,000 Ether = 2,100,000 tokens
+    Crowdsale(200, saleWallet, gocotoken) //token price is 0.005 Ether, i.e 200 token unit (10^-18) by wei
+    CappedCrowdsale(10500 ether) //Max cap  : 10,500 Ether = 2,100,000 tokens
     TimedCrowdsale(openingTime, closingTime)
   {
     require(rewardPoolWallet != address(0), "GOCOPreSale: rewardPoolWallet is the zero address");

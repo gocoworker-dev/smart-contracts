@@ -17,15 +17,26 @@ npm test
 Gocoworker smart contracts integrate with [Truffle](https://github.com/ConsenSys/truffle), an Ethereum development environment. 
 
 
+
+## Migration on Goeli 
+
+```sh
+ ./node_modules/.bin/truffle migrate --network goerli
+ node setup_sc.js
+```
+Token : 0x0866afA8bA5a7aE93980d0bbe57d0be9D84f6d2d
+Presale: 0xCEA30aB5758cc87fa737CB03f220dF3d3eAAcb36
+Sale : 0x4393F6B64A6Dc840B05898DBcB1663CfE3798bC8
+
 ## Migration on Rinkeby 
 
 ```sh
  ./node_modules/.bin/truffle migrate --network rinkeby
  node setup_sc.js
 ```
-Token : 0xCc7D5C8ad2AC270b5D7559130416911A7A59ABDB
-Presale: 0x443074dA4F0b50c98BBAed64683638EF89fc1a7d
-Sale : 0xEEccDAa58ecd1a55392dB369d88527641Fa3De56
+Token : 0x0866afA8bA5a7aE93980d0bbe57d0be9D84f6d2d
+Presale: 0xCEA30aB5758cc87fa737CB03f220dF3d3eAAcb36
+Sale : 0x53abE050eAbF9871dfa94DCe7B077D921A094617
 
 ## Migration on Ropsten 
 
@@ -33,9 +44,9 @@ Sale : 0xEEccDAa58ecd1a55392dB369d88527641Fa3De56
  ./node_modules/.bin/truffle migrate --network ropsten
  node setup_sc.js
 ```
-Token : 0xbc87b24723EE3BCe19CC9126e8aBa077911C5137
-Presale: 0x9253C583A98513db0B675275A3D343021FfED33d
-Sale : 0x96f0ef758DAb636A09C1613283B5d2F38e79C0ac
+Token : 0xBE4d0b52c1b834833Fa2a8e93250Eb0dF5ABE13C
+Presale: 0xC4e2b5Af3175ebF3F96BC40e025b6E032f362597
+Sale : 0x53e21A7BCcda95FF53477C09492d9d0bA962080C
 
 ## Security
 Gocoworker smart contracts are based on [OpenZeppelin](https://github.com/OpenZeppelin/zeppelin-solidity/) which is meant to provide secure, tested and community-audited code.

@@ -6,7 +6,7 @@ const HDWalletProvider = require('truffle-hdwallet-provider');
 module.exports = {
   compilers: {
     solc: {
-      version: '0.5.13'
+      version: '0.5.17'
     }
   },
   networks: {
@@ -15,6 +15,12 @@ module.exports = {
       port: 8545,
       network_id: '*', // eslint-disable-line camelcase
       
+    },
+    goerli: {
+      provider: new HDWalletProvider(process.env.MNEMONIC, 'https://goerli.infura.io/' + process.env.INFURA_API_KEY, 0, 5),
+      gas: 4700000,
+      network_id: 5,
+      skipDryRun: true
     },
     rinkeby: {
       provider: new HDWalletProvider(process.env.MNEMONIC, 'https://rinkeby.infura.io/' + process.env.INFURA_API_KEY, 0, 5),

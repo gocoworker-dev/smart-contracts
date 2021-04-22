@@ -6,7 +6,7 @@ const GOCOSale = artifacts.require('./GOCOSale.sol');
 //var nbPeriod = 250;
 
 
-var openingTime = Date.parse("2019-12-17T13:00:00");
+var openingTime = Math.floor(Date.parse("2021-09-01T12:00:00Z") / 1000);
 var nbPeriod = 25;
 
 
